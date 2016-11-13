@@ -1,4 +1,4 @@
-package client;
+package resources;
 
 public class Player {
 
