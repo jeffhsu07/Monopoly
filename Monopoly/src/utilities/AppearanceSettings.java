@@ -4,9 +4,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
@@ -36,6 +39,24 @@ public class AppearanceSettings {
 	public static <T extends JComponent>void setBackground(Color backGround, T ... components ){
 		
 		for (T component : components) component.setBackground(backGround);
+	}
+	
+	//sets the layout to boxlayout for each panel
+	public static void setBoxLayout(int axis, JPanel... panels){
+		
+		for (JPanel panel : panels) panel.setLayout(new BoxLayout(panel, axis));
+	}
+	
+	//iterates through the components and adds them to the panel with glue in between
+	@SafeVarargs
+	public static <T extends JComponent> void addGlue(JPanel panel, int axis, Boolean addInitialGlue, T... components){
+		
+		if (addInitialGlue) panel.add(axis == BoxLayout.PAGE_AXIS? Box.createVerticalGlue() : Box.createHorizontalGlue());
+			
+		for (T component : components){
+			panel.add(component);
+			panel.add(axis == BoxLayout.PAGE_AXIS? Box.createVerticalGlue() : Box.createHorizontalGlue());
+		}
 	}
 	
 	//sets foreground of supplied JComponents
@@ -73,6 +94,13 @@ public class AppearanceSettings {
 		for (T component : components) component.setVisible(visible);
 	}
 	
+	//sets visibility of supplied components
+	@SafeVarargs
+	public static <T extends JComponent>void setEnabled(Boolean enabled, T ... components ){
+		
+		for (T component : components) component.setEnabled(enabled);
+	}
+		
 	//sets size of components
 	@SafeVarargs
 	public static <T extends JComponent> void setSize(int x, int y, T ...components){
