@@ -49,6 +49,7 @@ public class PlayerInformation extends JFrame {
 		propertiesArea = new JTextArea();
 		setPropertiesPane();
 		propertiesArea.setPreferredSize(new Dimension(400,300));
+		propertiesArea.setEditable(false);
 		scrollPane = new JScrollPane(propertiesArea);
 		closeButton = new JButton("Close");
 	}
