@@ -6,12 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import resource.Factory;
-import resource.Product;
-import resource.Resource;
-import server.Constants;
-import server.FactoryServerGUI;
-import utilities.Util;
+
 
 public class Property {
 	private String name;
@@ -23,14 +18,11 @@ public class Property {
 	private int price;
 	private String group;
 	private int[] rentCosts;
-	boolean isMortgaged;
+	boolean mortgaged;
+	int boardPosition; 
 	
-	public static void main(String[] args)
-	{
-		
-	}
-	
-	public Property(String n, int p, String g, int[] costs, int hCost, int mValue)
+
+	public Property(String n, int p, String g, int[] costs, int hCost, int mValue, int bp)
 	{
 		owner = null;
 		
@@ -40,9 +32,10 @@ public class Property {
 		rentCosts = costs;
 		houseCost = hCost;
 		mortgageValue = mValue;
-		isMortgaged = false;
+		mortgaged = false;
 		hasHotel = false;
 		numHouses = 0;
+		boardPosition = bp;
 	}
 	
 	public void addBuilding()
@@ -109,6 +102,11 @@ public class Property {
 	public boolean getHotel() {
 		return hasHotel;
 	}
+	
+	public boolean isMortgaged()
+	{
+		return mortgaged;
+	}
 
 
 	public int getMortgageValue() {
@@ -170,10 +168,10 @@ private Property[] readFile(String fileName) throws IOException
 			{
 				rentPrices[i] = rt.nextToken();
 			}
-			int mValue = st.nextToken();
-			int houseCost = st.nextToken();
-			
-			properties[count] = new Property(name, price, group, rentPrices, houseCost, mValue);
+			int mValue = Integer.parseInt(st.nextToken());
+			int houseCost = Integer.parseInt(st.nextToken());
+			int bp = = Integer.parseInt(st.nextToken());
+			properties[count] = new Property(name, price, group, rentPrices, houseCost, mValue, bp);
 			
 			count++;
 			line = br.readLine();
