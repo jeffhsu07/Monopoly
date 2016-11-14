@@ -103,7 +103,7 @@ public class PlayerInformation extends JFrame {
 			if (property.isMortgaged()) {
 				propertiesArea.append(" (Mortgaged)");
 			} else {
-				if (property.hasHotel()) {
+				if (property.getHotel()) {
 					propertiesArea.append(" (Hotel)");
 				} else {
 					int numHouses = property.getNumHouses();
