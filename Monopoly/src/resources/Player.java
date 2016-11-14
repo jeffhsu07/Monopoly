@@ -2,6 +2,8 @@ package resources;
 
 import java.util.Vector;
 
+// Created by Nick
+// Edited by Jesse
 public class Player {
 	private String name;
 	private int wins;
@@ -10,6 +12,7 @@ public class Player {
 	private boolean inJail;
 	private Vector<Property> properties;
 	private int jailCards;
+	private int currentLocation;
 	
 	public Player(String name, int wins, int losses) {
 		this.name = name;
@@ -19,6 +22,7 @@ public class Player {
 		inJail = false;
 		properties = new Vector<Property>();
 		jailCards = 0;
+		currentLocation = 0;
 	}
 	
 	public String getName() {
@@ -55,5 +59,13 @@ public class Player {
 	
 	public void setJailCards(int num) {
 		jailCards = num;
+	}
+
+	public int getCurrentLocation() {
+		return currentLocation;
+	}
+
+	public void setCurrentLocation(int currentLocation) {
+		this.currentLocation = currentLocation;
 	}
 }

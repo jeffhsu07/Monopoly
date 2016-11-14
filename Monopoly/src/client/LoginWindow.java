@@ -21,6 +21,10 @@ import utilities.AppearanceSettings;
 
 public class LoginWindow extends JFrame {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3612046967469362741L;
 	private JLabel alertLabel;
 	private JButton loginButton;
 	private JButton createAccountButton;
@@ -150,7 +154,9 @@ public class LoginWindow extends JFrame {
 			@Override
 			public void focusGained(FocusEvent e) {
 				if (password.getForeground().equals(Color.LIGHT_GRAY)) {
-					password.setEchoChar('●');
+					// This line was causing issue on my computer as an illegal character
+					// - Jesse
+					//password.setEchoChar('a');
 					password.setText("");
 					password.setForeground(Color.BLACK);
 				}
