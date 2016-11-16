@@ -13,6 +13,7 @@ public class Player {
 	private Vector<Property> properties;
 	private int jailCards;
 	private int currentLocation;
+	private int gameToken;
 	
 	public Player(String name, int wins, int losses) {
 		this.name = name;
@@ -67,5 +68,13 @@ public class Player {
 
 	public void setCurrentLocation(int currentLocation) {
 		this.currentLocation = currentLocation;
+	}
+
+	public int getGameToken() {
+		return gameToken;
+	}
+
+	public void setGameToken(int gameToken) {
+		this.gameToken = gameToken;
 	}
 }

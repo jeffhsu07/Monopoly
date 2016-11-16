@@ -1,9 +1,13 @@
 package client;
 
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import resources.Player;
 
@@ -55,11 +59,54 @@ public class MainWindow extends JFrame {
 	}
 
 	private void createGUI() {
-		// TODO Auto-generated method stub
+		this.setSize(1600,900);
 		
+		// Use a border layout
+		this.setLayout(new BorderLayout());
+		this.add(gameBoard, BorderLayout.WEST);
+		
+		// Use GridBagLayout for remaining components
+		JPanel controlPanel = new JPanel();
+		controlPanel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		
+		// Set up the teams.
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = .1;
+		c.weighty = 1;
+		c.gridheight = 2;
+		c.gridwidth = 2;
+		controlPanel.add(playerInformationGrid, c);
+		
+		// Add the column of buttons
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		c.weighty = 0.5;
+		c.gridy = 2;
+		c.gridx = 0;
+		controlPanel.add(rollButton, c);
+		c.gridy++;
+		controlPanel.add(manageBuildingsButton, c);
+		c.gridy++;
+		controlPanel.add(managePropertiesButton, c);
+		c.gridy++;
+		controlPanel.add(endTurnButton, c);
+		c.gridy++;
+		controlPanel.add(exitButton, c);
+		
+		// Add the progress area
+		c.gridy = 2;
+		c.gridx = 1;
+		c.weightx = .25;
+		c.gridheight = 5;
+		controlPanel.add(progressArea, c);
+		
+		// Add control panel to the main board
+		this.add(controlPanel, BorderLayout.CENTER);
 	}
 
 	private void addListeners() {
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		// TODO Auto-generated method stub
 		
 	}
