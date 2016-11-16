@@ -1,9 +1,5 @@
 package resources;
 
-<<<<<<< HEAD
-public class Player {
-
-=======
 import java.util.Vector;
 
 // Created by Nick
@@ -81,5 +77,4 @@ public class Player {
 	public void setGameToken(int gameToken) {
 		this.gameToken = gameToken;
 	}
->>>>>>> 3027365277ab3be3e728f9d5526ffdb41fcdfcaa
 }

@@ -1,6 +1,8 @@
 package client;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -45,5 +47,14 @@ public class PlayerInformationGrid extends JPanel {
 
 	private void addListeners() {
 		// No action inside progress area.
+		for (int i = 0; i < players.size(); i++) {
+			JButton b = playerButtons.get(i);
+			Player p = players.get(i);
+			b.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					new PlayerInformation(p).setVisible(true);;
+				}
+			});
+		}
 	}
 }

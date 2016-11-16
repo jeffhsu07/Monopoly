@@ -3,7 +3,10 @@ package client;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -60,6 +63,7 @@ public class MainWindow extends JFrame {
 
 	private void createGUI() {
 		this.setSize(1600,900);
+		this.setResizable(false);
 		
 		// Use a border layout
 		this.setLayout(new BorderLayout());
@@ -107,7 +111,47 @@ public class MainWindow extends JFrame {
 
 	private void addListeners() {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		// TODO Auto-generated method stub
 		
+		// Have the roll button move the curren player.
+		rollButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Get a random dice roll
+				Random rand = new Random();
+				int roll1 = rand.nextInt(6)+1;
+				int roll2 = rand.nextInt(6)+1;
+				
+				// Move the player
+				Player p = players.get(currentPlayer);
+				int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
+				p.setCurrentLocation(newLocation);
+				
+				// Repaint the game board and update the progress area
+				gameBoard.repaint();
+				progressArea.addProgress(p.getName() + " rolled a " + roll1 +
+						" and a " + roll2 + ".\n");
+			}
+		});
+		
+		// Have the End Turn button increment the current player.
+		endTurnButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				currentPlayer = (currentPlayer + 1) % players.size();
+				progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.");
+			}
+		});
+		
+		// Opens the Manage properties window when clicked
+		managePropertiesButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new ManagePropertiesWindow().setVisible(true);
+			}
+		});
+		
+		// Opens the Manage buildings window when clicked
+		manageBuildingsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new ManageBuildingsWindow().setVisible(true);
+			}
+		});
 	}
 }

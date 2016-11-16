@@ -1,12 +1,20 @@
 package client;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import resources.Player;
+import utilities.Constants;
 
 //Made by Jesse
 public class GameBoard extends JPanel {
@@ -14,12 +22,38 @@ public class GameBoard extends JPanel {
 	private static final long serialVersionUID = 6731326368140967067L;
 	
 	ArrayList<Player> players;
+	ArrayList<Image> playerImages;
+	
+	// Images for the game board. Only want to load once.
+	Image goImage;
+	Image chestImage;
+	Image chanceImage;
+	Image trainImage;
 	
 	public GameBoard(ArrayList<Player> players) {
 		this.players = players;
+		this.playerImages = new ArrayList<Image>();
+		
+		// Initialize our Images
+		try {
+			// Player Images
+			for (Player p : players) {
+				Image loadedImage = null;
+					loadedImage = ImageIO.read(new File("images/tokens/token" + p.getGameToken() + ".png"));
+					playerImages.add(loadedImage);
+			}
+			
+			goImage = ImageIO.read(new File("images/board/go.gif"));
+			chanceImage = ImageIO.read(new File("images/board/chance.gif"));
+			chestImage = ImageIO.read(new File("images/board/communityChest.gif"));
+			trainImage = ImageIO.read(new File("images/board/train.gif"));
+		} catch (IOException ioe) {
+			System.out.println("Error Loading Player Image: " + ioe.getMessage());
+		}
+		
 		
 		// Default to a square
-		this.setPreferredSize(new Dimension(900,900));
+		this.setPreferredSize(new Dimension(891,891));
 	}
 
 	protected void paintComponent(Graphics g) {
@@ -31,9 +65,25 @@ public class GameBoard extends JPanel {
 		// Paint the houses and hotels
 		
 		// Paint the Players onto the Board
+		paintPlayers(g);
 	}
 	
 	private void paintBoard(Graphics g) {
+		// Draw the board images
+		drawImageAtLocation(g,goImage,0);
+		drawImageAtLocation(g,trainImage,5);
+		drawImageAtLocation(g,trainImage,15);
+		drawImageAtLocation(g,trainImage,25);
+		drawImageAtLocation(g,trainImage,35);
+		drawImageAtLocation(g,chanceImage,7);
+		drawImageAtLocation(g,chanceImage,22);
+		drawImageAtLocation(g,chanceImage,36);
+		drawImageAtLocation(g,chestImage,2);
+		drawImageAtLocation(g,chestImage,17);
+		drawImageAtLocation(g,chestImage,33);
+		
+		g.setColor(Color.BLACK);
+		//g.setStroke(new BasicStroke(3));
 		// Get width and height of cells based on current dimensions
 		int gridWidth = this.getWidth()/11;
 		int width = this.getWidth();
@@ -50,7 +100,7 @@ public class GameBoard extends JPanel {
 		g.drawLine(0, 0, 0, height);
 		g.drawLine(width-1, 0, width-1, height);
 		g.drawLine(gridWidth, 0, gridWidth, height);
-		g.drawLine(width-gridWidth, 0, width-gridWidth, height);
+		g.drawLine(gridWidth*10, 0, gridWidth*10, height);
 		
 		// Draw our horizontal lines
 		for (int i = 1; i < 9; i++) {
@@ -65,5 +115,85 @@ public class GameBoard extends JPanel {
 			g.drawLine(currentX, 0, currentX, gridHeight);
 			g.drawLine(currentX, height-gridHeight, currentX, height);
 		}
+		
+		// Draw the Rectangle on Each property
+		for (int i = 0; i < 40; i++) {
+			// Get the upper left of our square
+			int x = getXFromLocation(i);
+			int y = getYFromLocation(i);
+			
+			if (!Constants.propertyLocations.contains(i)) continue;
+			
+			if (i < 11) {
+				// In the top row.
+				g.drawRect(x, gridHeight*4/5, gridWidth, gridHeight/5);
+			} else if (i < 21) {
+				// In the right Column
+				g.drawRect(x, y, gridWidth/5, gridHeight);
+			} else if (i < 31) {
+				// In the bottom Row
+				g.drawRect(x, y, gridWidth, gridHeight/5);
+			} else {
+				// In the left Column
+				g.drawRect(gridWidth*4/5, y, gridWidth/5, gridHeight);
+			}
+		}
+		
+	}
+	
+	// Method to paint all the players to the game board.
+	private void paintPlayers(Graphics g) {
+		for (int i = 0; i < players.size(); i++) {
+			Player p = players.get(i);
+			int x = getXFromLocation(p.getCurrentLocation()) + getWidth()/44;
+			int y = getYFromLocation(p.getCurrentLocation()) + getHeight()/44;
+			Image img = playerImages.get(i);
+			g.drawImage(img, x, y, getWidth()/22, getHeight()/22, null);
+		}
+	}
+	
+	// Helper function to get the X coordinate of upper left of a location
+	private int getXFromLocation(int location) {
+		int result = 0;
+		if (location < 11) {
+			// In the top row.
+			result = location * (this.getWidth()/11);
+		} else if (location < 21) {
+			// In the right Column
+			result = this.getWidth() - this.getWidth()/11;
+		} else if (location < 31) {
+			// In the bottom Row
+			result = (location - 30) * (0-1) * (this.getWidth()/11);
+		} else {
+			// In the left Column
+			result = 0;
+		}
+		return result;
+	}
+	
+	// Helper function to get the Y coordinate of upper left of a location.
+	private int getYFromLocation(int location) {
+		int result = 0;
+		if (location < 11) {
+			// In the top row.
+			result = 0;
+		} else if (location < 20) {
+			// In the right Column
+			result = (location - 10) * (this.getHeight()/11);
+		} else if (location < 31) {
+			// In the bottom Row
+			result = this.getHeight() - this.getHeight()/11;
+		} else {
+			// In the left Column
+			result = (location - 40) * (0-1) * (this.getHeight()/11);
+		}
+		return result;
+	}
+	
+	// Helper function to draw an image to a location
+	private void drawImageAtLocation(Graphics g, Image i, int location) {
+		int x = getXFromLocation(location);
+		int y = getYFromLocation(location);
+		g.drawImage(i, x, y, getWidth()/11, getHeight()/11, null);
 	}
 }
