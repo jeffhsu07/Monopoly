@@ -1,9 +1,11 @@
 package main;
-
-import client.LoginWindow;;
-
-public class Main {
-	public static void main (String [] args){
-		new LoginWindow().setVisible(true);
+import client.ManagePropertiesWindow;
+import client.ManageBuildingsWindow;
+import client.PlayerInformationWindow;
+public class main {
+	public static void main(String [] args){
+		PlayerInformationWindow mpw = new PlayerInformationWindow();
+		mpw.setVisible(true);
 	}
+	
 }
