@@ -154,7 +154,7 @@ public class LoginWindow extends JFrame {
 			@Override
 			public void focusGained(FocusEvent e) {
 				if (password.getForeground().equals(Color.LIGHT_GRAY)) {
-					password.setEchoChar('●');
+					password.setEchoChar('*');
 					password.setText("");
 					password.setForeground(Color.BLACK);
 				}
