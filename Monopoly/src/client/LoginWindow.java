@@ -1,9 +1,13 @@
+//	Author: Matthew van Niekerk
 package client;
 
-public class LoginWindow {
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
-<<<<<<< HEAD
-=======
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,10 +22,6 @@ import utilities.AppearanceSettings;
 
 public class LoginWindow extends JFrame {
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3612046967469362741L;
 	private JLabel alertLabel;
 	private JButton loginButton;
 	private JButton createAccountButton;
@@ -30,12 +30,12 @@ public class LoginWindow extends JFrame {
 	private JPasswordField password;
 	
 	public LoginWindow() {
-		initializeComponents();
+		initializeVariables();
 		createGUI();
 		addListeners();
 	}
 	
-	private void initializeComponents() {
+	private void initializeVariables() {
 		alertLabel =new JLabel("");
 		loginButton = new JButton("Log In");
 		createAccountButton = new JButton("Create Account");
@@ -57,7 +57,8 @@ public class LoginWindow extends JFrame {
 		
 		//	make it pretty
 		AppearanceSettings.setSize(300, 60, password, username);
-		AppearanceSettings.setSize(120, 60, loginButton, createAccountButton, guestButton);
+		//AppearanceSettings.unSetBorderOnButtons(loginButton, createAccountButton);
+		//AppearanceSettings.setSize(120, 60, loginButton, createAccountButton, guestButton);
 		AppearanceSettings.setForeground(Color.LIGHT_GRAY, username, password);
 		
 		//	only guest button starts as enabled (and is always enabled)
@@ -97,6 +98,7 @@ public class LoginWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				//login(username.getText(), new String(password.getPassword()));
+				login();
 			}
 		});
 		
@@ -104,13 +106,14 @@ public class LoginWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				//createAccount(username.getText(), new String(password.getPassword()));
+				createAccount();
 			}
 		});
 		
 		guestButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-				//playAsGuest();
+				playAsGuest();
 			}
 		});
 		
@@ -151,9 +154,7 @@ public class LoginWindow extends JFrame {
 			@Override
 			public void focusGained(FocusEvent e) {
 				if (password.getForeground().equals(Color.LIGHT_GRAY)) {
-					// This line was causing issue on my computer as an illegal character
-					// - Jesse
-					//password.setEchoChar('a');
+					password.setEchoChar('●');
 					password.setText("");
 					password.setForeground(Color.BLACK);
 				}
@@ -210,5 +211,4 @@ public class LoginWindow extends JFrame {
 		}
 		
 	}
->>>>>>> 3027365277ab3be3e728f9d5526ffdb41fcdfcaa
 }
