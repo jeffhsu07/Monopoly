@@ -52,7 +52,7 @@ public class PlayerInformationGrid extends JPanel {
 			Player p = players.get(i);
 			b.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					new PlayerInformation(p).setVisible(true);;
+					new PlayerInformationWindow(p).setVisible(true);;
 				}
 			});
 		}

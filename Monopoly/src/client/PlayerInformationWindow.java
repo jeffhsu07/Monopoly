@@ -97,7 +97,8 @@ public class PlayerInformationWindow extends JFrame {
 	}
 	
 	private void addEvents() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				dispose();
@@ -110,7 +111,7 @@ public class PlayerInformationWindow extends JFrame {
 		nameLabel.setText(player.getName());
 		moneyLabel.setText("$"+player.getMoney());
 		jailCardsLabel.setText(Integer.toString(player.getJailCards()));
-		setPropertiesPane();
+		setPropertiesArea();
 	}
 	
 	private void setPropertiesArea() {
@@ -120,7 +121,7 @@ public class PlayerInformationWindow extends JFrame {
 			if (property.isMortgaged()) {
 				propertiesArea.append(" (Mortgaged)");
 			} else {
-				if (property.hasHotel()) {
+				if (property.getHotel()) {
 					propertiesArea.append(" (Hotel)");
 				} else {
 					int numHouses = property.getNumHouses();
