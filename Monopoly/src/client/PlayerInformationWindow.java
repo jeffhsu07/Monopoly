@@ -26,7 +26,7 @@ import resources.Property;
 import utilities.AppearanceSettings;
 import utilities.AppearanceConstants;
 
-public class PlayerInformation extends JFrame {
+public class PlayerInformationWindow extends JFrame {
 	public static final long serialVersionUID = 1;
 	private Player player;
 	private JLabel nameLabel, moneyLabel, moneyValueLabel, jailCardsLabel, jailCardsValueLabel, 
@@ -35,7 +35,7 @@ public class PlayerInformation extends JFrame {
 	private JScrollPane scrollPane;
 	private JButton closeButton;
 	
-	public PlayerInformation(Player p) {
+	public PlayerInformationWindow(Player p) {
 		super("Player Information");
 		player = p;
 		initializeComponents();
