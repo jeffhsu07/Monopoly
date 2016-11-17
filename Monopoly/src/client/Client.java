@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import resources.LoginInfo;
+import server.Server;
 import utilities.Constants;
 /*-----------------------------------------
  * Author: James Su
@@ -118,11 +119,16 @@ public class Client extends Thread{
 			//start the game 
 			
 		}else if(message.contains("EndTurn: ")){
-			message = message.replace("Client Logout: ", "");
+			message = message.replace("EndTurn: ", "");
 			message.trim();
 			int clientID = Integer.parseInt(message);
 			//TODO
 			//after client end his turn, proceed to another player
+		}else if(message.contains("::RolledForTurn::")){ //at the begining of the game decide turns
+			
+			String[] command = message.split("::");
+			int clientID = Integer.parseInt(command[0]);
+			int diceRolled = Integer.parseInt(command[2]);
 		}else if(message.contains("::Rolled::")){ //ID::Rolled::number
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
@@ -164,11 +170,13 @@ public class Client extends Thread{
 			
 		}else if(message.contains("")){
 			
-		}else if(message.contains("")){
-			
 		}else if(message.contains("You are connected")){
 			System.out.println("You are connected");
 		}
 	}
+	
+	public static void main(String args[]){
+		new Client().start();
 		
+	}
 }

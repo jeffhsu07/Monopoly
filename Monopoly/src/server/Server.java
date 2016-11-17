@@ -112,6 +112,26 @@ public class Server extends Thread{
 			return true;
 		}
 	}
+	//get win ratio from database 
+	public int getWinRatio(String username){
+		jDBCDriver.connect();
+		String mUsername = username;
+		if(jDBCDriver.doesExist(mUsername)){
+			int wins = jDBCDriver.getNumberOfWins(mUsername);
+			int numberOfGame =  jDBCDriver.getNumberOfGameplays(mUsername);
+			jDBCDriver.stop();
+			if(numberOfGame == 0){ //no game played yet 
+				return 0;
+			}else {
+				return wins/numberOfGame;
+			}
+		}else {
+			System.out.println("This username does not exist.");
+			jDBCDriver.stop();
+			return -1;
+		}
+		
+	}
 	
 	//start a new game 
 	public void refreshServer(){
@@ -155,9 +175,10 @@ public class Server extends Thread{
 			return;
 		}
 		int newThreadID = 1;
+		//reasign id after a player logs out 
 		synchronized(actualPlayerTheads){
-			for (ServerThread playerThead:actualPlayerTheads ){
-				playerThead.setServerThreadID(newThreadID);
+			for (ServerThread playerThread:actualPlayerTheads ){
+				playerThread.setServerThreadID(newThreadID);
 				newThreadID++;	
 			}
 		}

@@ -14,8 +14,10 @@ import com.mysql.jdbc.Driver;
 
 public class JDBCDriver {
 	private Connection con;
-	private final static String selectName = "SELECT * FROM USERNAMEANDPASSWORD WHERE MUSERNAME=?"; //need to be changed TODO
-	private final static String addProduct = "INSERT INTO USERNAMEANDPASSWORD(MUSERNAME, MPASSWORD) VALUES(?,?)"; // need to be changed TODO
+	private final static String selectName = "SELECT * FROM USERDATA WHERE MUSERNAME=?"; 
+	private final static String addProduct = "INSERT INTO USERDATA(MUSERNAME, MPASSWORD, MWINS, MGAMEPLAYES) VALUES(?,?,?,?)"; 
+	private final static String updateWins = "UPDATE USERDATA SET MWINS = ? WHERE MUSERNAME=?";
+	private final static String updateGameplays = "UPDATE USERDATA SET MGAMEPLAYES = ? WHERE MUSERNAME=?";
 	public JDBCDriver()
 	{
 		try{
@@ -28,7 +30,7 @@ public class JDBCDriver {
 	{
 		try{
 			//need to be changed TODO
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jeopardy?user=root&password=kuirensu&useSSL=false");//pass word need to be changed
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Monopoly?user=root&password=kuirensu&useSSL=false");//pass word need to be changed
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -58,7 +60,7 @@ public class JDBCDriver {
 		System.out.println("Unable to find userbame with name: " + username);
 		return false;
 	} 
-	
+	//get password 
 	public String getPassword(String username){
 		try{
 			PreparedStatement ps = con.prepareStatement(selectName);
@@ -75,15 +77,82 @@ public class JDBCDriver {
 		System.out.println("Unable to find userbame with name: " + username);
 		return null;
 	}
+	//get number of wins 
+	public int getNumberOfWins(String username){
+		try{
+			PreparedStatement ps = con.prepareStatement(selectName);
+			ps.setString(1, username);
+			ResultSet result = ps.executeQuery();
+			while(result.next())
+			{
+				System.out.println("number of wins is: " + result.getInt(3));
+				return result.getInt(3);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Unable to find userbame with name: " + username);
+		return -1;
+	}
 	
+	public void incrementWins(String username){
+		try{
+			int wins = getNumberOfWins(username);
+			PreparedStatement ps = con.prepareStatement(updateWins);
+			ps.setInt(3, wins+1);
+			ps.setString(1, username);
+			ps.executeUpdate();
+			System.out.println("Incremented " + username + "'s number of wins by one ");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Unable to find userbame with name: " + username);
+	}
+	
+	
+	//get number of gameplays
+	public int getNumberOfGameplays(String username){
+		try{
+			PreparedStatement ps = con.prepareStatement(selectName);
+			ps.setString(1, username);
+			ResultSet result = ps.executeQuery();
+			while(result.next())
+			{
+				System.out.println("number of gameplay is: " + result.getInt(4));
+				return result.getInt(4);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Unable to find userbame with name: " + username);
+		return -1;
+	}
+	
+	public void incrementGameplays(String username){
+		try{
+			int numberOfGameplays = getNumberOfGameplays(username);
+			PreparedStatement ps = con.prepareStatement(updateGameplays);
+			ps.setInt(4, numberOfGameplays+1);
+			ps.setString(1, username);
+			ps.executeUpdate();
+			System.out.println("Incremented " + username + "'s number of gameplays by one ");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Unable to find userbame with name: " + username);
+	}
+	
+	//create new account 
 	public void add(String username, String password)
 	{
 		try {
 			PreparedStatement ps = con.prepareStatement(addProduct);
 			ps.setString(1, username);
 			ps.setString(2, password);
+			ps.setInt(3, 0);
+			ps.setInt(4, 0);
 			ps.executeUpdate();
-			System.out.println("Adding username: " + username + " with password "+ password);
+			System.out.println("Adding username: " + username + " with password "+ password + " with zero gameplays ");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
