@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import utilities.AppearanceSettings;
 
+//Edited by Jesse
 public class ManageBuildingsWindow extends JFrame{
 	private JLabel selectPropertyLabel;
 	private JButton buyHouseButton;
@@ -62,13 +63,16 @@ public class ManageBuildingsWindow extends JFrame{
 	}
 	
 	private void addListeners(){
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// Had to change to do nothing because it was quitting program - Jesse
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		closeWindowButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				System.exit(0);		
+				
+				// Can't quit the program when we close one window.
+				//System.exit(0);		
 			}		
 		});
 	}

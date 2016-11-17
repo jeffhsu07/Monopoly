@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import utilities.AppearanceSettings;
 
+// Edited by Jesse
 public class ManagePropertiesWindow extends JFrame{
 	private JLabel selectPropertyLabel;
 	private JLabel mortgageStateLabel;
@@ -31,11 +32,11 @@ public class ManagePropertiesWindow extends JFrame{
 	
 	private void initializeComponents(){
 		selectPropertyLabel = new JLabel("Select a property: ");
-		mortgageStateLabel = new JLabel("this property is mortgaged bitch");
+		mortgageStateLabel = new JLabel("this property is mortgaged");
 		mortgageButton = new JButton("Mortgage Property");
 		closeWindowButton = new JButton("Close Window");
 		propertyDropDownComboBox = new JComboBox();
-		descriptionLabel = new JLabel("<html>Mortgage Value: <br>You won't be able to do shit with this property if mortgage it dumbass</html>");
+		descriptionLabel = new JLabel("<html>Mortgage Value: <br>You won't be able to utilize this property if mortgage it</html>");
 	}
 	
 	private void createGUI(){
@@ -64,13 +65,16 @@ public class ManagePropertiesWindow extends JFrame{
 	}
 	
 	private void addListeners(){
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// Had to change to do nothing because it was quitting program - Jesse
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		closeWindowButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				System.exit(0);		
+				
+				// Can't quit the program when we close one window
+				//System.exit(0);		
 			}		
 		});
 	}

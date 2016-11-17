@@ -1,9 +1,16 @@
 package client;
 
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import resources.Player;
 
@@ -55,12 +62,96 @@ public class MainWindow extends JFrame {
 	}
 
 	private void createGUI() {
-		// TODO Auto-generated method stub
+		this.setSize(1600,900);
+		this.setResizable(false);
 		
+		// Use a border layout
+		this.setLayout(new BorderLayout());
+		this.add(gameBoard, BorderLayout.WEST);
+		
+		// Use GridBagLayout for remaining components
+		JPanel controlPanel = new JPanel();
+		controlPanel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		
+		// Set up the teams.
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = .1;
+		c.weighty = 1;
+		c.gridheight = 2;
+		c.gridwidth = 2;
+		controlPanel.add(playerInformationGrid, c);
+		
+		// Add the column of buttons
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		c.weighty = 0.5;
+		c.gridy = 2;
+		c.gridx = 0;
+		controlPanel.add(rollButton, c);
+		c.gridy++;
+		controlPanel.add(manageBuildingsButton, c);
+		c.gridy++;
+		controlPanel.add(managePropertiesButton, c);
+		c.gridy++;
+		controlPanel.add(endTurnButton, c);
+		c.gridy++;
+		controlPanel.add(exitButton, c);
+		
+		// Add the progress area
+		c.gridy = 2;
+		c.gridx = 1;
+		c.weightx = .25;
+		c.gridheight = 5;
+		controlPanel.add(progressArea, c);
+		
+		// Add control panel to the main board
+		this.add(controlPanel, BorderLayout.CENTER);
 	}
 
 	private void addListeners() {
-		// TODO Auto-generated method stub
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
+		// Have the roll button move the curren player.
+		rollButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Get a random dice roll
+				Random rand = new Random();
+				int roll1 = rand.nextInt(6)+1;
+				int roll2 = rand.nextInt(6)+1;
+				
+				// Move the player
+				Player p = players.get(currentPlayer);
+				int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
+				p.setCurrentLocation(newLocation);
+				
+				// Repaint the game board and update the progress area
+				gameBoard.repaint();
+				progressArea.addProgress(p.getName() + " rolled a " + roll1 +
+						" and a " + roll2 + ".\n");
+			}
+		});
+		
+		// Have the End Turn button increment the current player.
+		endTurnButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				currentPlayer = (currentPlayer + 1) % players.size();
+				progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.");
+			}
+		});
+		
+		// Opens the Manage properties window when clicked
+		managePropertiesButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new ManagePropertiesWindow().setVisible(true);
+			}
+		});
+		
+		// Opens the Manage buildings window when clicked
+		manageBuildingsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new ManageBuildingsWindow().setVisible(true);
+			}
+		});
 	}
 }
