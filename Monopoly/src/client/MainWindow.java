@@ -13,6 +13,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import resources.Player;
+import resources.PropertiesSetUp;
+import resources.Property;
 
 // Made by Jesse
 public class MainWindow extends JFrame {
@@ -34,6 +36,7 @@ public class MainWindow extends JFrame {
 	private ProgressArea progressArea;
 	private PlayerInformationGrid playerInformationGrid;
 	private GameBoard gameBoard;
+	private Property[] properties;
 	
 	public MainWindow(ArrayList<Player> players) {
 		super("Monopoly");
@@ -41,6 +44,9 @@ public class MainWindow extends JFrame {
 		initializeComponents();
 		createGUI();
 		addListeners();
+		PropertiesSetUp p = new PropertiesSetUp();
+		properties = p.getProperties();
+
 	}
 
 	private void initializeComponents() {
@@ -124,11 +130,21 @@ public class MainWindow extends JFrame {
 				Player p = players.get(currentPlayer);
 				int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
 				p.setCurrentLocation(newLocation);
+				if(p.getCurrentLocation()+roll1+roll2 >= 40)
+				{
+					//means they passed go, increment 200
+				}
+				
+				//put game logic here, I would recommend testing to see if properties[newLocation].getPrice() != 0 to determine if its an actual
+				//property you can buy, then a super long if else statement for example you could use
+				//"if(properties[newLocation].getName().equals("Chance")){}" in the case of testing to see if the player landed on chance space
+				//-bho
 				
 				// Repaint the game board and update the progress area
 				gameBoard.repaint();
 				progressArea.addProgress(p.getName() + " rolled a " + roll1 +
 						" and a " + roll2 + ".\n");
+				
 			}
 		});
 		
@@ -136,7 +152,7 @@ public class MainWindow extends JFrame {
 		endTurnButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				currentPlayer = (currentPlayer + 1) % players.size();
-				progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.");
+				progressArea.addProgress("\n"+players.get(currentPlayer).getName() +"'s turn to go.");
 			}
 		});
 		
@@ -154,4 +170,6 @@ public class MainWindow extends JFrame {
 			}
 		});
 	}
+	
+	
 }

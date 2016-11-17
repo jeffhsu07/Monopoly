@@ -143,10 +143,10 @@ public class Property {
 	
 }
 /* returns array of all properties read in from fileName
-private Property[] readFile(String fileName) throws IOException 
+private Property[] readFile(String fileName)
 {
 	BufferedReader br = null;
-	Property[] properties = new Property[28];
+	Property[] properties = new Property[40];
 	try
 	{
 		br = new BufferedReader(new FileReader(fileName));

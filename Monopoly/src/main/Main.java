@@ -1,13 +1,17 @@
 package main;
 
-import client.LoginWindow;;
+import java.util.ArrayList;
+
+import client.LoginWindow;
+import client.MainWindow;
+import resources.Player;;
 
 public class Main {
 	public static void main (String [] args){
 		//new StartWindow().setVisible(true);
 		
 		// For Testing Main Window
-		/*ArrayList<Player> player = new ArrayList<Player>();
+		ArrayList<Player> player = new ArrayList<Player>();
 		Player p1 = new Player("Jesse",0,0);
 		p1.setGameToken(0);
 		p1.setCurrentLocation(8);
@@ -33,8 +37,8 @@ public class Main {
 		p5.setCurrentLocation(39);
 		player.add(p5);
 		
-		new MainWindow(player).setVisible(true);*/
+		new MainWindow(player).setVisible(true);
 		
-		new LoginWindow().setVisible(true);
+		//new LoginWindow().setVisible(true);
 	}
 }
