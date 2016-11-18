@@ -147,6 +147,10 @@ public class MainWindow extends JFrame {
 				
 				progressArea.addProgress("    landed on "+properties[newLocation].getName()+".\n");
 				
+				// Repaint the game board and update the progress area
+				gameBoard.repaint();
+				playerInformationGrid.repaint();
+				
 				//put game logic here, I would recommend testing to see if properties[newLocation].getPrice() != 0 to determine if its an actual
 				//property you can buy, then a super long if else statement for example you could use
 				//"if(properties[newLocation].getName().equals("Chance")){}" in the case of testing to see if the player landed on chance space
