@@ -134,16 +134,49 @@ public class MainWindow extends JFrame {
 				// Move the player
 				Player p = players.get(currentPlayer);
 				int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
-				p.setCurrentLocation(newLocation);
 				if(p.getCurrentLocation()+roll1+roll2 >= 40)
 				{
-					//means they passed go, increment 200
+					p.increaseMoney(200);
 				}
+				p.setCurrentLocation(newLocation);
 				
 				//put game logic here, I would recommend testing to see if properties[newLocation].getPrice() != 0 to determine if its an actual
 				//property you can buy, then a super long if else statement for example you could use
 				//"if(properties[newLocation].getName().equals("Chance")){}" in the case of testing to see if the player landed on chance space
 				//-bho
+				
+				if (properties[newLocation].getPrice() != 0) {
+					if (properties[newLocation].getOwner() == null) {
+						//TODO Ask if want to buy for properties[newLocation].getPrice()
+					} else {
+						if (properties[newLocation].isMortgaged()) {
+							//Nothing
+						} else {
+							//TODO Deduct properties[newLocation].getRent()
+						}
+					}
+				} else {
+					if (properties[newLocation].getName().equals("Chance")) {
+						//TODO show card
+					} else if (properties[newLocation].getName().equals("Go To Jail")) {
+						//TODO move to jail. set player inJail
+					} else if (properties[newLocation].getName().equals("Community Chest")) {
+						//TODO show card
+					} else if (properties[newLocation].getName().equals("Income Tax")) {
+						//TODO Pay 10% or $200
+					} else if (properties[newLocation].getName().equals("Go")) {
+						//Nothing. Go money handled above
+					} else if (properties[newLocation].getName().equals("Just Visiting")) {
+						//Nothing
+					} else if (properties[newLocation].getName().equals("Free Parking")) {
+						//Nothing
+					} else if (properties[newLocation].getName().equals("Luxury Tax")) {
+						//TODO pay $75
+					}
+				}
+				
+				//TODO check if player is bankrupt
+				//TODO handle throwing doubles
 				
 				// Repaint the game board and update the progress area
 				gameBoard.repaint();

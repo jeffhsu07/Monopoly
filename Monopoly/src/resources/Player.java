@@ -14,6 +14,7 @@ public class Player {
 	private int jailCards;
 	private int currentLocation;
 	private int gameToken;
+	private boolean bankrupt;
 	
 	public Player(String name, int wins, int losses) {
 		this.name = name;
@@ -24,6 +25,7 @@ public class Player {
 		properties = new Vector<Property>();
 		jailCards = 0;
 		currentLocation = 0;
+		bankrupt = false;
 	}
 	
 	public String getName() {
@@ -40,6 +42,13 @@ public class Player {
 	
 	public int getMoney() {
 		return money;
+	}
+	
+	public void increaseMoney(int num) {
+		money += num;
+		if (money <= 0) {
+			bankrupt = true;
+		}
 	}
 	
 	public boolean isInJail() {
@@ -80,5 +89,9 @@ public class Player {
 	
 	public void addProperty(Property property){
 		properties.add(property);
+	}
+	
+	public boolean isBankrupt() {
+		return bankrupt;
 	}
 }
