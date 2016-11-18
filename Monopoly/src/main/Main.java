@@ -18,7 +18,7 @@ public class Main {
 		player.add(p1);
 		
 		Player p2 = new Player("Michael",0,0);
-		p2.setGameToken(1);
+		p2.setGameToken(6);
 		p2.setCurrentLocation(18);
 		player.add(p2);
 		

@@ -102,7 +102,7 @@ public class PlayerInformationGrid extends JPanel {
 			int height = this.getHeight();
 			int fontHeight = g.getFont().getSize();
 			
-			g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+			g.drawRect(2, 2, getWidth()-4, getHeight()-4);
 			g.drawImage(playerIcon, 5, 5, width/2-10, height-10, null);
 			
 			g.drawString(player.getName(), width/2, height/4+fontHeight/2);

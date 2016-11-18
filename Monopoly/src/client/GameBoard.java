@@ -29,6 +29,11 @@ public class GameBoard extends JPanel {
 	Image trainImage;
 	Image jailImage;
 	Image incomeTaxImage;
+	Image goToJailImage;
+	Image luxuryTaxImage;
+	Image waterworksImage;
+	Image electricCompanyImage;
+	Image freeParkingImage;
 	
 	public GameBoard(ArrayList<Player> players) {
 		this.players = players;
@@ -49,10 +54,14 @@ public class GameBoard extends JPanel {
 			trainImage = ImageIO.read(new File("images/board/train.gif"));
 			jailImage = ImageIO.read(new File("images/board/jail.png"));
 			incomeTaxImage = ImageIO.read(new File("images/board/incomeTax.png"));
+			goToJailImage = ImageIO.read(new File("images/board/goToJail.png"));
+			luxuryTaxImage = ImageIO.read(new File("images/board/luxuryTax.png"));
+			waterworksImage = ImageIO.read(new File("images/board/waterworks.png"));
+			electricCompanyImage = ImageIO.read(new File("images/board/electricCompany.jpg"));
+			freeParkingImage = ImageIO.read(new File("images/board/freeParking.png"));
 		} catch (IOException ioe) {
 			System.out.println("Error Loading Player Image: " + ioe.getMessage());
 		}
-		
 		
 		// Default to a square
 		this.setPreferredSize(new Dimension(715,715));
@@ -90,6 +99,11 @@ public class GameBoard extends JPanel {
 		drawImageAtLocation(g,chestImage,33);
 		drawImageAtLocation(g,jailImage,10);
 		drawImageAtLocation(g,incomeTaxImage,4);
+		drawImageAtLocation(g,goToJailImage,30);
+		drawImageAtLocation(g,luxuryTaxImage,38);
+		drawImageAtLocation(g,electricCompanyImage,12);
+		drawImageAtLocation(g,waterworksImage,28);
+		drawImageAtLocation(g,freeParkingImage,20);
 		
 		g.setColor(Color.BLACK);
 		//g.setStroke(new BasicStroke(3));
