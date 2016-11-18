@@ -53,7 +53,12 @@ public class MainWindow extends JFrame {
 		// Initialize our player tracking to default values.
 		currentPlayer = 0;
 		ownedPlayer = 0;
-		
+		int[] tempCosts = {100,200};
+		Property temp1 = new Property("China", 100, "Chinks", tempCosts, 20, 100, 5);
+		Property temp2 = new Property("penis", 100, "Chinks", tempCosts, 20, 80, 5);
+		temp2.setMortgaged(true);
+		players.get(currentPlayer).addProperty(temp1);
+		players.get(currentPlayer).addProperty(temp2);
 		// Initialize our various buttons.
 		rollButton = new JButton("Roll Dice");
 		manageBuildingsButton = new JButton("Manage Buildings");
@@ -159,14 +164,14 @@ public class MainWindow extends JFrame {
 		// Opens the Manage properties window when clicked
 		managePropertiesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManagePropertiesWindow().setVisible(true);
+				new ManagePropertiesWindow(players.get(ownedPlayer)).setVisible(true);
 			}
 		});
 		
 		// Opens the Manage buildings window when clicked
 		manageBuildingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManageBuildingsWindow().setVisible(true);
+				new ManageBuildingsWindow(players.get(ownedPlayer)).setVisible(true);
 			}
 		});
 	}
