@@ -143,6 +143,16 @@ public class Property {
 		this.group = group;
 	}
 	
+	//returns true if successfully builds house
+	public boolean addHouse()
+	{
+		if(numHouses < 4)
+		{
+			numHouses++;
+			return true;
+		}
+		return false;
+	}
 }
 /* returns array of all properties read in from fileName
 private Property[] readFile(String fileName)
