@@ -57,7 +57,7 @@ public class JDBCDriver {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Unable to find userbame with name: " + username);
+		System.out.println("Unable to find user with name: " + username);
 		return false;
 	} 
 	//get password 
@@ -74,7 +74,7 @@ public class JDBCDriver {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Unable to find userbame with name: " + username);
+		System.out.println("Unable to find user with name: " + username);
 		return null;
 	}
 	//get number of wins 
@@ -91,7 +91,7 @@ public class JDBCDriver {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Unable to find userbame with name: " + username);
+		System.out.println("Unable to find user with name: " + username);
 		return -1;
 	}
 	
@@ -99,14 +99,13 @@ public class JDBCDriver {
 		try{
 			int wins = getNumberOfWins(username);
 			PreparedStatement ps = con.prepareStatement(updateWins);
-			ps.setInt(3, wins+1);
-			ps.setString(1, username);
+			ps.setInt(1, wins+1);
+			ps.setString(2, username);
 			ps.executeUpdate();
 			System.out.println("Incremented " + username + "'s number of wins by one ");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Unable to find userbame with name: " + username);
 	}
 	
 	
@@ -124,7 +123,7 @@ public class JDBCDriver {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Unable to find userbame with name: " + username);
+		System.out.println("Unable to find user with name: " + username);
 		return -1;
 	}
 	
@@ -132,14 +131,13 @@ public class JDBCDriver {
 		try{
 			int numberOfGameplays = getNumberOfGameplays(username);
 			PreparedStatement ps = con.prepareStatement(updateGameplays);
-			ps.setInt(4, numberOfGameplays+1);
-			ps.setString(1, username);
+			ps.setInt(1, numberOfGameplays+1);
+			ps.setString(2, username);
 			ps.executeUpdate();
 			System.out.println("Incremented " + username + "'s number of gameplays by one ");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Unable to find userbame with name: " + username);
 	}
 	
 	//create new account 
@@ -157,14 +155,13 @@ public class JDBCDriver {
 			e.printStackTrace();
 		}
 	}
-	/*
+	
 	public static void main(String args[]){
 		JDBCDriver jDBCDriver = new JDBCDriver();
 		jDBCDriver.connect();
-		jDBCDriver.doesExist("1");
-		jDBCDriver.add("1", "2");
-		jDBCDriver.doesExist("1");
+		System.out.println(jDBCDriver.doesExist("james"));
+		jDBCDriver.getNumberOfWins("jj");
 		jDBCDriver.stop();
 	}
-	*/
+	
 }
