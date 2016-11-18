@@ -76,6 +76,13 @@ public class PlayerInformationGrid extends JPanel {
 		Image playerIcon;
 		
 		public PlayerInfoLayout(Player p, JButton b) {
+			this.setLayout(new BorderLayout());
+			b.setOpaque(false);
+			b.setContentAreaFilled(false);
+			b.setBorderPainted(false);
+			b.setBackground(Color.WHITE);
+			this.add(b, BorderLayout.CENTER);
+			
 			this.player = p;
 			
 			// Initialize our Image
@@ -85,10 +92,7 @@ public class PlayerInformationGrid extends JPanel {
 				System.out.println("Error Loading Player Image: " + ioe.getMessage());
 			}
 			
-			this.setLayout(new BorderLayout());
-			b.setOpaque(false);
-			b.setBackground(Color.WHITE);
-			this.add(b, BorderLayout.CENTER);
+			
 		}
 		
 		protected void paintComponent(Graphics g) {
@@ -98,6 +102,7 @@ public class PlayerInformationGrid extends JPanel {
 			int height = this.getHeight();
 			int fontHeight = g.getFont().getSize();
 			
+			g.drawRect(0, 0, getWidth()-1, getHeight()-1);
 			g.drawImage(playerIcon, 5, 5, width/2-10, height-10, null);
 			
 			g.drawString(player.getName(), width/2, height/4+fontHeight/2);
