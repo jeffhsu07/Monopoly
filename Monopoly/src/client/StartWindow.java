@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
@@ -70,6 +72,12 @@ public class StartWindow extends JFrame {
 				e.printStackTrace();
 			}
 			temp.setSize(100, 100);
+			temp.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+				}
+			});
 			tokenButtons.add(temp);
 		}
 		
@@ -137,10 +145,7 @@ public class StartWindow extends JFrame {
 	
 	private void refreshPlayers() {
 		for (int i = 0; i < 8; i++) {
-			playerGrid.remove(playerNames.get(i));
-		}
-		for (int i = 0; i < 8; i++) {
-			playerGrid.add(playerNames.get(i));
+			
 		}
 	}
 
