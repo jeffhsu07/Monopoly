@@ -193,12 +193,44 @@ public class GameBoard extends JPanel {
 	
 	// Method to paint all the players to the game board.
 	private void paintPlayers(Graphics g) {
+		// keep track of squares with multiple players on them.
+		int[] numPlayers = new int[40];
+		for (Player p : players) {
+			numPlayers[p.getCurrentLocation()]++;
+		}
+		
+		// Number of players we've already placed on that square
+		int[] currPlayers = new int[40];
+		
 		for (int i = 0; i < players.size(); i++) {
 			Player p = players.get(i);
-			int x = getXFromLocation(p.getCurrentLocation()) + getWidth()/44;
-			int y = getYFromLocation(p.getCurrentLocation()) + getHeight()/44;
+			int loc = p.getCurrentLocation();
+			
+			
+			int xOffset = 0;
+			int yOffset = 0;
+			if (numPlayers[loc] == 1) {
+				xOffset = getWidth()/55;
+				yOffset = getHeight()/55;
+			} else if (numPlayers[loc] < 5) {
+				xOffset = (1+currPlayers[loc]%2)*getWidth()/33;
+				yOffset = (1+currPlayers[loc]/2)*getWidth()/33;
+			} else {
+				xOffset = (currPlayers[loc]%3)*getWidth()/33;
+				yOffset = (currPlayers[loc]/3)*getWidth()/33;
+			}
+			
+			int x = getXFromLocation(p.getCurrentLocation()) + xOffset;
+			int y = getYFromLocation(p.getCurrentLocation()) + yOffset;
 			Image img = playerImages.get(i);
-			g.drawImage(img, x, y, getWidth()/22, getHeight()/22, null);
+			if (numPlayers[loc] == 1) {
+				g.drawImage(img, x, y, getWidth()*3/55, getHeight()*3/55, null);
+			} else {
+				g.drawImage(img, x, y, getWidth()/33, getHeight()/33, null);
+			}
+			
+			// increment number of players on the square so they can be positioned correctly.
+			currPlayers[loc]++;
 		}
 	}
 	
