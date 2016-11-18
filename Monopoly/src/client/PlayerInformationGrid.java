@@ -1,10 +1,17 @@
 package client;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -17,6 +24,7 @@ public class PlayerInformationGrid extends JPanel {
 
 	ArrayList<Player> players;
 	ArrayList<JButton> playerButtons;
+	ArrayList<PlayerInfoLayout> playerInfoLayouts;
 	
 	public PlayerInformationGrid(ArrayList<Player> players) {
 		this.players = players;
@@ -28,9 +36,12 @@ public class PlayerInformationGrid extends JPanel {
 	private void initializeComponents() {
 		// Create a button for each player.
 		playerButtons = new ArrayList<JButton>();
+		playerInfoLayouts = new ArrayList<PlayerInfoLayout>();
 		for (Player p : players) {
-			JButton b = new JButton(p.getName());
+			JButton b = new JButton("");
 			playerButtons.add(b);
+			PlayerInfoLayout pil = new PlayerInfoLayout(p,b);
+			playerInfoLayouts.add(pil);
 		}
 	}
 
@@ -40,7 +51,7 @@ public class PlayerInformationGrid extends JPanel {
 		this.setLayout(new GridLayout(2,numColumns));
 		
 		// Add each button to the grid.
-		for (JButton b : playerButtons) {
+		for (PlayerInfoLayout b : playerInfoLayouts) {
 			this.add(b);
 		}
 	}
@@ -55,6 +66,42 @@ public class PlayerInformationGrid extends JPanel {
 					new PlayerInformationWindow(p).setVisible(true);;
 				}
 			});
+		}
+	}
+	
+	private class PlayerInfoLayout extends JPanel {
+		private static final long serialVersionUID = -6341876191272116746L;
+		
+		Player player;
+		Image playerIcon;
+		
+		public PlayerInfoLayout(Player p, JButton b) {
+			this.player = p;
+			
+			// Initialize our Image
+			try {
+					playerIcon = ImageIO.read(new File("images/tokens/token" + p.getGameToken() + ".png"));
+			} catch (IOException ioe) {
+				System.out.println("Error Loading Player Image: " + ioe.getMessage());
+			}
+			
+			this.setLayout(new BorderLayout());
+			b.setOpaque(false);
+			b.setBackground(Color.WHITE);
+			this.add(b, BorderLayout.CENTER);
+		}
+		
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			
+			int width = this.getWidth();
+			int height = this.getHeight();
+			int fontHeight = g.getFont().getSize();
+			
+			g.drawImage(playerIcon, 5, 5, width/2-10, height-10, null);
+			
+			g.drawString(player.getName(), width/2, height/4+fontHeight/2);
+			g.drawString("$"+player.getMoney(), width/2, height*3/4+fontHeight/2);
 		}
 	}
 }

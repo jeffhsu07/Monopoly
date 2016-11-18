@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.MouseInfo;
-import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +27,8 @@ public class GameBoard extends JPanel {
 	Image chestImage;
 	Image chanceImage;
 	Image trainImage;
+	Image jailImage;
+	Image incomeTaxImage;
 	
 	public GameBoard(ArrayList<Player> players) {
 		this.players = players;
@@ -47,13 +47,15 @@ public class GameBoard extends JPanel {
 			chanceImage = ImageIO.read(new File("images/board/chance.gif"));
 			chestImage = ImageIO.read(new File("images/board/communityChest.gif"));
 			trainImage = ImageIO.read(new File("images/board/train.gif"));
+			jailImage = ImageIO.read(new File("images/board/jail.png"));
+			incomeTaxImage = ImageIO.read(new File("images/board/incomeTax.png"));
 		} catch (IOException ioe) {
 			System.out.println("Error Loading Player Image: " + ioe.getMessage());
 		}
 		
 		
 		// Default to a square
-		this.setPreferredSize(new Dimension(891,891));
+		this.setPreferredSize(new Dimension(715,715));
 	}
 
 	protected void paintComponent(Graphics g) {
@@ -69,6 +71,11 @@ public class GameBoard extends JPanel {
 	}
 	
 	private void paintBoard(Graphics g) {
+		// Draw the board Background
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, getWidth(), getHeight());
+		g.setColor(Color.BLACK);
+		
 		// Draw the board images
 		drawImageAtLocation(g,goImage,0);
 		drawImageAtLocation(g,trainImage,5);
@@ -81,6 +88,8 @@ public class GameBoard extends JPanel {
 		drawImageAtLocation(g,chestImage,2);
 		drawImageAtLocation(g,chestImage,17);
 		drawImageAtLocation(g,chestImage,33);
+		drawImageAtLocation(g,jailImage,10);
+		drawImageAtLocation(g,incomeTaxImage,4);
 		
 		g.setColor(Color.BLACK);
 		//g.setStroke(new BasicStroke(3));
@@ -94,7 +103,7 @@ public class GameBoard extends JPanel {
 		g.drawLine(0, 0, width, 0);
 		g.drawLine(0, height-1, width, height-1);
 		g.drawLine(0, gridHeight, width, gridHeight);
-		g.drawLine(0, getHeight()-gridHeight, width, height-gridHeight);
+		g.drawLine(0, gridHeight*10, width, gridHeight*10);
 		
 		// Draw our main vertical lines
 		g.drawLine(0, 0, 0, height);
@@ -113,7 +122,7 @@ public class GameBoard extends JPanel {
 		for (int i = 1; i < 9; i++) {
 			int currentX = gridWidth*(1+i);
 			g.drawLine(currentX, 0, currentX, gridHeight);
-			g.drawLine(currentX, height-gridHeight, currentX, height);
+			g.drawLine(currentX, gridHeight*10, currentX, height);
 		}
 		
 		// Draw the Rectangle on Each property
@@ -124,18 +133,45 @@ public class GameBoard extends JPanel {
 			
 			if (!Constants.propertyLocations.contains(i)) continue;
 			
+			// get the color for the property
+			Color currentColor = Color.BLACK;
+			if (Constants.group1Locations.contains(i)) currentColor = Constants.group1Color;
+			if (Constants.group2Locations.contains(i)) currentColor = Constants.group2Color;
+			if (Constants.group3Locations.contains(i)) currentColor = Constants.group3Color;
+			if (Constants.group4Locations.contains(i)) currentColor = Constants.group4Color;
+			if (Constants.group5Locations.contains(i)) currentColor = Constants.group5Color;
+			if (Constants.group6Locations.contains(i)) currentColor = Constants.group6Color;
+			if (Constants.group7Locations.contains(i)) currentColor = Constants.group7Color;
+			if (Constants.group8Locations.contains(i)) currentColor = Constants.group8Color;
+			
 			if (i < 11) {
 				// In the top row.
+				g.setColor(currentColor);
+				g.fillRect(x, gridHeight*4/5, gridWidth, gridHeight/5);
+				g.setColor(Color.BLACK);
 				g.drawRect(x, gridHeight*4/5, gridWidth, gridHeight/5);
+				
 			} else if (i < 21) {
 				// In the right Column
+				g.setColor(currentColor);
+				g.fillRect(x, y, gridWidth/5, gridHeight);
+				g.setColor(Color.BLACK);
 				g.drawRect(x, y, gridWidth/5, gridHeight);
+				
 			} else if (i < 31) {
 				// In the bottom Row
+				g.setColor(currentColor);
+				g.fillRect(x, y, gridWidth, gridHeight/5);
+				g.setColor(Color.BLACK);
 				g.drawRect(x, y, gridWidth, gridHeight/5);
+				
 			} else {
 				// In the left Column
+				g.setColor(currentColor);
+				g.fillRect(gridWidth*4/5, y, gridWidth/5, gridHeight);
+				g.setColor(Color.BLACK);
 				g.drawRect(gridWidth*4/5, y, gridWidth/5, gridHeight);
+				
 			}
 		}
 		
@@ -182,7 +218,7 @@ public class GameBoard extends JPanel {
 			result = (location - 10) * (this.getHeight()/11);
 		} else if (location < 31) {
 			// In the bottom Row
-			result = this.getHeight() - this.getHeight()/11;
+			result = (this.getHeight()/11)*10;
 		} else {
 			// In the left Column
 			result = (location - 40) * (0-1) * (this.getHeight()/11);

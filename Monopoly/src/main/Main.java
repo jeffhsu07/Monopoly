@@ -2,13 +2,13 @@ package main;
 
 import java.util.ArrayList;
 
-import client.LoginWindow;
 import client.MainWindow;
+import client.StartWindow;
 import resources.Player;;
 
 public class Main {
 	public static void main (String [] args){
-		//new StartWindow().setVisible(true);
+		new StartWindow(new Player("Matt", 1, 0)).setVisible(true);
 		
 		// For Testing Main Window
 		ArrayList<Player> player = new ArrayList<Player>();

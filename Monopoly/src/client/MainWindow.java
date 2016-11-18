@@ -157,7 +157,7 @@ public class MainWindow extends JFrame {
 		endTurnButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				currentPlayer = (currentPlayer + 1) % players.size();
-				progressArea.addProgress("\n"+players.get(currentPlayer).getName() +"'s turn to go.");
+				progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.\n");
 			}
 		});
 		
