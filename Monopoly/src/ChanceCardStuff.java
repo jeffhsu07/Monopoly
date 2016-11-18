@@ -19,13 +19,13 @@ public class ChanceCardStuff
 		
 		if(deckPosition == 0)
 		{
-			p.increaseMoney(Constants.goMoney);
+			p.addMoney(Constants.goMoney);
 			p.setCurrentLocation(0);
 		}
 		else if(deckPosition == 1)
 		{
 			if(p.getCurrentLocation() > 24)
-				p.increaseMoney(Constants.goMoney);
+				p.addMoney(Constants.goMoney);
 			p.setCurrentLocation(24);
 		}
 		else if(deckPosition == 2)
@@ -37,7 +37,7 @@ public class ChanceCardStuff
 			else if(p.getCurrentLocation() <= 39)
 			{
 				p.setCurrentLocation(13);
-				p.increaseMoney(Constants.goMoney);
+				p.addMoney(Constants.goMoney);
 			}
 			else
 				p.setCurrentLocation(13);
@@ -52,7 +52,7 @@ public class ChanceCardStuff
 			else if(p.getCurrentLocation() > 35)
 			{
 				p.setCurrentLocation(5);
-				p.increaseMoney(Constants.goMoney);
+				p.addMoney(Constants.goMoney);
 			}
 			else if(p.getCurrentLocation() < 15)
 			{
@@ -71,14 +71,14 @@ public class ChanceCardStuff
 		{
 			if(p.getCurrentLocation() > 11)
 			{
-				p.increaseMoney(Constants.goMoney);
+				p.addMoney(Constants.goMoney);
 			}
 		
 			p.setCurrentLocation(11);
 		}
 		else if(deckPosition == 5)
 		{
-			p.increaseMoney(50);
+			p.addMoney(50);
 		}
 		else if(deckPosition == 6)
 		{
@@ -118,23 +118,23 @@ public class ChanceCardStuff
 					owed += a.getNumHouses() * 25;
 				}
 			}
-			p.increaseMoney(-owed);
+			p.addMoney(-owed);
 		}
 		else if(deckPosition == 10)
 		{
-			p.increaseMoney(-15);
+			p.addMoney(-15);
 		}
 		else if(deckPosition == 11)
 		{
 			if(p.getCurrentLocation() >= 5)
 			{
-				p.increaseMoney(Constants.goMoney);
+				p.addMoney(Constants.goMoney);
 			}
 			p.setCurrentLocation(5);
 		}
 		else if(deckPosition == 15)
 		{
-			p.increaseMoney(100);
+			p.addMoney(100);
 		}
 		
 		deckPosition++;

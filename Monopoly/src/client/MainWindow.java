@@ -140,7 +140,7 @@ public class MainWindow extends JFrame {
 				int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
 				if(p.getCurrentLocation()+roll1+roll2 >= 40)
 				{
-					p.increaseMoney(Constants.goMoney);
+					p.addMoney(Constants.goMoney);
 					progressArea.addProgress("    passed Go and collected $"+Constants.goMoney+".\n");
 				}
 				p.setCurrentLocation(newLocation);
@@ -162,7 +162,7 @@ public class MainWindow extends JFrame {
 								    "Buy Property?",
 								    JOptionPane.YES_NO_OPTION);
 							if (n == 0) {
-								p.increaseMoney(-properties[newLocation].getPrice());
+								p.addMoney(-properties[newLocation].getPrice());
 								p.addProperty(properties[newLocation]);
 								properties[newLocation].setOwner(p);
 								progressArea.addProgress("    bought "+properties[newLocation].getName()
@@ -173,8 +173,8 @@ public class MainWindow extends JFrame {
 						if (properties[newLocation].isMortgaged()) {
 							//Nothing
 						} else {
-							p.increaseMoney(-properties[newLocation].getRent());
-							properties[newLocation].getOwner().increaseMoney(properties[newLocation].getRent());
+							p.addMoney(-properties[newLocation].getRent());
+							properties[newLocation].getOwner().addMoney(properties[newLocation].getRent());
 							progressArea.addProgress("    paid $"+properties[newLocation].getRent()+" in rent.\n");
 						}
 					}
@@ -197,7 +197,7 @@ public class MainWindow extends JFrame {
 								options,  //the titles of buttons
 								options[0]);
 						if (n == 0) {
-							p.increaseMoney(-Constants.incomeTax);
+							p.addMoney(-Constants.incomeTax);
 							progressArea.addProgress("    paid $"+Constants.incomeTax+" in tax.\n");
 						} else {
 							int totalWorth = p.getMoney();
@@ -210,7 +210,7 @@ public class MainWindow extends JFrame {
 								}
 							}
 							int tax = totalWorth/10;
-							p.increaseMoney(-tax);
+							p.addMoney(-tax);
 							progressArea.addProgress("    paid $"+tax+" in tax.\n");
 						}
 					} else if (properties[newLocation].getName().equals("Go")) {
@@ -220,7 +220,7 @@ public class MainWindow extends JFrame {
 					} else if (properties[newLocation].getName().equals("Free Parking")) {
 						//Nothing
 					} else if (properties[newLocation].getName().equals("Luxury Tax")) {
-						p.increaseMoney(-Constants.luxuryTax);
+						p.addMoney(-Constants.luxuryTax);
 						progressArea.addProgress("    paid $"+Constants.luxuryTax+" in tax.\n");
 					}
 				}
