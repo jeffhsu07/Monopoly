@@ -72,7 +72,7 @@ public class Client extends Thread{
 				Object obj = (Object ) ois.readObject();
 				if(obj instanceof String){
 					String message = (String)obj;
-					System.out.println("Got message" + message);
+					System.out.println("Got message: " + message);
 					interpretMessage(message);
 					//oos.writeObject("OK");
 					//oos.flush();
@@ -86,21 +86,35 @@ public class Client extends Thread{
 	}
 	private void interpretMessage(String message){
 		//TODO
-		if(message.contains("Guest Login: ")){
+		if(message.contains("Login success")){
+			System.out.println(message);
+		}else if(message.contains("Login deny")){
+			System.out.println(message);
+		}else if(message.contains("Creating account success")){
+			System.out.println(message);
+		}else if(message.contains("Creating account deny")){
+			System.out.println(message);
+		}else if (message.contains("Update ID: ")){
+			message = message.replace("Update ID:", "");
+			message = message.trim();
+			int id = Integer.parseInt(message);
+			thisPlayerID = id;
+		}
+		else if(message.contains("Guest Login: ")){
 			message = message.replace("Guest Login: ", "");
-			message.trim();
+			message = message.trim();
 			String guestName = message;
 			//TODO
 			//do something after a Guest logs in 
 		}else if(message.contains("User Login: ")){
 			message = message.replace("User Login: ", "");
-			message.trim();
+			message = message.trim();
 			String username = message;
 			//TODO
 			//do something after a User logs in 
 		}else if(message.contains("Client Logout: ")){
 			message = message.replace("Client Logout: ", "");
-			message.trim();
+			message = message.trim();
 			String username = message;
 			//TODO
 			//do something if client logs out 
@@ -113,6 +127,13 @@ public class Client extends Thread{
 			//do something after the client picked a token
 			//let other players know
 			//ready to start unless quit
+		}else if(message.contains("Ready: ")){
+			if(thisPlayerID ==1){
+				//TODO
+				//if this client is host do sth
+			}else{
+				System.out.println(message);
+			}
 		}else if(message.contains("StartGame")){
 			//obtain the correct teamnames and team id at this point 
 			//TODO 
@@ -120,7 +141,7 @@ public class Client extends Thread{
 			
 		}else if(message.contains("EndTurn: ")){
 			message = message.replace("EndTurn: ", "");
-			message.trim();
+			message = message.trim();
 			int clientID = Integer.parseInt(message);
 			//TODO
 			//after client end his turn, proceed to another player
@@ -176,7 +197,9 @@ public class Client extends Thread{
 	}
 	
 	public static void main(String args[]){
-		new Client().start();
 		
+		Client client = new Client();
+		client.start();
+		new LoginWindow(client).setVisible(true);
 	}
 }

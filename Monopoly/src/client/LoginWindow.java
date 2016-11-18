@@ -1,4 +1,5 @@
-//	Author: Matthew van Niekerk
+// Author: Matthew van Niekerk
+// edited by James Su 
 package client;
 
 import java.awt.BorderLayout;
@@ -18,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import resources.LoginInfo;
 import utilities.AppearanceSettings;
 
 public class LoginWindow extends JFrame {
@@ -28,8 +30,9 @@ public class LoginWindow extends JFrame {
 	private JButton guestButton;
 	private JTextField username;
 	private JPasswordField password;
-	
-	public LoginWindow() {
+	private Client client;
+	public LoginWindow(Client client) {
+		this.client = client;
 		initializeVariables();
 		createGUI();
 		addListeners();
@@ -154,7 +157,7 @@ public class LoginWindow extends JFrame {
 			@Override
 			public void focusGained(FocusEvent e) {
 				if (password.getForeground().equals(Color.LIGHT_GRAY)) {
-					password.setEchoChar('*');
+					password.setEchoChar('●');
 					password.setText("");
 					password.setForeground(Color.BLACK);
 				}
@@ -179,15 +182,17 @@ public class LoginWindow extends JFrame {
 	}
 	
 	private void login() {
+		client.sendLoginInfo(new LoginInfo(username.getText(), new String(password.getPassword()), true  ) );
 		
 	}
 	
 	private void createAccount() {
-		
+		client.sendLoginInfo(new LoginInfo(username.getText(), new String(password.getPassword()), false  ) );
+	
 	}
 	
 	private void playAsGuest() {
-		
+		client.sendMessage("Guest Login: ");
 	}
 	
 	private class MyDocumentListener implements DocumentListener {
@@ -211,4 +216,9 @@ public class LoginWindow extends JFrame {
 		}
 		
 	}
+	/*
+	public static void main(String args[]){
+		new LoginWindow().setVisible(true);
+	}
+	*/
 }

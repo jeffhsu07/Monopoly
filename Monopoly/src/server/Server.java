@@ -29,6 +29,7 @@ public class Server extends Thread{
 			ss = new ServerSocket(Constants.defaultPort);
 			serverThreads = new ArrayList<ServerThread>();
 			actualPlayerTheads = new ArrayList<ServerThread>();
+			teamNames = new ArrayList<String>();
 			stop = false;
 			jDBCDriver = new JDBCDriver();
 		}catch (IOException e) {
@@ -132,6 +133,16 @@ public class Server extends Thread{
 		}
 		
 	}
+	public void incrementWins(String username){
+		jDBCDriver.connect();
+		jDBCDriver.incrementWins(username);
+		jDBCDriver.stop();
+	}
+	public void incrementNumberOfGameplays(String username){
+		jDBCDriver.connect();
+		jDBCDriver.incrementGameplays(username);
+		jDBCDriver.stop();
+	}
 	
 	//start a new game 
 	public void refreshServer(){
@@ -199,9 +210,10 @@ public class Server extends Thread{
 	
 	public void addGuestName(ServerThread st){
 		String newGuestName = "Guest" + Integer.toString(numberOfGuests);
+		System.out.println("set new guestname: " +newGuestName );
 		teamNames.add(newGuestName);
 		numberOfGuests++;
-		st.setName(newGuestName);
+		st.setClientName(newGuestName);
 	}
 	
 	

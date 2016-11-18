@@ -95,6 +95,7 @@ public class ServerThread extends Thread  {
 			if(match){
 				clientName = loginInfo.getUsername();
 				server.sendMessageToAllOtherClients("User Login: "+ clientName, this );	
+				sendMessage("Login success");
 				server.addToPalyerThread(this);
 				server.setID(this); //server generate an id for this user
 			}else{
@@ -105,6 +106,7 @@ public class ServerThread extends Thread  {
 			if(succeed){
 				clientName = loginInfo.getUsername();
 				server.sendMessageToAllOtherClients("User Login: "+ clientName, this );	
+				sendMessage("Creating account success");
 				server.addToPalyerThread(this);
 				server.setID(this);
 			}else{
@@ -112,7 +114,7 @@ public class ServerThread extends Thread  {
 			}
 		}
 	}
-	
+
 
 	public String getClientName(){
 		return clientName;
@@ -121,6 +123,7 @@ public class ServerThread extends Thread  {
 		clientName = name;
 	}
 	public void setServerThreadID(int id){
+		sendMessage("Update ID: " + id);
 		ID = id;
 	}
 	public int getServerThreadID(){
