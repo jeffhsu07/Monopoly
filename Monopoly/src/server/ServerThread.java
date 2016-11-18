@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import resources.LoginInfo;
+import resources.Player;
 /*-----------------------------------------
  * Author: James Su
  * 
@@ -43,7 +45,15 @@ public class ServerThread extends Thread  {
 			System.out.println("ioe: " + ioe.getMessage());
 		}
 	}
-	
+	//send actual teamnames to client once the game starts
+	public void sendPlayers( ArrayList<Player> players ){
+		try {
+			oos.writeObject(players);
+			oos.flush();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+	}
 	public void run(){
 		try {
 			while(true) {
@@ -67,11 +77,12 @@ public class ServerThread extends Thread  {
 	
 	private void interpretMessage(String message){
 		if(message.contains("Guest Login: ")){	//guest login
+			server.addGuestName(this); //set guest name from server
 			server.addToPalyerThread(this);
 			server.setID(this);
-			server.addGuestName(this); //set guest name from server
-			server.sendMessageToAllOtherClients(message+clientName, this); //send this guest client's name to all other clients
-			
+			if(!server.cannotAddPlayer()){
+				server.sendMessageToAllOtherClients(message+clientName, this); //send this guest client's name to all other clients
+			}
 			//send player information they need to get to the start window 
 		}else if(message.contains("Client Logout: ")){// a player log out during starting game gui or main gui
 			server.sendMessageToAllOtherClients(message+ clientName, this); // tell all other client that this client logs out with its ID number
@@ -93,22 +104,30 @@ public class ServerThread extends Thread  {
 		if(loginInfo.isLogin()){ // if client clicked login, verify account
 			boolean match = server.verifyUser(loginInfo.getUsername(), loginInfo.getPassword());
 			if(match){
-				clientName = loginInfo.getUsername();
-				server.sendMessageToAllOtherClients("User Login: "+ clientName, this );	
-				sendMessage("Login success");
-				server.addToPalyerThread(this);
-				server.setID(this); //server generate an id for this user
+				if(!server.cannotAddPlayer()){ //if there are not yet 8 people in game room
+					clientName = loginInfo.getUsername();
+					server.sendMessageToAllOtherClients("User Login: "+ clientName, this );	
+					sendMessage("Login success");
+					server.addToPalyerThread(this);
+					server.setID(this); //server generate an id for this user
+				}else{
+					sendMessage("Login deny, room is full");
+				}
 			}else{
 				sendMessage("Login deny, retype your username and password");
 			}
 		}else{ //if the client clicked create account, create an account
 			boolean succeed = server.createUser(loginInfo.getUsername(), loginInfo.getPassword());
 			if(succeed){
-				clientName = loginInfo.getUsername();
-				server.sendMessageToAllOtherClients("User Login: "+ clientName, this );	
 				sendMessage("Creating account success");
-				server.addToPalyerThread(this);
-				server.setID(this);
+				if(!server.cannotAddPlayer()){//if there are not yet 8 people in game room
+					clientName = loginInfo.getUsername();
+					server.sendMessageToAllOtherClients("User Login: "+ clientName, this );	
+					server.addToPalyerThread(this);
+					server.setID(this);
+				}else{
+					sendMessage("Login deny, room is full");
+				}
 			}else{
 				sendMessage("Creating account deny, try a different name");
 			}
@@ -121,7 +140,11 @@ public class ServerThread extends Thread  {
 	}
 	public void setClientName(String name){
 		clientName = name;
+		if(name.contains("Guest")){ //guest doesn't have a name so we give them one
+			sendMessage("Guest name: "+ name);
+		}
 	}
+	//update id on both client and serverThread
 	public void setServerThreadID(int id){
 		sendMessage("Update ID: " + id);
 		ID = id;

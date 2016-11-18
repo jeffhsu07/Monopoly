@@ -1,31 +1,36 @@
 package resources;
 
+import java.io.Serializable;
 import java.util.Vector;
 
 // Created by Nick
 // Edited by Jesse
-public class Player {
+// Edited by James
+public class Player implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9079112669746633237L;
 	private String name;
 	private int wins;
-	private int losses;
+	private int gamesPlayed; //changed from loses to gamesPlayed in accord to database 
 	private int money;
 	private boolean inJail;
 	private Vector<Property> properties;
 	private int jailCards;
 	private int currentLocation;
 	private int gameToken;
-	private boolean bankrupt;
-	
-	public Player(String name, int wins, int losses) {
+	private int ID; //added player ID 
+	public Player(String name, int wins, int gamesPlayed, int ID) {
 		this.name = name;
 		this.wins = wins;
-		this.losses = losses;
+		this.gamesPlayed = gamesPlayed;
+		this.ID = ID;
 		money = 0;
 		inJail = false;
 		properties = new Vector<Property>();
 		jailCards = 0;
 		currentLocation = 0;
-		bankrupt = false;
 	}
 	
 	public String getName() {
@@ -36,19 +41,12 @@ public class Player {
 		return wins;
 	}
 	
-	public int getLosses() {
-		return losses;
+	public int getGamesPlayed() {
+		return gamesPlayed;
 	}
 	
 	public int getMoney() {
 		return money;
-	}
-	
-	public void increaseMoney(int num) {
-		money += num;
-		if (money <= 0) {
-			bankrupt = true;
-		}
 	}
 	
 	public boolean isInJail() {
@@ -85,13 +83,5 @@ public class Player {
 
 	public void setGameToken(int gameToken) {
 		this.gameToken = gameToken;
-	}
-	
-	public void addProperty(Property property){
-		properties.add(property);
-	}
-	
-	public boolean isBankrupt() {
-		return bankrupt;
 	}
 }

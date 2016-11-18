@@ -5,8 +5,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 import resources.LoginInfo;
+import resources.Player;
 import server.Server;
 import utilities.Constants;
 /*-----------------------------------------
@@ -21,11 +23,13 @@ public class Client extends Thread{
 	private ObjectOutputStream oos;
 	private Socket s = null;
 	private int thisPlayerID = -1;
-	private ArrayList<String> teamNames; 
+	private String thisPlayerName; //set to login user name or guest name when assigned 
+	//private ArrayList<String> teamNames; 
+	private ArrayList<Player> playerList;
 	public Client() {
 		
 		try {
-			teamNames = new ArrayList<String>();
+			//teamNames = new ArrayList<String>();
 			s = new Socket(Constants.defaultHostname, Constants.defaultPort);
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
@@ -76,6 +80,13 @@ public class Client extends Thread{
 					interpretMessage(message);
 					//oos.writeObject("OK");
 					//oos.flush();
+				}else if (obj instanceof ArrayList<?>){
+					playerList = (ArrayList<Player>)obj; //send array of players maybe??
+					synchronized(playerList){
+						for (Player p : playerList) {
+							System.out.println("Players' names are: " + p.getName());
+						}
+					}
 				}
 			}
 		} catch (ClassNotFoundException cnfe) {
@@ -85,7 +96,6 @@ public class Client extends Thread{
 		}
 	}
 	private void interpretMessage(String message){
-		//TODO
 		if(message.contains("Login success")){
 			System.out.println(message);
 		}else if(message.contains("Login deny")){
@@ -94,6 +104,10 @@ public class Client extends Thread{
 			System.out.println(message);
 		}else if(message.contains("Creating account deny")){
 			System.out.println(message);
+		}else if(message.contains("Guest name: ")){ //guest doesn't have a name so we give them one
+			message = message.replace("Guest name: ", "");
+			message = message.trim();
+			thisPlayerName = message;
 		}else if (message.contains("Update ID: ")){
 			message = message.replace("Update ID:", "");
 			message = message.trim();

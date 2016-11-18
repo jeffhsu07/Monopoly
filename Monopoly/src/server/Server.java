@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import resources.JDBCDriver;
+import resources.Player;
 import utilities.Constants;
 /*-----------------------------------------
  * Author: James Su
@@ -23,12 +24,14 @@ public class Server extends Thread{
 	private JDBCDriver jDBCDriver;
 
 	private ArrayList<String> teamNames; 
+	private ArrayList<Player> players;
 	private int numberOfGuests = 1; //used to assign guest name 
 	public Server(){
 		try{
 			ss = new ServerSocket(Constants.defaultPort);
 			serverThreads = new ArrayList<ServerThread>();
 			actualPlayerTheads = new ArrayList<ServerThread>();
+			players = new ArrayList<Player>();
 			teamNames = new ArrayList<String>();
 			stop = false;
 			jDBCDriver = new JDBCDriver();
@@ -48,7 +51,21 @@ public class Server extends Thread{
 		}
 		
 	}
-	
+	public void sendPlayersToClients() {
+		synchronized(actualPlayerTheads){//construct the actual list of player once the game starts
+			for (int i = 0; i < actualPlayerTheads.size(); i++) {
+				ServerThread st = actualPlayerTheads.get(i);
+				String playername = st.getClientName();
+				players.add(new Player(playername, getWins(playername), getNumberOfGames(playername), st.getServerThreadID()));
+			}
+		}
+		synchronized(actualPlayerTheads){
+			for (ServerThread st : actualPlayerTheads) {
+				st.sendPlayers(players);
+			}
+		}
+		
+	}
 	public void run(){
 		try{
 			while (!stop && actualPlayerTheads.size() != 8 ) {
@@ -114,6 +131,7 @@ public class Server extends Thread{
 		}
 	}
 	//get win ratio from database 
+	/* no need for this method
 	public int getWinRatio(String username){
 		jDBCDriver.connect();
 		String mUsername = username;
@@ -130,6 +148,29 @@ public class Server extends Thread{
 			System.out.println("This username does not exist.");
 			jDBCDriver.stop();
 			return -1;
+		}
+		
+	}
+	*/
+	public int getWins(String username){
+		if(!username.contains("Guest")){
+			jDBCDriver.connect();
+			int wins = jDBCDriver.getNumberOfWins(username);
+			jDBCDriver.stop();
+			return wins;
+		}else {
+			return 0;
+		}
+		
+	}
+	public int getNumberOfGames(String username){
+		if(!username.contains("Guest")){
+			jDBCDriver.connect();
+			int wins = jDBCDriver.getNumberOfGameplays(username);
+			jDBCDriver.stop();
+			return wins;
+		}else {
+			return 0;
 		}
 		
 	}
@@ -161,13 +202,16 @@ public class Server extends Thread{
 			}
 		}
 	}
+	
 	//give an id to the login user or guest, ID is based on the capacity of arraylist
 	public void setID(ServerThread serverThread){
 		if(actualPlayerTheads.size() <= 8){
 			int serverThreadID = actualPlayerTheads.size() ;
 			serverThread.setServerThreadID(serverThreadID);
 		}else{
+			
 			System.out.println("exceed server capacity");
+			return;
 		}
 		
 	}
@@ -201,8 +245,17 @@ public class Server extends Thread{
 	public void addToPalyerThread(ServerThread st){
 		if(st != null){
 			synchronized(actualPlayerTheads){
-				actualPlayerTheads.add(st);
-				teamNames.add(st.getClientName());
+				if(actualPlayerTheads.size() <8){
+					actualPlayerTheads.add(st);
+				}else{
+					System.out.println("exceed 8 player capacity");
+					return;
+				}
+			}
+			synchronized(teamNames){
+				if(!st.getClientName().contains("Guest")){ // if contain Guest, then its name is already added to teamNames through addGuestName method 
+					teamNames.add(st.getClientName());
+				}
 			}
 		}
 		
@@ -211,15 +264,20 @@ public class Server extends Thread{
 	public void addGuestName(ServerThread st){
 		String newGuestName = "Guest" + Integer.toString(numberOfGuests);
 		System.out.println("set new guestname: " +newGuestName );
-		teamNames.add(newGuestName);
+		synchronized(teamNames){
+			teamNames.add(newGuestName);
+		}
 		numberOfGuests++;
 		st.setClientName(newGuestName);
 	}
 	
-	
+	public boolean cannotAddPlayer(){
+		return actualPlayerTheads.size() == 8;
+	}
 	
 	public static void main(String args[]){
-		new Server().start();
+		Server server = new Server();
+		server.start();
 		
 	}
 
