@@ -53,7 +53,7 @@ public class GameBoard extends JPanel {
 		
 		
 		// Default to a square
-		this.setPreferredSize(new Dimension(891,891));
+		this.setPreferredSize(new Dimension(715,715));
 	}
 
 	protected void paintComponent(Graphics g) {
@@ -94,7 +94,7 @@ public class GameBoard extends JPanel {
 		g.drawLine(0, 0, width, 0);
 		g.drawLine(0, height-1, width, height-1);
 		g.drawLine(0, gridHeight, width, gridHeight);
-		g.drawLine(0, getHeight()-gridHeight, width, height-gridHeight);
+		g.drawLine(0, gridHeight*10, width, gridHeight*10);
 		
 		// Draw our main vertical lines
 		g.drawLine(0, 0, 0, height);
@@ -113,7 +113,7 @@ public class GameBoard extends JPanel {
 		for (int i = 1; i < 9; i++) {
 			int currentX = gridWidth*(1+i);
 			g.drawLine(currentX, 0, currentX, gridHeight);
-			g.drawLine(currentX, height-gridHeight, currentX, height);
+			g.drawLine(currentX, gridHeight*10, currentX, height);
 		}
 		
 		// Draw the Rectangle on Each property
@@ -182,7 +182,7 @@ public class GameBoard extends JPanel {
 			result = (location - 10) * (this.getHeight()/11);
 		} else if (location < 31) {
 			// In the bottom Row
-			result = this.getHeight() - this.getHeight()/11;
+			result = (this.getHeight()/11)*10;
 		} else {
 			// In the left Column
 			result = (location - 40) * (0-1) * (this.getHeight()/11);
