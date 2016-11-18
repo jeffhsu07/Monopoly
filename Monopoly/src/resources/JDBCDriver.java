@@ -155,7 +155,7 @@ public class JDBCDriver {
 			e.printStackTrace();
 		}
 	}
-	
+	/*
 	public static void main(String args[]){
 		JDBCDriver jDBCDriver = new JDBCDriver();
 		jDBCDriver.connect();
@@ -163,5 +163,5 @@ public class JDBCDriver {
 		jDBCDriver.getNumberOfWins("jj");
 		jDBCDriver.stop();
 	}
-	
+	*/
 }
