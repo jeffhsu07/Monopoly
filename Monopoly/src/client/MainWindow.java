@@ -42,13 +42,12 @@ public class MainWindow extends JFrame {
 	
 	public MainWindow(ArrayList<Player> players) {
 		super("Monopoly");
+		PropertiesSetUp p = new PropertiesSetUp();
+		properties = p.getProperties();
 		this.players = players;
 		initializeComponents();
 		createGUI();
 		addListeners();
-		PropertiesSetUp p = new PropertiesSetUp();
-		properties = p.getProperties();
-
 	}
 
 	private void initializeComponents() {
@@ -56,8 +55,8 @@ public class MainWindow extends JFrame {
 		currentPlayer = 0;
 		ownedPlayer = 0;
 		int[] tempCosts = {100,200};
-		Property temp1 = new Property("Property1", 100, "Group1", tempCosts, 20, 100, 5);
-		Property temp2 = new Property("Property2", 100, "Group1", tempCosts, 20, 80, 5);
+		Property temp1 = new Property("Test Property 1", 100, "Group9", tempCosts, 20, 100, 5);
+		Property temp2 = new Property("Test Property 2", 100, "Group9", tempCosts, 20, 80, 5);
 		temp2.setMortgaged(true);
 		players.get(currentPlayer).addProperty(temp1);
 		players.get(currentPlayer).addProperty(temp2);
@@ -71,7 +70,7 @@ public class MainWindow extends JFrame {
 		// Initialize our custom Panels
 		progressArea = new ProgressArea();
 		playerInformationGrid = new PlayerInformationGrid(players);
-		gameBoard = new GameBoard(players);
+		gameBoard = new GameBoard(players, properties);
 	}
 
 	private void createGUI() {

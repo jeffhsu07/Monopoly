@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import resources.Player;
+import resources.Property;
 import utilities.Constants;
 
 //Made by Jesse
@@ -40,10 +41,12 @@ public class GameBoard extends JPanel {
 	Image electricCompanyImage;
 	Image freeParkingImage;
 	Image boardImage;
+	Property[] properties;
 	
-	public GameBoard(ArrayList<Player> players) {
+	public GameBoard(ArrayList<Player> players, Property[] properties) {
 		this.players = players;
 		this.playerImages = new ArrayList<Image>();
+		this.properties = properties;
 		
 		// Initialize our Images
 		try {
@@ -207,7 +210,7 @@ public class GameBoard extends JPanel {
 		// Draw a mouseover text for each property
 		for (int i = 0; i < 40; i++) {
 			if (isMouseWithinLocation(i)) {
-				g.drawString("Mouse Over Property: " + i, 100, 100);
+				g.drawString("Mouse Over Property: " + properties[i].getName(), 100, 100);
 			}
 		}
 	}
