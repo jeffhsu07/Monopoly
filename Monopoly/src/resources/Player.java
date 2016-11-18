@@ -77,4 +77,8 @@ public class Player {
 	public void setGameToken(int gameToken) {
 		this.gameToken = gameToken;
 	}
+	
+	public void addProperty(Property property){
+		properties.add(property);
+	}
 }

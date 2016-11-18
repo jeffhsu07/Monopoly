@@ -107,8 +107,10 @@ public class Property {
 	{
 		return mortgaged;
 	}
-
-
+	public void setMortgaged(boolean isMortgaged){
+		mortgaged = isMortgaged;
+	}
+	
 	public int getMortgageValue() {
 		return mortgageValue;
 	}
