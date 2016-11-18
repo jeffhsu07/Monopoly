@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import resources.Player;
 import resources.PropertiesSetUp;
 import resources.Property;
+import utilities.Constants;
 
 // Made by Jesse
 public class MainWindow extends JFrame {
@@ -136,7 +137,7 @@ public class MainWindow extends JFrame {
 				int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
 				if(p.getCurrentLocation()+roll1+roll2 >= 40)
 				{
-					p.increaseMoney(200);
+					p.increaseMoney(Constants.goMoney);
 				}
 				p.setCurrentLocation(newLocation);
 				
@@ -165,13 +166,13 @@ public class MainWindow extends JFrame {
 					} else if (properties[newLocation].getName().equals("Income Tax")) {
 						//TODO Pay 10% or $200
 					} else if (properties[newLocation].getName().equals("Go")) {
-						//Nothing. Go money handled above
+						//Nothing. Go money handled above.
 					} else if (properties[newLocation].getName().equals("Just Visiting")) {
 						//Nothing
 					} else if (properties[newLocation].getName().equals("Free Parking")) {
 						//Nothing
 					} else if (properties[newLocation].getName().equals("Luxury Tax")) {
-						//TODO pay $75
+						p.increaseMoney(-Constants.luxuryTax);
 					}
 				}
 				

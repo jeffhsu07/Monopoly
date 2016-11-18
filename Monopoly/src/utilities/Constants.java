@@ -36,4 +36,8 @@ public class Constants {
 	public static Color group6Color = Color.YELLOW;
 	public static Color group7Color = Color.GREEN;
 	public static Color group8Color = Color.BLUE;
+	
+	public static int incomeTax = 200;
+	public static int luxuryTax = 75;
+	public static int goMoney = 200;
 }
