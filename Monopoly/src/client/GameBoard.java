@@ -27,6 +27,8 @@ public class GameBoard extends JPanel {
 	Image chestImage;
 	Image chanceImage;
 	Image trainImage;
+	Image jailImage;
+	Image incomeTaxImage;
 	
 	public GameBoard(ArrayList<Player> players) {
 		this.players = players;
@@ -45,6 +47,8 @@ public class GameBoard extends JPanel {
 			chanceImage = ImageIO.read(new File("images/board/chance.gif"));
 			chestImage = ImageIO.read(new File("images/board/communityChest.gif"));
 			trainImage = ImageIO.read(new File("images/board/train.gif"));
+			jailImage = ImageIO.read(new File("images/board/jail.png"));
+			incomeTaxImage = ImageIO.read(new File("images/board/incomeTax.png"));
 		} catch (IOException ioe) {
 			System.out.println("Error Loading Player Image: " + ioe.getMessage());
 		}
@@ -67,6 +71,11 @@ public class GameBoard extends JPanel {
 	}
 	
 	private void paintBoard(Graphics g) {
+		// Draw the board Background
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, getWidth(), getHeight());
+		g.setColor(Color.BLACK);
+		
 		// Draw the board images
 		drawImageAtLocation(g,goImage,0);
 		drawImageAtLocation(g,trainImage,5);
@@ -79,6 +88,8 @@ public class GameBoard extends JPanel {
 		drawImageAtLocation(g,chestImage,2);
 		drawImageAtLocation(g,chestImage,17);
 		drawImageAtLocation(g,chestImage,33);
+		drawImageAtLocation(g,jailImage,10);
+		drawImageAtLocation(g,incomeTaxImage,4);
 		
 		g.setColor(Color.BLACK);
 		//g.setStroke(new BasicStroke(3));
@@ -122,18 +133,45 @@ public class GameBoard extends JPanel {
 			
 			if (!Constants.propertyLocations.contains(i)) continue;
 			
+			// get the color for the property
+			Color currentColor = Color.BLACK;
+			if (Constants.group1Locations.contains(i)) currentColor = Constants.group1Color;
+			if (Constants.group2Locations.contains(i)) currentColor = Constants.group2Color;
+			if (Constants.group3Locations.contains(i)) currentColor = Constants.group3Color;
+			if (Constants.group4Locations.contains(i)) currentColor = Constants.group4Color;
+			if (Constants.group5Locations.contains(i)) currentColor = Constants.group5Color;
+			if (Constants.group6Locations.contains(i)) currentColor = Constants.group6Color;
+			if (Constants.group7Locations.contains(i)) currentColor = Constants.group7Color;
+			if (Constants.group8Locations.contains(i)) currentColor = Constants.group8Color;
+			
 			if (i < 11) {
 				// In the top row.
+				g.setColor(currentColor);
+				g.fillRect(x, gridHeight*4/5, gridWidth, gridHeight/5);
+				g.setColor(Color.BLACK);
 				g.drawRect(x, gridHeight*4/5, gridWidth, gridHeight/5);
+				
 			} else if (i < 21) {
 				// In the right Column
+				g.setColor(currentColor);
+				g.fillRect(x, y, gridWidth/5, gridHeight);
+				g.setColor(Color.BLACK);
 				g.drawRect(x, y, gridWidth/5, gridHeight);
+				
 			} else if (i < 31) {
 				// In the bottom Row
+				g.setColor(currentColor);
+				g.fillRect(x, y, gridWidth, gridHeight/5);
+				g.setColor(Color.BLACK);
 				g.drawRect(x, y, gridWidth, gridHeight/5);
+				
 			} else {
 				// In the left Column
+				g.setColor(currentColor);
+				g.fillRect(gridWidth*4/5, y, gridWidth/5, gridHeight);
+				g.setColor(Color.BLACK);
 				g.drawRect(gridWidth*4/5, y, gridWidth/5, gridHeight);
+				
 			}
 		}
 		
