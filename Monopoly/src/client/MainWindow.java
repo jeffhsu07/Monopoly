@@ -68,7 +68,7 @@ public class MainWindow extends JFrame {
 	}
 
 	private void createGUI() {
-		this.setSize(1600,900);
+		this.setSize(1280,720);
 		this.setResizable(false);
 		
 		// Use a border layout
