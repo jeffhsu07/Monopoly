@@ -1,0 +1,27 @@
+To Do:
+	Add Menu Bar to the top of the main window
+		Create a player window for registered users
+
+	Create a game winner window
+
+	Finish game logic in main window
+		Chance Cards
+		Community Chest Cards
+		Go To Jail
+		Use Exit Game Button
+
+	Paint houses and hotels to the game board (Jesse)
+
+	Finish the game setup window
+
+	Utilize networking thorughout code
+
+	Separate Properties In Player Information Window by Group
+		Give each group a header so monopolies can be seen.
+
+	Finish Manage Buildings Window
+
+Known Issues:
+	Mortgage Properties Window doesn't repaint board when actions occur
+	Need clear indicator of who's turn it is.
+	
