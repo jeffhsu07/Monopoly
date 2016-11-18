@@ -70,6 +70,8 @@ public class PlayerInformationGrid extends JPanel {
 	}
 	
 	private class PlayerInfoLayout extends JPanel {
+		private static final long serialVersionUID = -6341876191272116746L;
+		
 		Player player;
 		Image playerIcon;
 		
