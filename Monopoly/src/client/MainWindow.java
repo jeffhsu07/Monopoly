@@ -63,6 +63,10 @@ public class MainWindow extends JFrame {
 		// Initialize our player tracking to default values.
 		currentPlayer = 0;
 		ownedPlayer = 0;
+		int[] tempCosts = {100,200};
+		Property temp1 = new Property("Test Property 1", 100, "Group9", tempCosts, 20, 100, 5);
+		Property temp2 = new Property("Test Property 2", 100, "Group9", tempCosts, 20, 80, 5);
+		temp2.setMortgaged(true);
 		players.get(currentPlayer).addProperty(properties[1]);
 		players.get(currentPlayer).addProperty(properties[3]);
 		// Initialize our various buttons.
@@ -141,13 +145,15 @@ public class MainWindow extends JFrame {
 		
 		menuPlayerStats.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//new PlayerStatisticsWindow(players.get(ownedPlayer)).setVisible(true);;
+				new PlayerStatisticsWindow(players.get(ownedPlayer)).setVisible(true);;
 			}
 		});
 		
 		// Have the roll button move the current player.
 		rollButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				rollButton.setEnabled(false);
+				
 				// Get a random dice roll
 				Random rand = new Random();
 				int roll1 = rand.nextInt(6)+1;
@@ -300,14 +306,23 @@ public class MainWindow extends JFrame {
 				playerInformationGrid.repaint();
 				
 				progressArea.addProgress("\n");
+				
+				if (players.get(currentPlayer).getDoubles() > 0) {
+					progressArea.addProgress(players.get(currentPlayer).getName() +" gets to roll again.\n");
+					rollButton.setEnabled(true);
+				} else {
+					endTurnButton.setEnabled(true);
+				}
 			}
 		});
 		
 		// Have the End Turn button increment the current player.
 		endTurnButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				currentPlayer = (currentPlayer + 1) % players.size();
+				//currentPlayer = (currentPlayer + 1) % players.size();
 				progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.\n");
+				rollButton.setEnabled(true);
+				endTurnButton.setEnabled(false);
 			}
 		});
 		
