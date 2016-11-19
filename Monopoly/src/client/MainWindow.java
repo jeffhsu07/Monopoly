@@ -74,6 +74,7 @@ public class MainWindow extends JFrame {
 		manageBuildingsButton = new JButton("Manage Buildings");
 		managePropertiesButton = new JButton("Manage Properties");
 		endTurnButton = new JButton("End Turn");
+		endTurnButton.setEnabled(false);
 		exitButton = new JButton("Exit");
 		
 		// Initialize our custom Panels
