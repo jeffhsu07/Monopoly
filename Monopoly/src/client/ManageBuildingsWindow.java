@@ -119,15 +119,8 @@ public class ManageBuildingsWindow extends JFrame{
 		buyHouseButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				if(currentProperty.getCanBuild()){
-					currentProperty.addBuilding();
-					System.out.println("Built a house on " + currentProperty.getName() + " Number of Houses: " + currentProperty.getNumHouses());
-					mw.repaint();
-					mw.revalidate();
-				}
-				else if(hasAllPropertiesInGroup()){
-					setCanBuildHouseOnGroupProperty();
-					currentProperty.addBuilding();
-					System.out.println("Built a house on " + currentProperty.getName() + " Number of Houses: " + currentProperty.getNumHouses());
+					addHouse();
+					//System.out.println("Built a house on " + currentProperty.getName() + " Number of Houses: " + currentProperty.getNumHouses());
 					mw.repaint();
 					mw.revalidate();
 				}
@@ -139,6 +132,7 @@ public class ManageBuildingsWindow extends JFrame{
 		
 		sellHouseButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
+				sellHouse();
 			}
 		});
 		final int temp = 0;
@@ -219,6 +213,52 @@ public class ManageBuildingsWindow extends JFrame{
 					player.getProperties().get(j).setCanBuild();
 				}
 			}
+		}
+	}
+	
+	public void addHouse(){
+		ArrayList<Property> group = new ArrayList<Property>();
+		for(int i = 0; i < groupLocation.size(); i++){
+			for(int j = 0; i < player.getProperties().size(); i++){
+				if(player.getProperties().get(j).getBoardPosition() == groupLocation.get(i)){
+					group.add(player.getProperties().get(j));
+				}
+			}
+		}
+		
+		for(int i = 0; i < group.size(); i++){
+			if(currentProperty.getNumHouses() > group.get(i).getNumHouses()){
+				buyHouseDescriptionLabel.setText("Cannot buy a house here, houses must be distributed evenly among the property group");
+				return;
+			}
+		}
+		currentProperty.addHouse();
+		System.out.println("Added house to " + currentProperty.getName() + " total num houses built: " + group.get(0).getNumHouses());
+	}
+	
+	public void sellHouse(){
+		if(currentProperty.getNumHouses() > 0){
+			ArrayList<Property> group = new ArrayList<Property>();
+			for(int i = 0; i < groupLocation.size(); i++){
+				for(int j = 0; i < player.getProperties().size(); i++){
+					if(player.getProperties().get(j).getBoardPosition() == groupLocation.get(i)){
+						group.add(player.getProperties().get(j));
+					}
+				}
+			}
+			
+			for(int i = 0; i < group.size(); i++){
+				if(currentProperty.getNumHouses() < group.get(i).getNumHouses()){
+					sellHouseDescriptionLabel.setText("Cannot sell a house here, houses must be distributed evenly among the property group");
+					return;
+				}
+			}
+			
+			currentProperty.removeBuilding();
+			System.out.println("Removed house from " + currentProperty.getName() + " total num houses built: " + group.get(0).getNumHouses());
+		}
+		else{
+			sellHouseDescriptionLabel.setText("No houses to sell on this property");
 		}
 	}
 }

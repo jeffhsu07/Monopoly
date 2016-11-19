@@ -2,6 +2,7 @@ package main;
 
 import java.util.ArrayList;
 
+import client.Client;
 import client.MainWindow;
 import client.StartWindow;
 import resources.Player;;
