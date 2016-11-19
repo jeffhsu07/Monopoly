@@ -36,6 +36,7 @@ public class Client extends Thread{
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
 			
+			
 		} catch (IOException ioe) {
 			System.out.println("ioe construct: " + ioe.getMessage());
 		}
@@ -82,12 +83,27 @@ public class Client extends Thread{
 					interpretMessage(message);
 					//oos.writeObject("OK");
 					//oos.flush();
-				}else if (obj instanceof ArrayList<?>){
-					playerList = (ArrayList<Player>)obj; //send array of players maybe??
-					synchronized(playerList){
-						for (Player p : playerList) {
-							System.out.println("Players' names are: " + p.getName());
+				}else if (obj instanceof ArrayList<?>){//checking what arraylist contains, if contain strings then its otherplayerInfo, else is playerlist
+					if(((ArrayList<?>)obj).size()!=0){
+						if(((ArrayList<?>)obj).get(0) instanceof String){ //after login success, server send otherplayerInfo to consctuct a startwindow
+							ArrayList<String> otherPlayerInfo = (ArrayList<String>)obj; //pass to startwindow to initialize it 
+							loginWindow.setVisible(false);
+							startWindow = new StartWindow(thisPlayerName, otherPlayerInfo, this);
+							startWindow.setVisible(true);
+						}else if(((ArrayList<?>)obj).get(0) instanceof Player){
+							playerList = (ArrayList<Player>)obj; //send array of players maybe??
+							synchronized(playerList){
+								for (Player p : playerList) {
+									System.out.println("Players' names are: " + p.getName());
+								}
+							}
+							//start main game gui
 						}
+					}else{//this player is the first player who logged in, button in startwindow should be set to start instead of ready
+						loginWindow.setVisible(false);
+						startWindow = new StartWindow(thisPlayerName, null, this);
+						startWindow.setVisible(true);
+						
 					}
 				}
 			}
@@ -103,8 +119,6 @@ public class Client extends Thread{
 			message = message.replace("Login success: ", "");
 			message = message.trim();
 			thisPlayerName = message;
-			loginWindow.setVisible(false);
-			startWindow = new StartWindow(thisPlayerName, this);
 		}else if(message.contains("Login deny")){
 			System.out.println(message);
 		}else if(message.contains("Creating account success")){
