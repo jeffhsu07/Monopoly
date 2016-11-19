@@ -55,6 +55,7 @@ public class Property {
 			if(numHouses == 4)
 			{
 				hasHotel = true;
+				numHouses = 0;
 			}
 			else
 				numHouses++;
