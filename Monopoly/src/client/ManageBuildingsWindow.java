@@ -137,6 +137,8 @@ public class ManageBuildingsWindow extends JFrame{
 		sellHouseButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				sellHouse();
+				mw.repaint();
+				mw.revalidate();
 			}
 		});
 		final int temp = 0;
@@ -194,13 +196,14 @@ public class ManageBuildingsWindow extends JFrame{
 			groupLocation = Constants.group8Locations;
 
 		}
-		numPropertiesInGroupOwned++;
+		//numPropertiesInGroupOwned++;
 	}
 	
 	public boolean hasAllPropertiesInGroup(){ //checks if player has all properties in the current property group
 		findWhichSet();
+
 		for(int i = 0; i < groupLocation.size(); i++){
-			for(int j = 0; i < player.getProperties().size(); i++){
+			for(int j = 0; j < player.getProperties().size();j++){
 				if(player.getProperties().get(j).getBoardPosition() == groupLocation.get(i)){
 					numPropertiesInGroupOwned++;
 				}

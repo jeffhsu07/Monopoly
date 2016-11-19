@@ -57,6 +57,7 @@ public class ManagePropertiesWindow extends JFrame{
 		mortgageValue =  player.getProperties().get(0).getMortgageValue();
 		currentProperty = player.getProperties().get(0);
 		isMortgaged = currentProperty.isMortgaged();
+		groupLocation = new ArrayList<Integer>();
 		if(isMortgaged){
 			mortgageButton.setText("Reclaim Property");
 			mortgageStateLabel.setText("this property has been mortgaged");
@@ -171,6 +172,7 @@ public class ManagePropertiesWindow extends JFrame{
 	}
 	
 	private void mortgageProperty(){
+		findWhichSet();
 		if(!isMortgaged && !groupHasHouses()){
 			player.addMoney(mortgageValue);
 			currentProperty.setMortgaged(true);
@@ -178,7 +180,7 @@ public class ManagePropertiesWindow extends JFrame{
 			updateMortgageStateLabel();
 		}
 		else if(groupHasHouses()){
-			mortgageStateLabel.setText("Can't mortgage property if properties in the same group has buildings on them");
+			mortgageStateLabel.setText("<html>Can't mortgage property if properties in the same group has <br>buildings on them</br></html>");
 		}
 		else{
 			if(player.subtractMoney(mortgageValue)){
@@ -228,7 +230,9 @@ public class ManagePropertiesWindow extends JFrame{
 			groupLocation = Constants.group8Locations;
 
 		}
-		numPropertiesInGroupOwned++;
+		for(int i = 0; i < groupLocation.size(); i++){
+			System.out.println(groupLocation.get(i));
+		}
 	}
 	
 	public boolean groupHasHouses(){
@@ -236,6 +240,7 @@ public class ManagePropertiesWindow extends JFrame{
 			for(int j = 0; j < groupLocation.size(); j++){
 				if(player.getProperties().get(i).getBoardPosition() == groupLocation.get(j)){
 					if(player.getProperties().get(i).getNumHouses() > 0){
+						System.out.println("Is this running?");
 						return true;
 					}
 				}
