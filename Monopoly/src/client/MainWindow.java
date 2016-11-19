@@ -67,7 +67,9 @@ public class MainWindow extends JFrame {
 		Property temp2 = new Property("Test Property 2", 100, "Group9", tempCosts, 20, 80, 5);
 		temp2.setMortgaged(true);
 		players.get(currentPlayer).addProperty(properties[1]);
+		properties[1].setOwner(players.get(currentPlayer));
 		players.get(currentPlayer).addProperty(properties[3]);
+		properties[3].setOwner(players.get(currentPlayer));
 		// Initialize our various buttons.
 		rollButton = new JButton("Roll Dice");
 		manageBuildingsButton = new JButton("Manage Buildings");

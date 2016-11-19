@@ -67,7 +67,7 @@ public class Property {
 	{
 		if(!group.equals("Utilities")&&!group.equals("Stations"))
 		{
-			if(hasHotel = true) {
+			if(hasHotel == true) {
 				hasHotel = false;
 				numHouses = 4;
 			}
