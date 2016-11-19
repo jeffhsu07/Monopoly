@@ -12,16 +12,16 @@ public class PropertiesSetUp
 	private Property[] allProperties;
 	public PropertiesSetUp()
 	{
-	System.out.println("here");
+	//System.out.println("here");
 			BufferedReader br = null;
 			Property[] properties = new Property[40];
 			try
 			{
-				System.out.println("what");
-				System.out.println(new File(".").getAbsoluteFile());
+				//System.out.println("what");
+				//System.out.println(new File(".").getAbsoluteFile());
 				br = new BufferedReader(new FileReader("src/resources/Properties.txt"));
 				int count = 0;
-				System.out.println("interesting");
+				//System.out.println("interesting");
 			
 				String line = br.readLine();
 				while (line != null) 
