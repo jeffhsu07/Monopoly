@@ -28,14 +28,14 @@ public class Constants {
 	public static ArrayList<Integer> group8Locations = new ArrayList<>(Arrays.asList(37,39));
 	
 	// Properties Color for each monopoly group
-	public static Color group1Color = Color.MAGENTA;
-	public static Color group2Color = Color.CYAN;
-	public static Color group3Color = Color.PINK;
-	public static Color group4Color = Color.ORANGE;
-	public static Color group5Color = Color.RED;
-	public static Color group6Color = Color.YELLOW;
-	public static Color group7Color = Color.GREEN;
-	public static Color group8Color = Color.BLUE;
+	public static Color group1Color = new Color(149,84,54);
+	public static Color group2Color = new Color(170,224,250);
+	public static Color group3Color = new Color(217,58,150);
+	public static Color group4Color = new Color(247,148,29);
+	public static Color group5Color = new Color(237,27,36);
+	public static Color group6Color = new Color(254,242,0);
+	public static Color group7Color = new Color(31,178,90);
+	public static Color group8Color = new Color(0,114,187);
 	
 	public static int incomeTax = 200;
 	public static int luxuryTax = 75;
