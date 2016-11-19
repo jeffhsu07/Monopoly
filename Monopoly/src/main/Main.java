@@ -9,7 +9,7 @@ import resources.Player;;
 
 public class Main {
 	public static void main (String [] args){
-		new StartWindow(new Player("Matt", 1, 0,0)).setVisible(true);
+		//new StartWindow(new Player("Matt", 1, 0,0)).setVisible(true);
 		
 		// For Testing Main Window
 		ArrayList<Player> player = new ArrayList<Player>();

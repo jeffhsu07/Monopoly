@@ -66,10 +66,13 @@ public class Property {
 	{
 		if(!group.equals("Utilities")&&!group.equals("Stations"))
 		{
-			if(hasHotel = true)
+			/*if(hasHotel = true)
 				hasHotel = false;
-			else
+			else{*/
+				System.out.println("number of houses: " + numHouses);
 				numHouses--;
+			//}
+				System.out.println("number of houses: " + numHouses);
 		}
 	}
 
@@ -104,7 +107,9 @@ public class Property {
 	public int getHouseCost() {
 		return houseCost;
 	}
-
+	public int getSellHouseCost(){
+		return houseCost/2;
+	}
 	public void setHouseCost(int houseCost) {
 		this.houseCost = houseCost;
 	}

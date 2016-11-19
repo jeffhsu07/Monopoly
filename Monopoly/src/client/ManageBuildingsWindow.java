@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -51,9 +52,10 @@ public class ManageBuildingsWindow extends JFrame{
 		sellHouseButton = new JButton("Sell House");
 		closeWindowButton = new JButton("Close Window");
 		propertyDropDownComboBox = new JComboBox();
-		buyHouseDescriptionLabel = new JLabel("buying a house will..");
-		sellHouseDescriptionLabel = new JLabel("Selling a house will...");
 		currentProperty = player.getProperties().get(0);
+		buyHouseDescriptionLabel = new JLabel("<html>Clicking this button will add a house to the property<br>House cost: " + currentProperty.getHouseCost() + "</br><html>");
+		sellHouseDescriptionLabel = new JLabel("<html>Clicking this button will remove a house from this property<br>Current number of houses on this property: " + 
+												currentProperty.getNumHouses() + "</br><html>");
 		groupLocation = new ArrayList<Integer>();
 	}
 	
@@ -76,9 +78,11 @@ public class ManageBuildingsWindow extends JFrame{
 		c.gridheight = 1;
 		c.gridx = 0;
 		c.gridy = 0;
+		buyHouseButton.setPreferredSize(new Dimension(200,50));
 		centerPanel.add(buyHouseButton, c);
 		c.gridx = 0;
 		c.gridy = 4;
+		sellHouseButton.setPreferredSize(new Dimension(200,50));
 		centerPanel.add(sellHouseButton, c);
 		c.gridx = 4;
 		c.gridy = 0;
@@ -118,7 +122,7 @@ public class ManageBuildingsWindow extends JFrame{
 		
 		buyHouseButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				if(currentProperty.getCanBuild()){
+				if(hasAllPropertiesInGroup()){
 					addHouse();
 					//System.out.println("Built a house on " + currentProperty.getName() + " Number of Houses: " + currentProperty.getNumHouses());
 					mw.repaint();
@@ -144,6 +148,9 @@ public class ManageBuildingsWindow extends JFrame{
 					String propertyName = (String) propertyDropDownComboBox.getSelectedItem();
 					if(propertyName.equals(player.getProperties().get(i).getName())){ //if the property name in the combo box matches the name current property
 						currentProperty = player.getProperties().get(i); //updates the current property the combobox is on
+						buyHouseDescriptionLabel.setText("<html>Clicking this button will add a house to" + currentProperty.getName() + "<br>House cost: " + currentProperty.getHouseCost() + "</br><html>");
+						sellHouseDescriptionLabel.setText("<html>Clicking this button will remove a house from " + currentProperty.getName() + "<br>Current number of houses on this property: " + 
+																currentProperty.getNumHouses() + "</br><html>");
 						break; //break the for loop cuz property was found
 					}
 				}
@@ -201,8 +208,10 @@ public class ManageBuildingsWindow extends JFrame{
 		}
 
 		if(numPropertiesInGroupOwned != groupLocation.size()){
+			numPropertiesInGroupOwned = 0;
 			return false;
 		}
+		numPropertiesInGroupOwned = 0;
 		return true;
 	}
 	
@@ -219,7 +228,7 @@ public class ManageBuildingsWindow extends JFrame{
 	public void addHouse(){
 		ArrayList<Property> group = new ArrayList<Property>();
 		for(int i = 0; i < groupLocation.size(); i++){
-			for(int j = 0; i < player.getProperties().size(); i++){
+			for(int j = 0; j < player.getProperties().size(); j++){
 				if(player.getProperties().get(j).getBoardPosition() == groupLocation.get(i)){
 					group.add(player.getProperties().get(j));
 				}
@@ -228,12 +237,20 @@ public class ManageBuildingsWindow extends JFrame{
 		
 		for(int i = 0; i < group.size(); i++){
 			if(currentProperty.getNumHouses() > group.get(i).getNumHouses()){
-				buyHouseDescriptionLabel.setText("Cannot buy a house here, houses must be distributed evenly among the property group");
+				buyHouseDescriptionLabel.setText("<html>Cannot buy a house here, <br>houses must be distributed evenly among the property group</br></html>");
 				return;
 			}
 		}
-		currentProperty.addHouse();
-		System.out.println("Added house to " + currentProperty.getName() + " total num houses built: " + group.get(0).getNumHouses());
+		if(player.getMoney() > currentProperty.getHouseCost()){
+			currentProperty.addBuilding();
+			player.subtractMoney(currentProperty.getHouseCost());
+			buyHouseDescriptionLabel.setText("<html>Added house to " + currentProperty.getName() + "<br> total number of houses built on this property: " + currentProperty.getNumHouses() + "</br></html>");
+			sellHouseDescriptionLabel.setText("<html>Clicking this button will remove a house from this property<br>Current number of houses on this property: " + 
+					currentProperty.getNumHouses() + "</br><html>");
+		}
+		else{
+			buyHouseDescriptionLabel.setText("You do not have enough money to buy a house on this property!");
+		}
 	}
 	
 	public void sellHouse(){
@@ -249,16 +266,19 @@ public class ManageBuildingsWindow extends JFrame{
 			
 			for(int i = 0; i < group.size(); i++){
 				if(currentProperty.getNumHouses() < group.get(i).getNumHouses()){
-					sellHouseDescriptionLabel.setText("Cannot sell a house here, houses must be distributed evenly among the property group");
+					sellHouseDescriptionLabel.setText("<html>Cannot sell a house here <br>houses must be distributed evenly among the property group</br></html>");
 					return;
 				}
 			}
 			
 			currentProperty.removeBuilding();
-			System.out.println("Removed house from " + currentProperty.getName() + " total num houses built: " + group.get(0).getNumHouses());
+			System.out.println(currentProperty.getNumHouses());
+			player.addMoney(currentProperty.getSellHouseCost());
+			sellHouseDescriptionLabel.setText("<html>Removed house from <br>" + currentProperty.getName() + "<br>total number of houses built: " + currentProperty.getNumHouses() + "</br><html>");
+			buyHouseDescriptionLabel.setText("<html>Clicking this button will <br>add a house to the property<br>House cost: " + currentProperty.getHouseCost() + "</br><html>");
 		}
 		else{
-			sellHouseDescriptionLabel.setText("No houses to sell on this property");
+			sellHouseDescriptionLabel.setText("There are no houses on this property!");
 		}
 	}
 }
