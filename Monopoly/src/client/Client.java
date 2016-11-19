@@ -25,9 +25,10 @@ public class Client extends Thread{
 	private int thisPlayerID = -1;
 	private String thisPlayerName; //set to login user name or guest name when assigned 
 	//private ArrayList<String> teamNames; 
-	private static ArrayList<Player> playerList;
+	private ArrayList<Player> playerList;
 	private LoginWindow loginWindow;
 	private StartWindow startWindow;
+	private MainWindow mainWindow;
 	public Client() {
 		
 		try {
@@ -97,6 +98,7 @@ public class Client extends Thread{
 									System.out.println("Players' names are: " + p.getName());
 								}
 							}
+							mainWindow = new MainWindow(playerList);
 							//start main game gui
 						}
 					}else{//this player is the first player who logged in, button in startwindow should be set to start instead of ready
@@ -118,7 +120,7 @@ public class Client extends Thread{
 			System.out.println(message);
 			message = message.replace("Login success: ", "");
 			message = message.trim();
-			thisPlayerName = message;
+			thisPlayerName = message; //set this player's name 
 		}else if(message.contains("Login deny")){
 			System.out.println(message);
 		}else if(message.contains("Creating account success")){
@@ -135,25 +137,19 @@ public class Client extends Thread{
 			int id = Integer.parseInt(message);
 			thisPlayerID = id;
 		}
-		else if(message.contains("Guest Login: ")){
+		else if(message.contains("Guest Login: ") && startWindow != null){
 			message = message.replace("Guest Login: ", "");
 			message = message.trim();
 			String guestName = message;
 			//TODO
 			//do something after a Guest logs in 
-		}else if(message.contains("User Login: ")){
+		}else if(message.contains("User Login: ") && startWindow != null){
 			message = message.replace("User Login: ", "");
 			message = message.trim();
 			String username = message;
 			//TODO
 			//do something after a User logs in 
-		}else if(message.contains("Client Logout: ")){
-			message = message.replace("Client Logout: ", "");
-			message = message.trim();
-			String username = message;
-			//TODO
-			//do something if client logs out 
-		}else if(message.contains("::Picked Token::")){ //ClientName::Picked Token::TokenID
+		}else if(message.contains("::Picked Token::") && startWindow != null){ //ClientName::Picked Token::TokenID
 			String[] command = message.split("::");
 			String clientName = command[0];
 			int tokenID = Integer.parseInt(command[2]);
@@ -162,60 +158,61 @@ public class Client extends Thread{
 			//do something after the client picked a token
 			//let other players know
 			//ready to start unless quit
-		}else if(message.contains("Ready: ")){
+		}else if(message.contains("Ready: ") && startWindow != null){
 			if(thisPlayerID ==1){
 				//TODO
 				//if this client is host do sth
 			}else{
 				System.out.println(message);
 			}
-		}else if(message.contains("StartGame")){
+		}else if(message.contains("StartGame") && startWindow != null){
 			//obtain the correct teamnames and team id at this point 
 			//TODO 
 			//start the game 
 			
-		}else if(message.contains("EndTurn: ")){
+		}else if(message.contains("EndTurn: ") && mainWindow != null ){
 			message = message.replace("EndTurn: ", "");
 			message = message.trim();
 			int clientID = Integer.parseInt(message);
 			//TODO
 			//after client end his turn, proceed to another player
-		}else if(message.contains("::RolledForTurn::")){ //at the begining of the game decide turns
+		}else if(message.contains("::RolledForTurn::") && mainWindow != null){ //at the begining of the game decide turns
 			
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int diceRolled = Integer.parseInt(command[2]);
-		}else if(message.contains("::Rolled::")){ //ID::Rolled::number
+		}else if(message.contains("::Rolled::") && mainWindow != null){ //ID::Rolled::number
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int diceRolled = Integer.parseInt(command[2]);
 			//TODO
 			//do somthing when player rooled dice 
-		}else if(message.contains("::PurchasedProperty::")){
+		}else if(message.contains("::PurchasedProperty::") && mainWindow != null){
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]);
 			//TODO
-		}else if(message.contains("::PurchasedHouse::")){
+		}else if(message.contains("::PurchasedHouse::") && mainWindow != null){
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]); //house on the property
 			//TODO
-		}else if(message.contains("::MortgagedProperty::")){
+		}else if(message.contains("::MortgagedProperty::") && mainWindow != null){
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]);
 			//TODO
-		}else if(message.contains("::MortgagedHouse::")){
+		}else if(message.contains("::MortgagedHouse::") && mainWindow != null){
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]); //house on the property
 			//TODO
-		}else if(message.contains("::DrewCard::")){
+		}else if(message.contains("::DrewCard::") && mainWindow != null){
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int cardID = Integer.parseInt(command[2]); //house on the property
 			//TODO
+			
 		}else if(message.contains("")){
 			
 		}else if(message.contains("")){
@@ -228,8 +225,23 @@ public class Client extends Thread{
 			
 		}else if(message.contains("You are connected")){
 			System.out.println("You are connected");
+		}else if(message.contains("Client Logout: ")){
+			message = message.replace("Client Logout: ", "");
+			message = message.trim();
+			String username = message;
+			//TODO
+			if(startWindow != null){// a client in startwindow logs out 
+				
+			}else if(mainWindow != null){// a client in mainwindow logs out 
+				
+			}
+			//do something if client logs out 
 		}
 	}
+	
+	
+	
+	
 	public void setLoginWindow(LoginWindow loginWindow ){
 		this.loginWindow = loginWindow;
 	}
@@ -239,6 +251,5 @@ public class Client extends Thread{
 		Client client = new Client();
 		client.start();
 		new LoginWindow(client).setVisible(true);
-		new MainWindow(playerList).setVisible(true);
 	}
 }

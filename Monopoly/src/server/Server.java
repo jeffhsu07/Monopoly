@@ -110,8 +110,7 @@ public class Server extends Thread{
 			System.out.println("This username does not exist.");
 			jDBCDriver.stop();
 			return false;
-		}
-		else{
+		}else{
 			
 			//if the user gave the wrong password
 			if (!mPassword.equals(jDBCDriver.getPassword(mUsername))){
@@ -132,6 +131,13 @@ public class Server extends Thread{
 		jDBCDriver.connect();
 		String mUsername = username;
 		String mPassword = password;
+		//username cannot name themself guest
+		if(mUsername.contains("Guest")){
+			System.out.println("Cannot name a user Guest.");
+			jDBCDriver.stop();
+			return false;
+		}
+		
 		//check if username has been created
 		if(jDBCDriver.doesExist(mUsername)){
 			System.out.println("This username already exist.");
@@ -206,9 +212,11 @@ public class Server extends Thread{
 		stop = false;
 		run();
 	}
-	
+	public void stopServer(){
+		stop=true;
+	}
 	//end server thread 
-	public void endServer(){
+	public void closeServer(){
 		if (ss != null) {
 			try {
 				ss.close();
