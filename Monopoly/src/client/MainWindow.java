@@ -49,7 +49,10 @@ public class MainWindow extends JFrame {
 		createGUI();
 		addListeners();
 	}
-
+	
+	public Property[] getPropertiesArray(){
+		return properties;
+	}
 	private void initializeComponents() {
 		// Initialize our player tracking to default values.
 		currentPlayer = 0;
@@ -58,8 +61,8 @@ public class MainWindow extends JFrame {
 		Property temp1 = new Property("Test Property 1", 100, "Group9", tempCosts, 20, 100, 5);
 		Property temp2 = new Property("Test Property 2", 100, "Group9", tempCosts, 20, 80, 5);
 		temp2.setMortgaged(true);
-		players.get(currentPlayer).addProperty(temp1);
-		players.get(currentPlayer).addProperty(temp2);
+		players.get(currentPlayer).addProperty(properties[1]);
+		players.get(currentPlayer).addProperty(properties[3]);
 		// Initialize our various buttons.
 		rollButton = new JButton("Roll Dice");
 		manageBuildingsButton = new JButton("Manage Buildings");
@@ -257,14 +260,14 @@ public class MainWindow extends JFrame {
 		// Opens the Manage properties window when clicked
 		managePropertiesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManagePropertiesWindow(players.get(ownedPlayer)).setVisible(true);
+				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this).setVisible(true);
 			}
 		});
 		
 		// Opens the Manage buildings window when clicked
 		manageBuildingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManageBuildingsWindow(players.get(ownedPlayer)).setVisible(true);
+				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this).setVisible(true);
 			}
 		});
 	}

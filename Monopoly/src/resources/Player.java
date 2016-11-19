@@ -17,16 +17,13 @@ public class Player implements Serializable {
 	private int money;
 	private boolean inJail;
 	private Vector<Property> properties;
+	private Vector<String> completeSets;
 	private int jailCards;
 	private int currentLocation;
 	private int gameToken;
-<<<<<<< HEAD
+	private boolean bankrupt;
 	private int ID; //added player ID 
-	public Player(String name, int wins, int gamesPlayed, int ID) {
-=======
-    private boolean bankrupt;
-	public Player(String name, int wins, int losses) {
->>>>>>> origin/master
+	public Player(String name, int wins, int gamesPlayed, int ID){
 		this.name = name;
 		this.wins = wins;
 		this.gamesPlayed = gamesPlayed;
@@ -36,10 +33,9 @@ public class Player implements Serializable {
 		properties = new Vector<Property>();
 		jailCards = 0;
 		currentLocation = 0;
-<<<<<<< HEAD
-=======
+		completeSets = new Vector<String>();
         bankrupt = false;
->>>>>>> origin/master
+
 	}
 	
 	public String getName() {
@@ -93,8 +89,6 @@ public class Player implements Serializable {
 	public void setGameToken(int gameToken) {
 		this.gameToken = gameToken;
 	}
-<<<<<<< HEAD
-=======
 	
 	public void addProperty(Property property){
 		properties.add(property);
@@ -118,5 +112,5 @@ public class Player implements Serializable {
 		}
 		return false;
 	}
->>>>>>> origin/master
+
 }

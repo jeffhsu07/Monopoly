@@ -6,6 +6,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,7 +18,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import resources.Player;
+import resources.Property;
 import utilities.AppearanceSettings;
+import utilities.Constants;
 
 //Edited by Jesse
 public class ManageBuildingsWindow extends JFrame{
@@ -27,9 +32,14 @@ public class ManageBuildingsWindow extends JFrame{
 	private JLabel buyHouseDescriptionLabel;
 	private JLabel sellHouseDescriptionLabel;
 	private Player player;
-	public ManageBuildingsWindow(Player player){
+	private int numPropertiesInGroupOwned = 0;
+	private ArrayList<Integer> groupLocation;
+	private Property currentProperty;
+	private MainWindow mw;
+	public ManageBuildingsWindow(Player player, MainWindow mw){
 		super("Manage Properties Window");
 		this.player = player;
+		this.mw = mw;
 		initializeComponents();
 		createGUI();
 		addListeners();
@@ -43,6 +53,8 @@ public class ManageBuildingsWindow extends JFrame{
 		propertyDropDownComboBox = new JComboBox();
 		buyHouseDescriptionLabel = new JLabel("buying a house will..");
 		sellHouseDescriptionLabel = new JLabel("Selling a house will...");
+		currentProperty = player.getProperties().get(0);
+		groupLocation = new ArrayList<Integer>();
 	}
 	
 	private void createGUI(){
@@ -106,7 +118,22 @@ public class ManageBuildingsWindow extends JFrame{
 		
 		buyHouseButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				if(currentProperty.getCanBuild()){
+					currentProperty.addBuilding();
+					System.out.println("Built a house on " + currentProperty.getName() + " Number of Houses: " + currentProperty.getNumHouses());
+					mw.repaint();
+					mw.revalidate();
+				}
+				else if(hasAllPropertiesInGroup()){
+					setCanBuildHouseOnGroupProperty();
+					currentProperty.addBuilding();
+					System.out.println("Built a house on " + currentProperty.getName() + " Number of Houses: " + currentProperty.getNumHouses());
+					mw.repaint();
+					mw.revalidate();
+				}
+				else{
+					buyHouseDescriptionLabel.setText("Can't build a house on this property, you don't have a complete set");
+				}
 			}
 		});
 		
@@ -114,5 +141,84 @@ public class ManageBuildingsWindow extends JFrame{
 			public void actionPerformed(ActionEvent e){
 			}
 		});
+		final int temp = 0;
+		propertyDropDownComboBox.addItemListener(new ItemListener(){
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				for(int i = 0; i < player.getProperties().size(); i++){ //this for loop finds which property is selected and then updates the 												//description label to reflect the mortgage value
+					String propertyName = (String) propertyDropDownComboBox.getSelectedItem();
+					if(propertyName.equals(player.getProperties().get(i).getName())){ //if the property name in the combo box matches the name current property
+						currentProperty = player.getProperties().get(i); //updates the current property the combobox is on
+						break; //break the for loop cuz property was found
+					}
+				}
+				
+			}
+			
+		});
+	}
+	
+	public void findWhichSet(){ //finds which group the current property is in
+		Integer currPropertyPosition = currentProperty.getBoardPosition();
+		if(currPropertyPosition == 1 || currPropertyPosition == 3){
+			groupLocation = Constants.group1Locations;
+
+		}
+		else if(currPropertyPosition == 6 || currPropertyPosition == 8 || currPropertyPosition == 9){
+			groupLocation = Constants.group2Locations;
+
+		}
+		else if(currPropertyPosition == 11 || currPropertyPosition == 13 || currPropertyPosition == 14){
+			groupLocation = Constants.group3Locations;
+
+		}
+		else if(currPropertyPosition == 16 || currPropertyPosition == 18 || currPropertyPosition == 19){
+			groupLocation = Constants.group4Locations;
+
+		}
+		else if(currPropertyPosition == 21 || currPropertyPosition == 23 || currPropertyPosition == 24){
+			groupLocation = Constants.group5Locations;
+
+		}
+		else if(currPropertyPosition == 26 || currPropertyPosition == 27 || currPropertyPosition == 29){
+			groupLocation = Constants.group6Locations;
+
+		}
+		else if(currPropertyPosition == 31 || currPropertyPosition == 32 || currPropertyPosition == 34){
+			groupLocation = Constants.group7Locations;
+
+		}
+		else if(currPropertyPosition == 37 || currPropertyPosition == 39){
+			groupLocation = Constants.group8Locations;
+
+		}
+		numPropertiesInGroupOwned++;
+	}
+	
+	public boolean hasAllPropertiesInGroup(){ //checks if player has all properties in the current property group
+		findWhichSet();
+		for(int i = 0; i < groupLocation.size(); i++){
+			for(int j = 0; i < player.getProperties().size(); i++){
+				if(player.getProperties().get(j).getBoardPosition() == groupLocation.get(i)){
+					numPropertiesInGroupOwned++;
+				}
+			}
+		}
+
+		if(numPropertiesInGroupOwned != groupLocation.size()){
+			return false;
+		}
+		return true;
+	}
+	
+	public void setCanBuildHouseOnGroupProperty(){
+		for(int i = 0; i < groupLocation.size(); i++){
+			for(int j = 0; i < player.getProperties().size(); i++){
+				if(player.getProperties().get(j).getBoardPosition() == groupLocation.get(i)){
+					player.getProperties().get(j).setCanBuild();
+				}
+			}
+		}
 	}
 }

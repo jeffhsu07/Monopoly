@@ -1,10 +1,7 @@
 package resources;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.StringTokenizer;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -18,9 +15,10 @@ public class Property {
 	private int price;
 	private String group;
 	private int[] rentCosts;
+	private List<Property> propertiesInGroup;
 	boolean mortgaged;
 	int boardPosition; 
-	
+	private boolean canBuild;
 
 	public Property(String n, int p, String g, int[] costs, int hCost, int mValue, int bp)
 	{
@@ -36,8 +34,20 @@ public class Property {
 		hasHotel = false;
 		numHouses = 0;
 		boardPosition = bp;
+		propertiesInGroup = new ArrayList<Property>();
+		canBuild = false;
 	}
 	
+	public void setCanBuild(){
+		canBuild = true;
+	}
+	
+	public boolean getCanBuild(){
+		return canBuild;
+	}
+	public Integer getBoardPosition(){
+		return boardPosition;
+	}
 	public void addBuilding()
 	{
 		if(!group.equals("Utilities")&&!group.equals("Stations"))
