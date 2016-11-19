@@ -44,8 +44,9 @@ public class PropertiesSetUp
 					int bp = Integer.parseInt(st.nextToken());
 					properties[count] = new Property(name, price, group, rentPrices, houseCost, mValue, bp);
 					
-					System.out.println("Property name: " + name + ", Property Price: " + price + ", Property Color: " 
-							+ group);
+					// Printing out was only for debugging.
+					//System.out.println("Property name: " + name + ", Property Price: " + price + ", Property Color: " 
+					//		+ group);
 					count++;
 					line = br.readLine();
 				}

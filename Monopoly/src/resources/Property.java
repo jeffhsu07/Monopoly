@@ -67,13 +67,13 @@ public class Property {
 	{
 		if(!group.equals("Utilities")&&!group.equals("Stations"))
 		{
-			/*if(hasHotel = true)
+			if(hasHotel = true) {
 				hasHotel = false;
-			else{*/
-				System.out.println("number of houses: " + numHouses);
+				numHouses = 4;
+			}
+			else{
 				numHouses--;
-			//}
-				System.out.println("number of houses: " + numHouses);
+			}
 		}
 	}
 
@@ -160,7 +160,7 @@ public class Property {
 	}
 	
 	//returns true if successfully builds house
-	public boolean addHouse()
+	/*public boolean addHouse()
 	{
 		if(numHouses < 4)
 		{
@@ -168,7 +168,7 @@ public class Property {
 			return true;
 		}
 		return false;
-	}
+	}*/
 }
 /* returns array of all properties read in from fileName
 private Property[] readFile(String fileName)
