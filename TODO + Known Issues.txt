@@ -1,10 +1,4 @@
 To Do:
-	Add Menu Bar to the top of the main window (Jesse)
-	
-	Create a player statistics window for registered users (Jesse)
-
-	Create a game winner window
-
 	Finish game logic in main window (Nick + Brandon)
 		Roll Dice at beginning to determine turn order
 		Chance Cards
@@ -24,8 +18,6 @@ To Do:
 	Finish Player Information Window (Nick)
 		Give each group a header so monopolies can be seen.
 
-	Finish Manage Buildings Window (Jeff)
-
 	Pick fonts / Colors For Windows
 		Make the game look pretty
 
@@ -38,9 +30,3 @@ To Do:
 		Ensure all adapted code cites it's source
 
 	Add comment to top of every file with our names and group name.
-
-Known Issues:
-	Mortgage Properties Window doesn't repaint board when actions occur
-	Any action on one of the management windows will probably need to repaint the main window
-	Need clear indicator of who's turn it is.
-	

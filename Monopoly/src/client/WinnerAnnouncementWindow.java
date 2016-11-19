@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import resources.Player;
+import resources.Property;
 
 public class WinnerAnnouncementWindow extends JFrame {
 	public static final long serialVersionUID = 1;
@@ -36,8 +37,8 @@ public class WinnerAnnouncementWindow extends JFrame {
 		numPropertiesLabel = new JLabel("Number of Properties");
 		ownedLabel = new JLabel("Owned: " + player.getProperties().size());
 		buildingsBoughtLabel = new JLabel("Buildings Bought:");
-		housesLabel = new JLabel("Houses: 14");
-		hotelsLabel = new JLabel("Hotels: 2");
+		housesLabel = new JLabel("Houses: " + calculateHouses());
+		hotelsLabel = new JLabel("Hotels: " + calculateHotels());
 		totalAmountLabel = new JLabel("Total Amount of Money");
 		moneyLabel = new JLabel("$" + player.getMoney());
 		recordLabel = new JLabel(player.getName() + " now has " +
@@ -124,5 +125,29 @@ public class WinnerAnnouncementWindow extends JFrame {
 				dispose();
 			}
 		});
+	}
+	
+	private int calculateHouses() {
+		// Count total number of houses
+		int total = 0;
+		
+		// Loop through each property and get the house values.
+		for (Property p : player.getProperties()) {
+			total += p.getNumHouses();
+		}
+		
+		return total;
+	}
+	
+	private int calculateHotels() {
+		// Count total number of hotels
+		int total = 0;
+		
+		// Loop through the properties and check for hotels.
+		for (Property p : player.getProperties()) {
+			if (p.getHotel()) total++;
+		}
+		
+		return total;
 	}
 }
