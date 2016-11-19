@@ -37,10 +37,12 @@ public class ManageBuildingsWindow extends JFrame{
 	private ArrayList<Integer> groupLocation;
 	private Property currentProperty;
 	private MainWindow mw;
-	public ManageBuildingsWindow(Player player, MainWindow mw){
+	private Client client;
+	public ManageBuildingsWindow(Player player, MainWindow mw, Client client){
 		super("Manage Properties Window");
 		this.player = player;
 		this.mw = mw;
+		this.client = client;
 		initializeComponents();
 		createGUI();
 		addListeners();
