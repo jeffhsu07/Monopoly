@@ -44,7 +44,6 @@ public class MainWindow extends JFrame {
 	private Property[] properties;
 	
 	// Menu options
-	JMenuItem menuExit;
 	JMenuItem menuPlayerStats;
 	
 	public MainWindow(ArrayList<Player> players) {
@@ -83,7 +82,6 @@ public class MainWindow extends JFrame {
 		gameBoard = new GameBoard(players, properties);
 		
 		// Initialize menu items.
-		menuExit = new JMenuItem("Exit Game");
 		menuPlayerStats = new JMenuItem("View Player Statistics");
 	}
 
@@ -96,7 +94,6 @@ public class MainWindow extends JFrame {
 		JMenu menu = new JMenu("Menu");
 		menuBar.add(menu);
 		menu.add(menuPlayerStats);
-		menu.add(menuExit);
 		setJMenuBar(menuBar);
 		
 		// Use a border layout
@@ -145,6 +142,12 @@ public class MainWindow extends JFrame {
 
 	private void addListeners() {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		menuPlayerStats.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new PlayerStatisticsWindow(players.get(ownedPlayer)).setVisible(true);;
+			}
+		});
 		
 		// Have the roll button move the current player.
 		rollButton.addActionListener(new ActionListener() {
