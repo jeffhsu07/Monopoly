@@ -18,7 +18,7 @@ public class PlayerStatisticsWindow extends JFrame {
 	private JButton closeButton;
 	
 	public PlayerStatisticsWindow(Player p) {
-		super("Player Information");
+		super("Player Statistics");
 		player = p;
 		initializeComponents();
 		createGUI();
