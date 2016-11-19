@@ -25,7 +25,7 @@ public class Client extends Thread{
 	private int thisPlayerID = -1;
 	private String thisPlayerName; //set to login user name or guest name when assigned 
 	//private ArrayList<String> teamNames; 
-	private ArrayList<Player> playerList;
+	private static ArrayList<Player> playerList;
 	private LoginWindow loginWindow;
 	private StartWindow startWindow;
 	public Client() {
@@ -239,5 +239,6 @@ public class Client extends Thread{
 		Client client = new Client();
 		client.start();
 		new LoginWindow(client).setVisible(true);
+		new MainWindow(playerList).setVisible(true);
 	}
 }

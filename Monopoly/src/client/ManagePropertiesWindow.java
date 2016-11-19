@@ -171,11 +171,14 @@ public class ManagePropertiesWindow extends JFrame{
 	}
 	
 	private void mortgageProperty(){
-		if(!isMortgaged){
+		if(!isMortgaged && !groupHasHouses()){
 			player.addMoney(mortgageValue);
 			currentProperty.setMortgaged(true);
 			isMortgaged = currentProperty.isMortgaged();
 			updateMortgageStateLabel();
+		}
+		else if(groupHasHouses()){
+			mortgageStateLabel.setText("Can't mortgage property if properties in the same group has buildings on them");
 		}
 		else{
 			if(player.subtractMoney(mortgageValue)){
@@ -189,5 +192,56 @@ public class ManagePropertiesWindow extends JFrame{
 		}
 		
 		//updateMortgageStateLabel();
+	}
+	
+	public void findWhichSet(){ //finds which group the current property is in
+		Integer currPropertyPosition = currentProperty.getBoardPosition();
+		if(currPropertyPosition == 1 || currPropertyPosition == 3){
+			groupLocation = Constants.group1Locations;
+
+		}
+		else if(currPropertyPosition == 6 || currPropertyPosition == 8 || currPropertyPosition == 9){
+			groupLocation = Constants.group2Locations;
+
+		}
+		else if(currPropertyPosition == 11 || currPropertyPosition == 13 || currPropertyPosition == 14){
+			groupLocation = Constants.group3Locations;
+
+		}
+		else if(currPropertyPosition == 16 || currPropertyPosition == 18 || currPropertyPosition == 19){
+			groupLocation = Constants.group4Locations;
+
+		}
+		else if(currPropertyPosition == 21 || currPropertyPosition == 23 || currPropertyPosition == 24){
+			groupLocation = Constants.group5Locations;
+
+		}
+		else if(currPropertyPosition == 26 || currPropertyPosition == 27 || currPropertyPosition == 29){
+			groupLocation = Constants.group6Locations;
+
+		}
+		else if(currPropertyPosition == 31 || currPropertyPosition == 32 || currPropertyPosition == 34){
+			groupLocation = Constants.group7Locations;
+
+		}
+		else if(currPropertyPosition == 37 || currPropertyPosition == 39){
+			groupLocation = Constants.group8Locations;
+
+		}
+		numPropertiesInGroupOwned++;
+	}
+	
+	public boolean groupHasHouses(){
+		for(int i = 0; i < player.getProperties().size(); i++){
+			for(int j = 0; j < groupLocation.size(); j++){
+				if(player.getProperties().get(i).getBoardPosition() == groupLocation.get(j)){
+					if(player.getProperties().get(i).getNumHouses() > 0){
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
 	}
 }

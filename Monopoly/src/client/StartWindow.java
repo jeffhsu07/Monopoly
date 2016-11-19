@@ -40,7 +40,7 @@ public class StartWindow extends JFrame {
 	private Client client;
 	private ArrayList<Image> tokenImages;
 
-	public StartWindow(String playerName/*, Vector<String> otherPlayerInfo*/, Client client) {
+	public StartWindow(String playerName, ArrayList<String> otherPlayerInfo, Client client) {
 		this.playerName = playerName;
 		this.client = client;
 		playerToken = -1;

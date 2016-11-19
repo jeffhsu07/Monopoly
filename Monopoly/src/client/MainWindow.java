@@ -63,10 +63,6 @@ public class MainWindow extends JFrame {
 		// Initialize our player tracking to default values.
 		currentPlayer = 0;
 		ownedPlayer = 0;
-		int[] tempCosts = {100,200};
-		Property temp1 = new Property("Test Property 1", 100, "Group9", tempCosts, 20, 100, 5);
-		Property temp2 = new Property("Test Property 2", 100, "Group9", tempCosts, 20, 80, 5);
-		temp2.setMortgaged(true);
 		players.get(currentPlayer).addProperty(properties[1]);
 		players.get(currentPlayer).addProperty(properties[3]);
 		// Initialize our various buttons.
@@ -145,7 +141,7 @@ public class MainWindow extends JFrame {
 		
 		menuPlayerStats.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new PlayerStatisticsWindow(players.get(ownedPlayer)).setVisible(true);;
+				//new PlayerStatisticsWindow(players.get(ownedPlayer)).setVisible(true);;
 			}
 		});
 		
