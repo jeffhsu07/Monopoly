@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import resources.Player;
+import resources.Property;
 import utilities.AppearanceSettings;
 
 // Edited by Jesse
@@ -28,8 +29,10 @@ public class ManagePropertiesWindow extends JFrame{
 	private JComboBox propertyDropDownComboBox;
 	private  Player player;
 	private int mortgageValue;
+	private Property currentProperty; 
 	//private JLabel mortgageValueLabel;
 	private JLabel descriptionLabel;
+	private boolean isMortgaged;
 	public ManagePropertiesWindow(Player player){
 		super("Manage Properties Window");
 		this.player = player;
@@ -40,11 +43,21 @@ public class ManagePropertiesWindow extends JFrame{
 	
 	private void initializeComponents(){
 		selectPropertyLabel = new JLabel("Select a property: ");
-		mortgageStateLabel = new JLabel("this property is mortgaged");
-		mortgageButton = new JButton("Mortgage Property");
+		mortgageStateLabel = new JLabel();
+		mortgageButton = new JButton();
 		closeWindowButton = new JButton("Close Window");
 		propertyDropDownComboBox = new JComboBox();
-		int mortgageValue =  player.getProperties().get(0).getMortgageValue();
+		mortgageValue =  player.getProperties().get(0).getMortgageValue();
+		currentProperty = player.getProperties().get(0);
+		isMortgaged = currentProperty.isMortgaged();
+		if(isMortgaged){
+			mortgageButton.setText("Reclaim Property");
+			mortgageStateLabel.setText("this property has been mortgaged");
+		}
+		else{
+			mortgageButton.setText("Mortgage Property");
+			mortgageStateLabel.setText("This property has not been mortgaged yet");
+		}
 		descriptionLabel = new JLabel("<html>Mortgage Value: " + mortgageValue + "<br>You won't be able to utilize this property if mortgage it</html>");
 		
 	}
@@ -103,24 +116,30 @@ public class ManagePropertiesWindow extends JFrame{
 				//System.exit(0);		
 			}		
 		});
+		mortgageButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				mortgageProperty();
+			}
+		});
 		
 		propertyDropDownComboBox.addItemListener(new ItemListener(){
 
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				for(int i = 0; i < player.getProperties().size(); i++){
+				for(int i = 0; i < player.getProperties().size(); i++){ //this for loop finds which property is selected and then updates the 
+																		//description label to reflect the mortgage value
 					String propertyName = (String) propertyDropDownComboBox.getSelectedItem();
-					if(propertyName.equals(player.getProperties().get(i).getName())){
-						updateDescriptionLabel(player.getProperties().get(i).getMortgageValue());
+					if(propertyName.equals(player.getProperties().get(i).getName())){ //if the property name in the combo box matches the name current property
+						updateDescriptionLabel(player.getProperties().get(i).getMortgageValue()); //update the mortgage value displayed
+						currentProperty = player.getProperties().get(i); //updates the current property the combobox is on
+						isMortgaged = player.getProperties().get(i).isMortgaged();
 						if(player.getProperties().get(i).isMortgaged()){
-							updateMortgageStateLabel(true);
-							mortgageButton.setEnabled(false);
+							updateMortgageStateLabel();
 						}
 						else{
-							updateMortgageStateLabel(false);
-							mortgageButton.setEnabled(true);
+							updateMortgageStateLabel();
 						}
-						break;
+						break; //break the for loop cuz property was found
 					}
 				}
 				
@@ -130,14 +149,38 @@ public class ManagePropertiesWindow extends JFrame{
 	}
 	
 	private void updateDescriptionLabel(int value){ //updates the description label to match the mortgage value of the property 
-		descriptionLabel.setText("<html>Mortgage Value: " + value + "<br>You won't be able to do shit with this property if mortgage it dumbass</html>");
+		mortgageValue = value;
+		descriptionLabel.setText("<html>Mortgage Value: " + mortgageValue + "<br>You won't be able to do shit with this property if mortgage it dumbass</html>");
 	}
 	
-	private void updateMortgageStateLabel(boolean isMortgaged){ //updates the mortgage state label.
+	private void updateMortgageStateLabel(){ //updates the mortgage state label.
 		if(isMortgaged){ //if the property has been mortgaged then set mortgageLabel to this shit
 			mortgageStateLabel.setText("This property has already been mortgaged");
+			mortgageButton.setText("Reclaim Property"); //disables mortgage button so that can't be clicked if mortgaged
 		}else{// if its not mortgaged then set text to this shit
 			mortgageStateLabel.setText("This property has not been mortgaged");
+			mortgageButton.setText("Mortgage Property");
 		}
+	}
+	
+	private void mortgageProperty(){
+		if(!isMortgaged){
+			player.addMoney(mortgageValue);
+			currentProperty.setMortgaged(true);
+			isMortgaged = currentProperty.isMortgaged();
+			updateMortgageStateLabel();
+		}
+		else{
+			if(player.subtractMoney(mortgageValue)){
+				currentProperty.setMortgaged(false);
+				isMortgaged = currentProperty.isMortgaged();
+				updateMortgageStateLabel();
+			}
+			else{
+				mortgageStateLabel.setText("Can't reclaim this property because you don't have enough money");
+			}
+		}
+		
+		//updateMortgageStateLabel();
 	}
 }

@@ -4,6 +4,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +17,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import resources.Player;
+import resources.Property;
 import utilities.Constants;
 
 //Made by Jesse
@@ -34,10 +40,13 @@ public class GameBoard extends JPanel {
 	Image waterworksImage;
 	Image electricCompanyImage;
 	Image freeParkingImage;
+	Image boardImage;
+	Property[] properties;
 	
-	public GameBoard(ArrayList<Player> players) {
+	public GameBoard(ArrayList<Player> players, Property[] properties) {
 		this.players = players;
 		this.playerImages = new ArrayList<Image>();
+		this.properties = properties;
 		
 		// Initialize our Images
 		try {
@@ -59,12 +68,20 @@ public class GameBoard extends JPanel {
 			waterworksImage = ImageIO.read(new File("images/board/waterworks.png"));
 			electricCompanyImage = ImageIO.read(new File("images/board/electricCompany.jpg"));
 			freeParkingImage = ImageIO.read(new File("images/board/freeParking.png"));
+			boardImage = ImageIO.read(new File("images/board/monopolyLogo.png"));
 		} catch (IOException ioe) {
 			System.out.println("Error Loading Player Image: " + ioe.getMessage());
 		}
 		
 		// Default to a square
 		this.setPreferredSize(new Dimension(715,715));
+		
+		// Have the board repaint if the mouse moves
+		// This way we can make sure our mouseover text is up to date
+		this.addMouseMotionListener(new MouseMotionListener() {
+			public void mouseDragged(MouseEvent arg0) {repaint();}
+			public void mouseMoved(MouseEvent arg0) {repaint();}
+		});
 	}
 
 	protected void paintComponent(Graphics g) {
@@ -84,6 +101,7 @@ public class GameBoard extends JPanel {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		g.setColor(Color.BLACK);
+		g.drawImage(boardImage, (getWidth()-boardImage.getWidth(null))/2, (getHeight()-boardImage.getHeight(null))/2, null);
 		
 		// Draw the board images
 		drawImageAtLocation(g,goImage,0);
@@ -189,16 +207,54 @@ public class GameBoard extends JPanel {
 			}
 		}
 		
+		// Draw a mouseover text for each property
+		for (int i = 0; i < 40; i++) {
+			if (isMouseWithinLocation(i)) {
+				g.drawString("Mouse Over Property: " + properties[i].getName(), 100, 100);
+			}
+		}
 	}
 	
 	// Method to paint all the players to the game board.
 	private void paintPlayers(Graphics g) {
+		// keep track of squares with multiple players on them.
+		int[] numPlayers = new int[40];
+		for (Player p : players) {
+			numPlayers[p.getCurrentLocation()]++;
+		}
+		
+		// Number of players we've already placed on that square
+		int[] currPlayers = new int[40];
+		
 		for (int i = 0; i < players.size(); i++) {
 			Player p = players.get(i);
-			int x = getXFromLocation(p.getCurrentLocation()) + getWidth()/44;
-			int y = getYFromLocation(p.getCurrentLocation()) + getHeight()/44;
+			int loc = p.getCurrentLocation();
+			
+			
+			int xOffset = 0;
+			int yOffset = 0;
+			if (numPlayers[loc] == 1) {
+				xOffset = getWidth()/55;
+				yOffset = getHeight()/55;
+			} else if (numPlayers[loc] < 5) {
+				xOffset = (1+currPlayers[loc]%2)*getWidth()/33;
+				yOffset = (1+currPlayers[loc]/2)*getWidth()/33;
+			} else {
+				xOffset = (currPlayers[loc]%3)*getWidth()/33;
+				yOffset = (currPlayers[loc]/3)*getWidth()/33;
+			}
+			
+			int x = getXFromLocation(p.getCurrentLocation()) + xOffset;
+			int y = getYFromLocation(p.getCurrentLocation()) + yOffset;
 			Image img = playerImages.get(i);
-			g.drawImage(img, x, y, getWidth()/22, getHeight()/22, null);
+			if (numPlayers[loc] == 1) {
+				g.drawImage(img, x, y, getWidth()*3/55, getHeight()*3/55, null);
+			} else {
+				g.drawImage(img, x, y, getWidth()/33, getHeight()/33, null);
+			}
+			
+			// increment number of players on the square so they can be positioned correctly.
+			currPlayers[loc]++;
 		}
 	}
 	
@@ -245,5 +301,16 @@ public class GameBoard extends JPanel {
 		int x = getXFromLocation(location);
 		int y = getYFromLocation(location);
 		g.drawImage(i, x, y, getWidth()/11, getHeight()/11, null);
+	}
+	
+	// Returns whether or not the mouse is over a property location
+	private boolean isMouseWithinLocation(int l)
+	{
+	    Point mousePos = MouseInfo.getPointerInfo().getLocation();
+	    Rectangle bounds = new Rectangle((int)this.getLocationOnScreen().getX()+getXFromLocation(l),
+	    			(int)this.getLocationOnScreen().getY()+getYFromLocation(l),
+	    			getWidth()/11,
+	    			getHeight()/11);
+	    return bounds.contains(mousePos);
 	}
 }

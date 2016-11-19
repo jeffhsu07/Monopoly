@@ -10,6 +10,7 @@ import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import resources.Player;
@@ -41,13 +42,12 @@ public class MainWindow extends JFrame {
 	
 	public MainWindow(ArrayList<Player> players) {
 		super("Monopoly");
+		PropertiesSetUp p = new PropertiesSetUp();
+		properties = p.getProperties();
 		this.players = players;
 		initializeComponents();
 		createGUI();
 		addListeners();
-		PropertiesSetUp p = new PropertiesSetUp();
-		properties = p.getProperties();
-
 	}
 
 	private void initializeComponents() {
@@ -55,8 +55,8 @@ public class MainWindow extends JFrame {
 		currentPlayer = 0;
 		ownedPlayer = 0;
 		int[] tempCosts = {100,200};
-		Property temp1 = new Property("China", 100, "Chinks", tempCosts, 20, 100, 5);
-		Property temp2 = new Property("penis", 100, "Chinks", tempCosts, 20, 80, 5);
+		Property temp1 = new Property("Test Property 1", 100, "Group9", tempCosts, 20, 100, 5);
+		Property temp2 = new Property("Test Property 2", 100, "Group9", tempCosts, 20, 80, 5);
 		temp2.setMortgaged(true);
 		players.get(currentPlayer).addProperty(temp1);
 		players.get(currentPlayer).addProperty(temp2);
@@ -70,7 +70,7 @@ public class MainWindow extends JFrame {
 		// Initialize our custom Panels
 		progressArea = new ProgressArea();
 		playerInformationGrid = new PlayerInformationGrid(players);
-		gameBoard = new GameBoard(players);
+		gameBoard = new GameBoard(players, properties);
 	}
 
 	private void createGUI() {
@@ -124,7 +124,7 @@ public class MainWindow extends JFrame {
 	private void addListeners() {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		// Have the roll button move the curren player.
+		// Have the roll button move the current player.
 		rollButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Get a random dice roll
@@ -134,12 +134,21 @@ public class MainWindow extends JFrame {
 				
 				// Move the player
 				Player p = players.get(currentPlayer);
+				progressArea.addProgress(p.getName() + " rolled a " + roll1 +
+						" and a " + roll2 + ".\n");
 				int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
 				if(p.getCurrentLocation()+roll1+roll2 >= 40)
 				{
-					p.increaseMoney(Constants.goMoney);
+					p.addMoney(Constants.goMoney);
+					progressArea.addProgress("    passed Go and collected $"+Constants.goMoney+".\n");
 				}
 				p.setCurrentLocation(newLocation);
+				
+				progressArea.addProgress("    landed on "+properties[newLocation].getName()+".\n");
+				
+				// Repaint the game board and update the progress area
+				gameBoard.repaint();
+				playerInformationGrid.repaint();
 				
 				//put game logic here, I would recommend testing to see if properties[newLocation].getPrice() != 0 to determine if its an actual
 				//property you can buy, then a super long if else statement for example you could use
@@ -148,12 +157,28 @@ public class MainWindow extends JFrame {
 				
 				if (properties[newLocation].getPrice() != 0) {
 					if (properties[newLocation].getOwner() == null) {
-						//TODO Ask if want to buy for properties[newLocation].getPrice()
+						if (p.getMoney() >= properties[newLocation].getPrice()) {
+							int n = JOptionPane.showConfirmDialog(
+								    getContentPane(),
+								    "Would you like to buy "+properties[newLocation].getName()+
+								    " for $"+properties[newLocation].getPrice()+"?",
+								    "Buy Property?",
+								    JOptionPane.YES_NO_OPTION);
+							if (n == 0) {
+								p.addMoney(-properties[newLocation].getPrice());
+								p.addProperty(properties[newLocation]);
+								properties[newLocation].setOwner(p);
+								progressArea.addProgress("    bought "+properties[newLocation].getName()
+										+" for $"+properties[newLocation].getPrice()+".\n");
+							}
+						}
 					} else {
 						if (properties[newLocation].isMortgaged()) {
 							//Nothing
 						} else {
-							//TODO Deduct properties[newLocation].getRent()
+							p.addMoney(-properties[newLocation].getRent());
+							properties[newLocation].getOwner().addMoney(properties[newLocation].getRent());
+							progressArea.addProgress("    paid $"+properties[newLocation].getRent()+" in rent.\n");
 						}
 					}
 				} else {
@@ -164,7 +189,33 @@ public class MainWindow extends JFrame {
 					} else if (properties[newLocation].getName().equals("Community Chest")) {
 						//TODO show card
 					} else if (properties[newLocation].getName().equals("Income Tax")) {
-						//TODO Pay 10% or $200
+						Object[] options = {"Pay $"+Constants.incomeTax,
+	                    "Pay 10% of Total Worth"};
+						int n = JOptionPane.showOptionDialog(getContentPane(),
+								"Would you like to estimate your tax at $"+Constants.incomeTax+" or pay 10% of your total worth (including cash, properties, and buildings)?",
+								"Income Tax",
+								JOptionPane.DEFAULT_OPTION,
+								JOptionPane.QUESTION_MESSAGE,
+								null,     //do not use a custom Icon
+								options,  //the titles of buttons
+								options[0]);
+						if (n == 0) {
+							p.addMoney(-Constants.incomeTax);
+							progressArea.addProgress("    paid $"+Constants.incomeTax+" in tax.\n");
+						} else {
+							int totalWorth = p.getMoney();
+							for (Property property : p.getProperties()) {
+								totalWorth += property.getPrice();
+								if (property.getHotel()) {
+									//totalWorth += hotel cost
+								} else {
+									//totalWorth += houses cost
+								}
+							}
+							int tax = totalWorth/10;
+							p.addMoney(-tax);
+							progressArea.addProgress("    paid $"+tax+" in tax.\n");
+						}
 					} else if (properties[newLocation].getName().equals("Go")) {
 						//Nothing. Go money handled above.
 					} else if (properties[newLocation].getName().equals("Just Visiting")) {
@@ -172,18 +223,26 @@ public class MainWindow extends JFrame {
 					} else if (properties[newLocation].getName().equals("Free Parking")) {
 						//Nothing
 					} else if (properties[newLocation].getName().equals("Luxury Tax")) {
-						p.increaseMoney(-Constants.luxuryTax);
+						p.addMoney(-Constants.luxuryTax);
+						progressArea.addProgress("    paid $"+Constants.luxuryTax+" in tax.\n");
 					}
 				}
 				
-				//TODO check if player is bankrupt
-				//TODO handle throwing doubles
+				//Determine if player went bankrupt
+				if (p.isBankrupt()) {
+					progressArea.addProgress("    is bankrupt.\n");
+					//TODO
+				}
+				
+				//Find next player. If doubles was rolled and player is not in jail, player goes again.
+				currentPlayer = (roll1 == roll2 && !p.isInJail()) ? 
+						currentPlayer : (currentPlayer+1) % players.size();
 				
 				// Repaint the game board and update the progress area
 				gameBoard.repaint();
-				progressArea.addProgress(p.getName() + " rolled a " + roll1 +
-						" and a " + roll2 + ".\n");
+				playerInformationGrid.repaint();
 				
+				progressArea.addProgress("\n");
 			}
 		});
 		

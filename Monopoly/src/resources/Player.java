@@ -20,8 +20,13 @@ public class Player implements Serializable {
 	private int jailCards;
 	private int currentLocation;
 	private int gameToken;
+<<<<<<< HEAD
 	private int ID; //added player ID 
 	public Player(String name, int wins, int gamesPlayed, int ID) {
+=======
+    private boolean bankrupt;
+	public Player(String name, int wins, int losses) {
+>>>>>>> origin/master
 		this.name = name;
 		this.wins = wins;
 		this.gamesPlayed = gamesPlayed;
@@ -31,6 +36,10 @@ public class Player implements Serializable {
 		properties = new Vector<Property>();
 		jailCards = 0;
 		currentLocation = 0;
+<<<<<<< HEAD
+=======
+        bankrupt = false;
+>>>>>>> origin/master
 	}
 	
 	public String getName() {
@@ -84,4 +93,30 @@ public class Player implements Serializable {
 	public void setGameToken(int gameToken) {
 		this.gameToken = gameToken;
 	}
+<<<<<<< HEAD
+=======
+	
+	public void addProperty(Property property){
+		properties.add(property);
+	}
+    
+    public boolean isBankrupt(){
+        return bankrupt;
+    }
+	
+	public void addMoney(int amount){
+		money += amount;
+		if(money <= 0){
+			bankrupt = true;
+		}
+	}
+	
+	public boolean subtractMoney(int amount){
+		if(amount <= money){
+			money -= amount;
+			return true;
+		}
+		return false;
+	}
+>>>>>>> origin/master
 }
