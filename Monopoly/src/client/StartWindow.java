@@ -40,7 +40,7 @@ public class StartWindow extends JFrame {
 	private Client client;
 	private ArrayList<Image> tokenImages;
 
-	public StartWindow(String playerName, Vector<String> otherPlayerInfo, Client client) {
+	public StartWindow(String playerName, ArrayList<String> otherPlayerInfo, Client client) {
 		this.playerName = playerName;
 		this.client = client;
 		playerToken = -1;
@@ -157,12 +157,78 @@ public class StartWindow extends JFrame {
 	}
 	
 	private void addActionListeners() {
-		for (int i = 0; i < 8; i++) {
+		/*for (int i = 0; i < 8; i++) {
 			setUpTokenWindow(i);
-		}
+		}*/
+		tokenButtons.get(0).addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				playerToken = 0;
+				refreshPlayers();
+				System.out.println(playerName + " " + playerToken);
+				client.sendMessage(playerName + "::Picked Token::" + playerToken);
+			}
+		});
+		tokenButtons.get(1).addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				playerToken = 1;
+				refreshPlayers();
+				System.out.println(playerName + " " + playerToken);
+				client.sendMessage(playerName + "::Picked Token::" + playerToken);
+			}
+		});
+		tokenButtons.get(2).addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				playerToken = 2;
+				refreshPlayers();
+				client.sendMessage(playerName + "::Picked Token::" + playerToken);
+			}
+		});
+		tokenButtons.get(3).addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				playerToken = 3;
+				refreshPlayers();
+				client.sendMessage(playerName + "::Picked Token::" + playerToken);
+			}
+		});
+		tokenButtons.get(4).addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				playerToken = 4;
+				refreshPlayers();
+				client.sendMessage(playerName + "::Picked Token::" + playerToken);
+			}
+		});
+		tokenButtons.get(5).addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				playerToken = 5;
+				refreshPlayers();
+				client.sendMessage(playerName + "::Picked Token::" + playerToken);
+			}
+		});
+		tokenButtons.get(6).addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				playerToken = 6;
+				refreshPlayers();
+				client.sendMessage(playerName + "::Picked Token::" + playerToken);
+			}
+		});
+		tokenButtons.get(7).addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				playerToken = 7;
+				refreshPlayers();
+				client.sendMessage(playerName + "::Picked Token::" + playerToken);
+			}
+		});
 	}
 	
-	private void setUpTokenWindow(int i) {
+	/*private void setUpTokenWindow(int i) {
 		tokenButtons.get(i).addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -171,7 +237,7 @@ public class StartWindow extends JFrame {
 				client.sendMessage(playerName + "::Picked Token::" + playerToken);
 			}
 		});
-	}
+	}*/
 	
 	private class PlayerInfoLayout extends JPanel {
 		private static final long serialVersionUID = -6341876191272116746L;
