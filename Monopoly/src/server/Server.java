@@ -268,7 +268,7 @@ public class Server extends Thread{
 			teamNames.add(newGuestName);
 		}
 		numberOfGuests++;
-		st.setClientName(newGuestName);
+		st.setGuestName(newGuestName);
 	}
 	
 	public boolean cannotAddPlayer(){

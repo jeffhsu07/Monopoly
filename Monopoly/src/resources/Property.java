@@ -4,11 +4,17 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.StringTokenizer;
 
 
 
-public class Property {
+public class Property implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5816869775022296730L;
 	private String name;
 	private int numHouses;
 	private int houseCost;
