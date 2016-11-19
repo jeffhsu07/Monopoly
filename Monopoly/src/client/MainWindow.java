@@ -44,7 +44,6 @@ public class MainWindow extends JFrame {
 	private Property[] properties;
 	
 	// Menu options
-	JMenuItem menuExit;
 	JMenuItem menuPlayerStats;
 	
 	public MainWindow(ArrayList<Player> players) {
@@ -83,7 +82,6 @@ public class MainWindow extends JFrame {
 		gameBoard = new GameBoard(players, properties);
 		
 		// Initialize menu items.
-		menuExit = new JMenuItem("Exit Game");
 		menuPlayerStats = new JMenuItem("View Player Statistics");
 	}
 
@@ -96,7 +94,6 @@ public class MainWindow extends JFrame {
 		JMenu menu = new JMenu("Menu");
 		menuBar.add(menu);
 		menu.add(menuPlayerStats);
-		menu.add(menuExit);
 		setJMenuBar(menuBar);
 		
 		// Use a border layout
@@ -146,6 +143,12 @@ public class MainWindow extends JFrame {
 	private void addListeners() {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
+		menuPlayerStats.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new PlayerStatisticsWindow(players.get(ownedPlayer)).setVisible(true);;
+			}
+		});
+		
 		// Have the roll button move the current player.
 		rollButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -158,6 +161,18 @@ public class MainWindow extends JFrame {
 				Player p = players.get(currentPlayer);
 				progressArea.addProgress(p.getName() + " rolled a " + roll1 +
 						" and a " + roll2 + ".\n");
+				if (roll1 == roll2) {
+					p.setDoubles(p.getDoubles()+1);
+					if (p.getDoubles() == 3) {
+						p.setDoubles(0);
+						p.setCurrentLocation(Constants.jailLocation);
+						p.setInJail(true);
+						progressArea.addProgress("    was sent to jail for rolling doubles too many times.\n\n");
+						gameBoard.repaint();
+						playerInformationGrid.repaint();
+						return;
+					}
+				}
 				int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
 				if(p.getCurrentLocation()+roll1+roll2 >= 40)
 				{
@@ -198,16 +213,40 @@ public class MainWindow extends JFrame {
 						if (properties[newLocation].isMortgaged()) {
 							//Nothing
 						} else {
-							p.addMoney(-properties[newLocation].getRent());
-							properties[newLocation].getOwner().addMoney(properties[newLocation].getRent());
-							progressArea.addProgress("    paid $"+properties[newLocation].getRent()+" in rent.\n");
+							int rent = 0;
+							if (properties[newLocation].getGroup().equals("Stations")) {
+								rent = properties[newLocation].getRent();
+								for (Property property : properties[newLocation].getOwner().getProperties()) {
+									if (property.getGroup().equals("Stations")) {
+										rent *= 2;
+									}
+								}
+							} else if (properties[newLocation].getGroup().equals("Utilities")) {
+								int count = 0;
+								for (Property property : properties[newLocation].getOwner().getProperties()) {
+									if (property.getGroup().equals("Utilities")) {
+										count++;
+									}
+								}
+								if (count == 1) {
+									rent = 4 * (roll1+roll2);
+								} else {
+									rent = 10 * (roll1+roll2);
+								}
+							} else {
+								rent = properties[newLocation].getRent();
+							}
+							p.addMoney(-rent);
+							properties[newLocation].getOwner().addMoney(rent);
+							progressArea.addProgress("    paid $"+rent+" in rent.\n");
 						}
 					}
 				} else {
 					if (properties[newLocation].getName().equals("Chance")) {
 						//TODO show card
 					} else if (properties[newLocation].getName().equals("Go To Jail")) {
-						//TODO move to jail. set player inJail
+						p.setCurrentLocation(Constants.jailLocation);
+						p.setInJail(true);
 					} else if (properties[newLocation].getName().equals("Community Chest")) {
 						//TODO show card
 					} else if (properties[newLocation].getName().equals("Income Tax")) {
@@ -229,9 +268,9 @@ public class MainWindow extends JFrame {
 							for (Property property : p.getProperties()) {
 								totalWorth += property.getPrice();
 								if (property.getHotel()) {
-									//totalWorth += hotel cost
+									totalWorth += 5 * property.getHouseCost();
 								} else {
-									//totalWorth += houses cost
+									totalWorth += property.getNumHouses() * property.getHouseCost();
 								}
 							}
 							int tax = totalWorth/10;

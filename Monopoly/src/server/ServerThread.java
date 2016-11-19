@@ -20,6 +20,7 @@ public class ServerThread extends Thread  {
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	private int ID = -1; //after player login as user or guest, he is given an id from 1 to 8
+	private int tokenPicked =-1; //set to actual token id after client-connected picked a token 
 	private Server server;
 	private Socket s;
 	private String clientName;
@@ -46,6 +47,14 @@ public class ServerThread extends Thread  {
 		}
 	}
 	//send actual teamnames to client once the game starts
+	public void sendOtherPlayerNameAndTokenChose( ArrayList<String> otherPlayerInfo ){
+		try {
+			oos.writeObject(otherPlayerInfo);
+			oos.flush();
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+	}
 	public void sendPlayers( ArrayList<Player> players ){
 		try {
 			oos.writeObject(players);
@@ -82,6 +91,7 @@ public class ServerThread extends Thread  {
 			server.setID(this);
 			if(!server.cannotAddPlayer()){
 				sendMessage("Login success: "+clientName);
+				server.sendOtherPlayerInfo(this);
 				server.sendMessageToAllOtherClients(message+clientName, this); //send this guest client's name to all other clients
 			}
 			//send player information they need to get to the start window 
@@ -94,6 +104,12 @@ public class ServerThread extends Thread  {
 			//TODO
 			//send new ID to all players in actual player list 
 			
+		}else if(message.contains("::Picked Token::")){
+			server.sendMessageToAllOtherClients(message, this);
+			String[] command = message.split("::");
+			String clientName = command[0];
+			int tokenID = Integer.parseInt(command[2]);
+			tokenPicked = tokenID;
 		}else{
 			server.sendMessageToAllOtherClients(message, this); //if it is other message,  send to other players
 		}
@@ -109,6 +125,7 @@ public class ServerThread extends Thread  {
 					clientName = loginInfo.getUsername();
 					server.sendMessageToAllOtherClients("User Login: "+ clientName, this );	
 					sendMessage("Login success: "+clientName);
+					server.sendOtherPlayerInfo(this);
 					server.addToPalyerThread(this);
 					server.setID(this); //server generate an id for this user
 				}else{
@@ -125,6 +142,7 @@ public class ServerThread extends Thread  {
 				if(!server.cannotAddPlayer()){//if there are not yet 8 people in game room
 					server.sendMessageToAllOtherClients("User Login: "+ clientName, this );	
 					sendMessage("Login success: "+clientName);
+					server.sendOtherPlayerInfo(this);
 					server.addToPalyerThread(this);
 					server.setID(this);
 				}else{
@@ -152,5 +170,8 @@ public class ServerThread extends Thread  {
 	}
 	public int getServerThreadID(){
 		return ID;
+	}
+	public int getTokenPicked(){
+		return tokenPicked;
 	}
 }

@@ -25,6 +25,7 @@ public class Server extends Thread{
 
 	private ArrayList<String> teamNames; 
 	private ArrayList<Player> players;
+	private ArrayList<String> otherPlayerInfo; //who logged in, what token they picked
 	private int numberOfGuests = 1; //used to assign guest name 
 	public Server(){
 		try{
@@ -33,6 +34,7 @@ public class Server extends Thread{
 			actualPlayerTheads = new ArrayList<ServerThread>();
 			players = new ArrayList<Player>();
 			teamNames = new ArrayList<String>();
+			otherPlayerInfo = new ArrayList<String>();
 			stop = false;
 			jDBCDriver = new JDBCDriver();
 		}catch (IOException e) {
@@ -65,6 +67,19 @@ public class Server extends Thread{
 			}
 		}
 		
+	}
+	public void sendOtherPlayerInfo(ServerThread serverThread){
+		synchronized(actualPlayerTheads){//construct the actual list of player once a new player login, the list will construct his startwindow
+			for (ServerThread st : actualPlayerTheads) {
+				if(st !=serverThread ){
+					String name = st.getClientName();
+					String id = Integer.toString(st.getTokenPicked());
+					otherPlayerInfo.add(name+"::Picked Token::"+id);
+				}
+			}
+			
+		}
+		serverThread.sendOtherPlayerNameAndTokenChose(otherPlayerInfo);
 	}
 	public void run(){
 		try{
