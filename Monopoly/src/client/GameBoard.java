@@ -91,6 +91,7 @@ public class GameBoard extends JPanel {
 		paintBoard(g);
 		
 		// Paint the houses and hotels
+		paintBuildings(g);
 		
 		// Paint the Players onto the Board
 		paintPlayers(g);
@@ -98,7 +99,7 @@ public class GameBoard extends JPanel {
 	
 	private void paintBoard(Graphics g) {
 		// Draw the board Background
-		g.setColor(Color.WHITE);
+		g.setColor(new Color(205, 230, 208));
 		g.fillRect(0, 0, getWidth(), getHeight());
 		g.setColor(Color.BLACK);
 		g.drawImage(boardImage, (getWidth()-boardImage.getWidth(null))/2, (getHeight()-boardImage.getHeight(null))/2, null);
@@ -211,6 +212,90 @@ public class GameBoard extends JPanel {
 		for (int i = 0; i < 40; i++) {
 			if (isMouseWithinLocation(i)) {
 				g.drawString("Mouse Over Property: " + properties[i].getName(), 100, 100);
+			}
+		}
+	}
+	
+	private void paintBuildings(Graphics g) {
+		// calclate gride width and height for reference
+		int gridHeight = getHeight()/11;
+		int gridWidth = getWidth()/11;
+		
+		// Go through each property and check if it has houses / hotels to paint
+		for (int i = 0; i < 40; i++) {
+			// Check if this is a property that can be built on
+			if (!Constants.propertyLocations.contains(i)) continue;
+			
+			// Get the upper left of our square
+			int x = getXFromLocation(i);
+			int y = getYFromLocation(i);
+			Property p = properties[i];
+			
+			if (i < 11) {
+				// Paint the Houses
+				for (int houseNum = 0; houseNum < p.getNumHouses(); houseNum++) {
+					g.setColor(Color.GREEN);
+					g.fillRect(x+gridWidth/10+gridWidth*houseNum/5, gridHeight*4/5, gridWidth/5, gridHeight/5);
+					g.setColor(Color.BLACK);
+					g.drawRect(x+gridWidth/10+gridWidth*houseNum/5, gridHeight*4/5, gridWidth/5, gridHeight/5);
+				}
+				
+				// Paint the hotel
+				if (p.getHotel()) {
+					g.setColor(Color.RED);
+					g.fillRect(x+gridWidth/6, gridHeight*4/5, gridWidth*2/3, gridHeight/5);
+					g.setColor(Color.BLACK);
+					g.drawRect(x+gridWidth/6, gridHeight*4/5, gridWidth*2/3, gridHeight/5);
+				}
+				
+			} else if (i < 21) {
+				// Paint the Houses
+				for (int houseNum = 0; houseNum < p.getNumHouses(); houseNum++) {
+					g.setColor(Color.GREEN);
+					g.fillRect(x, y+gridHeight/10+gridHeight*houseNum/5, gridWidth/5, gridHeight/5);
+					g.setColor(Color.BLACK);
+					g.drawRect(x, y+gridHeight/10+gridHeight*houseNum/5, gridWidth/5, gridHeight/5);
+					
+				}
+				
+				// Paint the hotel
+				if (p.getHotel()) {
+					g.setColor(Color.RED);
+					g.fillRect(x, y+gridHeight/6, gridWidth/5, gridHeight*2/3);
+					g.setColor(Color.BLACK);
+					g.drawRect(x, y+gridHeight/6, gridWidth/5, gridHeight*2/3);
+				}
+			} else if (i < 31) {
+				// Paint the Houses
+				for (int houseNum = 0; houseNum < p.getNumHouses(); houseNum++) {
+					g.setColor(Color.GREEN);
+					g.fillRect(x+gridWidth/10+gridWidth*houseNum/5, y, gridWidth/5, gridHeight/5);
+					g.setColor(Color.BLACK);
+					g.drawRect(x+gridWidth/10+gridWidth*houseNum/5, y, gridWidth/5, gridHeight/5);
+				}
+				
+				// Paint the hotel
+				if (p.getHotel()) {
+					g.setColor(Color.RED);
+					g.fillRect(x+gridWidth/6, y, gridWidth*2/3, gridHeight/5);
+					g.setColor(Color.BLACK);
+					g.drawRect(x+gridWidth/6, y, gridWidth*2/3, gridHeight/5);
+				}
+			} else {
+				// Paint the House
+				for (int houseNum = 0; houseNum < p.getNumHouses(); houseNum++) {
+					g.setColor(Color.GREEN);
+					g.fillRect(gridWidth*4/5, y+gridHeight/10+gridHeight*houseNum/5, gridWidth/5, gridHeight/5);
+					g.setColor(Color.BLACK);
+					g.drawRect(gridWidth*4/5, y+gridHeight/10+gridHeight*houseNum/5, gridWidth/5, gridHeight/5);
+				}
+				
+				if (p.getHotel()) {
+					g.setColor(Color.RED);
+					g.fillRect(gridWidth*4/5, y+gridHeight/6, gridWidth/5, gridHeight*2/3);
+					g.setColor(Color.BLACK);
+					g.drawRect(gridWidth*4/5, y+gridHeight/6, gridWidth/5, gridHeight*2/3);
+				}
 			}
 		}
 	}

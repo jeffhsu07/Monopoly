@@ -81,6 +81,7 @@ public class ServerThread extends Thread  {
 			server.addToPalyerThread(this);
 			server.setID(this);
 			if(!server.cannotAddPlayer()){
+				sendMessage("Login success: "+clientName);
 				server.sendMessageToAllOtherClients(message+clientName, this); //send this guest client's name to all other clients
 			}
 			//send player information they need to get to the start window 
@@ -107,7 +108,7 @@ public class ServerThread extends Thread  {
 				if(!server.cannotAddPlayer()){ //if there are not yet 8 people in game room
 					clientName = loginInfo.getUsername();
 					server.sendMessageToAllOtherClients("User Login: "+ clientName, this );	
-					sendMessage("Login success");
+					sendMessage("Login success: "+clientName);
 					server.addToPalyerThread(this);
 					server.setID(this); //server generate an id for this user
 				}else{
@@ -119,10 +120,11 @@ public class ServerThread extends Thread  {
 		}else{ //if the client clicked create account, create an account
 			boolean succeed = server.createUser(loginInfo.getUsername(), loginInfo.getPassword());
 			if(succeed){
-				sendMessage("Creating account success");
+				clientName = loginInfo.getUsername();
+				sendMessage("Creating account success: "+clientName);
 				if(!server.cannotAddPlayer()){//if there are not yet 8 people in game room
-					clientName = loginInfo.getUsername();
 					server.sendMessageToAllOtherClients("User Login: "+ clientName, this );	
+					sendMessage("Login success: "+clientName);
 					server.addToPalyerThread(this);
 					server.setID(this);
 				}else{
@@ -138,8 +140,7 @@ public class ServerThread extends Thread  {
 	public String getClientName(){
 		return clientName;
 	}
-	public void setClientName(String name){
-		clientName = name;
+	public void setGuestName(String name){
 		if(name.contains("Guest")){ //guest doesn't have a name so we give them one
 			sendMessage("Guest name: "+ name);
 		}

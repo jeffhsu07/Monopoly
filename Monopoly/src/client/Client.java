@@ -26,6 +26,8 @@ public class Client extends Thread{
 	private String thisPlayerName; //set to login user name or guest name when assigned 
 	//private ArrayList<String> teamNames; 
 	private ArrayList<Player> playerList;
+	private LoginWindow loginWindow;
+	private StartWindow startWindow;
 	public Client() {
 		
 		try {
@@ -96,8 +98,13 @@ public class Client extends Thread{
 		}
 	}
 	private void interpretMessage(String message){
-		if(message.contains("Login success")){
+		if(message.contains("Login success: ")){
 			System.out.println(message);
+			message = message.replace("Login success: ", "");
+			message = message.trim();
+			thisPlayerName = message;
+			loginWindow.setVisible(false);
+			startWindow = new StartWindow(thisPlayerName, this);
 		}else if(message.contains("Login deny")){
 			System.out.println(message);
 		}else if(message.contains("Creating account success")){
@@ -208,6 +215,9 @@ public class Client extends Thread{
 		}else if(message.contains("You are connected")){
 			System.out.println("You are connected");
 		}
+	}
+	public void setLoginWindow(LoginWindow loginWindow ){
+		this.loginWindow = loginWindow;
 	}
 	
 	public static void main(String args[]){

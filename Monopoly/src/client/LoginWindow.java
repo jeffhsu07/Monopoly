@@ -33,6 +33,7 @@ public class LoginWindow extends JFrame {
 	private Client client;
 	public LoginWindow(Client client) {
 		this.client = client;
+		//client.setLoginWindow(this);
 		initializeVariables();
 		createGUI();
 		addListeners();

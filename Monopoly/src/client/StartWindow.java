@@ -2,7 +2,9 @@
 package client;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -11,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -19,8 +22,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import resources.Player;
-
 public class StartWindow extends JFrame {
 	
 	private JLabel selectPrompt;
@@ -28,17 +29,21 @@ public class StartWindow extends JFrame {
 	private JLabel playersLabel;
 	private JLabel tokensLabel;
 	private JButton readyButton;
-	private ArrayList<JLabel> playerNames;
+	private ArrayList<PlayerInfoLayout> playerInfo;
 	private ArrayList<Image> chosenIcons;
 	private ArrayList<JButton> tokenButtons;
 	private JPanel playerGrid;
 	private JPanel tokenGrid;
 	private Socket s;
-	private Player player;
+	private String playerName;
+	private int playerToken;
+	private Client client;
 	private ArrayList<Image> tokenImages;
 
-	public StartWindow(Player player) {
-		this.player = player;
+	public StartWindow(String playerName, Vector<String> otherPlayerInfo, Client client) {
+		this.playerName = playerName;
+		this.client = client;
+		playerToken = -1;
 		initializeVariables();
 		createGUI();
 		addActionListeners();
@@ -47,15 +52,15 @@ public class StartWindow extends JFrame {
 	private void initializeVariables() {
 		selectPrompt = new JLabel("Select your game token.", JLabel.CENTER);
 		//	Change to variable
-		yourName = new JLabel("Name: " + player.getName(), JLabel.CENTER);
+		yourName = new JLabel("Name: " + playerName, JLabel.CENTER);
 		playersLabel = new JLabel("Players:", JLabel.CENTER);
 		tokensLabel = new JLabel("Tokens:", JLabel.CENTER);
 		readyButton = new JButton("Ready");
 		
-		playerNames = new ArrayList<JLabel>(8);
-		playerNames.add(0, new JLabel(player.getName(), JLabel.CENTER));
+		playerInfo = new ArrayList<PlayerInfoLayout>(8);
+		playerInfo.add(0, new PlayerInfoLayout(playerName, playerToken));
 		for (int i = 1; i < 8; i++) {
-			playerNames.add(i, new JLabel("No Player", JLabel.CENTER));
+			playerInfo.add(i, new PlayerInfoLayout("No Player", -1));
 		}
 		
 		chosenIcons = new ArrayList<Image>();
@@ -72,12 +77,6 @@ public class StartWindow extends JFrame {
 				e.printStackTrace();
 			}
 			temp.setSize(100, 100);
-			temp.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					
-				}
-			});
 			tokenButtons.add(temp);
 		}
 		
@@ -124,7 +123,7 @@ public class StartWindow extends JFrame {
 		tokenGrid.setLayout(new GridLayout(2, 4));
 		
 		for (int i = 0; i < 8; i++) {
-			playerGrid.add(playerNames.get(i));
+			playerGrid.add(playerInfo.get(i));
 		}
 		
 		for (int i = 0; i < 8; i++) {
@@ -142,12 +141,6 @@ public class StartWindow extends JFrame {
 		
 		return centerPanel;
 	}
-	
-	private void refreshPlayers() {
-		for (int i = 0; i < 8; i++) {
-			
-		}
-	}
 
 	private JPanel createSouthPanel() {
 		JPanel southPanel = new JPanel();
@@ -157,7 +150,65 @@ public class StartWindow extends JFrame {
 		return southPanel;
 	}
 	
+	private void refreshPlayers() {
+		for (int i = 0; i < 8; i++) {
+			
+		}
+	}
+	
 	private void addActionListeners() {
+		for (int i = 0; i < 8; i++) {
+			setUpTokenWindow(i);
+		}
+	}
+	
+	private void setUpTokenWindow(int i) {
+		tokenButtons.get(i).addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				playerToken = i;
+				refreshPlayers();
+				client.sendMessage(playerName + "::Picked Token::" + playerToken);
+			}
+		});
+	}
+	
+	private class PlayerInfoLayout extends JPanel {
+		private static final long serialVersionUID = -6341876191272116746L;
 		
+		String playerName;
+		int playerToken;
+		
+		public PlayerInfoLayout(String playerName, int playerToken) {
+			this.setLayout(new BorderLayout());
+			this.setPreferredSize(new Dimension(200, 100));
+			this.playerName = playerName;
+			this.playerToken = playerToken;
+			// Initialize our Image
+			/*try {
+					playerToken = ImageIO.read(new File("images/tokens/token" + p.getGameToken() + ".png"));
+			} catch (IOException ioe) {
+				System.out.println("Error Loading Player Image: " + ioe.getMessage());
+			}*/
+		}
+		
+		public String getName() {
+			return playerName;
+		}
+		
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			
+			int width = this.getWidth();
+			int height = this.getHeight();
+			int fontHeight = g.getFont().getSize();
+			
+			g.drawRect(2, 2, getWidth()-4, getHeight()-4);
+			if (playerToken != -1) {
+				g.drawImage(tokenImages.get(playerToken), 5, 5, width/2-10, height-10, null);
+			}
+			
+			g.drawString(playerName, width/2, height/4+fontHeight/2);
+		}
 	}
 }
