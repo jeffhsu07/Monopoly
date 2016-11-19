@@ -198,9 +198,32 @@ public class MainWindow extends JFrame {
 						if (properties[newLocation].isMortgaged()) {
 							//Nothing
 						} else {
-							p.addMoney(-properties[newLocation].getRent());
-							properties[newLocation].getOwner().addMoney(properties[newLocation].getRent());
-							progressArea.addProgress("    paid $"+properties[newLocation].getRent()+" in rent.\n");
+							int rent = 0;
+							if (properties[newLocation].getGroup().equals("Stations")) {
+								rent = properties[newLocation].getRent();
+								for (Property property : properties[newLocation].getOwner().getProperties()) {
+									if (property.getGroup().equals("Stations")) {
+										rent *= 2;
+									}
+								}
+							} else if (properties[newLocation].getGroup().equals("Utilities")) {
+								int count = 0;
+								for (Property property : properties[newLocation].getOwner().getProperties()) {
+									if (property.getGroup().equals("Utilities")) {
+										count++;
+									}
+								}
+								if (count == 1) {
+									rent = 4 * (roll1+roll2);
+								} else {
+									rent = 10 * (roll1+roll2);
+								}
+							} else {
+								rent = properties[newLocation].getRent();
+							}
+							p.addMoney(-rent);
+							properties[newLocation].getOwner().addMoney(rent);
+							progressArea.addProgress("    paid $"+rent+" in rent.\n");
 						}
 					}
 				} else {
@@ -229,9 +252,9 @@ public class MainWindow extends JFrame {
 							for (Property property : p.getProperties()) {
 								totalWorth += property.getPrice();
 								if (property.getHotel()) {
-									//totalWorth += hotel cost
+									totalWorth += 5 * property.getHouseCost();
 								} else {
-									//totalWorth += houses cost
+									totalWorth += property.getNumHouses() * property.getHouseCost();
 								}
 							}
 							int tax = totalWorth/10;
