@@ -142,19 +142,21 @@ public class Client extends Thread{
 			message = message.trim();
 			String guestName = message;
 			//TODO
+			startWindow.userJoined(guestName);
 			//do something after a Guest logs in 
 		}else if(message.contains("User Login: ") && startWindow != null){
 			message = message.replace("User Login: ", "");
 			message = message.trim();
 			String username = message;
 			//TODO
+			startWindow.userJoined(username);
 			//do something after a User logs in 
 		}else if(message.contains("::Picked Token::") && startWindow != null){ //ClientName::Picked Token::TokenID
 			String[] command = message.split("::");
 			String clientName = command[0];
 			int tokenID = Integer.parseInt(command[2]);
 			//TODO
-			
+			startWindow.refreshPlayer(clientName, tokenID);
 			//do something after the client picked a token
 			//let other players know
 			//ready to start unless quit
