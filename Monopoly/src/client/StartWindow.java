@@ -29,7 +29,7 @@ public class StartWindow extends JFrame {
 	private JLabel playersLabel;
 	private JLabel tokensLabel;
 	private JButton readyButton;
-	private ArrayList<PlayerInfoLayout> playerInfo;
+	private ArrayList<PlayerInfoLayout> playerInfoPanels;
 	private ArrayList<Image> chosenIcons;
 	private ArrayList<JButton> tokenButtons;
 	private JPanel playerGrid;
@@ -39,11 +39,14 @@ public class StartWindow extends JFrame {
 	private int playerToken;
 	private Client client;
 	private ArrayList<Image> tokenImages;
+	private ArrayList<String> otherPlayerInfo;
 
 	public StartWindow(String playerName, ArrayList<String> otherPlayerInfo, Client client) {
 		this.playerName = playerName;
 		this.client = client;
 		playerToken = -1;
+		this.otherPlayerInfo = otherPlayerInfo;
+		this.otherPlayerInfo.add(playerName + "::Picked Token::" + playerToken);
 		initializeVariables();
 		createGUI();
 		addActionListeners();
@@ -57,10 +60,16 @@ public class StartWindow extends JFrame {
 		tokensLabel = new JLabel("Tokens:", JLabel.CENTER);
 		readyButton = new JButton("Ready");
 		
-		playerInfo = new ArrayList<PlayerInfoLayout>(8);
-		playerInfo.add(0, new PlayerInfoLayout(playerName, playerToken));
-		for (int i = 1; i < 8; i++) {
-			playerInfo.add(i, new PlayerInfoLayout("No Player", -1));
+		playerInfoPanels = new ArrayList<PlayerInfoLayout>(8);
+		for (int i = 0; i < 8; i++) {
+			if (i < otherPlayerInfo.size()) {
+				String[] temp = otherPlayerInfo.get(i).split("::");
+				String clientName = temp[0];
+				int tokenID = Integer.parseInt(temp[2]);
+				playerInfoPanels.add(i, new PlayerInfoLayout(clientName, tokenID));
+			} else {
+				playerInfoPanels.add(i, new PlayerInfoLayout("No Player", -1));
+			}
 		}
 		
 		chosenIcons = new ArrayList<Image>();
@@ -123,7 +132,7 @@ public class StartWindow extends JFrame {
 		tokenGrid.setLayout(new GridLayout(2, 4));
 		
 		for (int i = 0; i < 8; i++) {
-			playerGrid.add(playerInfo.get(i));
+			playerGrid.add(playerInfoPanels.get(i));
 		}
 		
 		for (int i = 0; i < 8; i++) {
@@ -150,27 +159,44 @@ public class StartWindow extends JFrame {
 		return southPanel;
 	}
 	
-	private void refreshPlayers() {
+	protected void refreshPlayer(String playerName, int playerToken) {
 		for (int i = 0; i < 8; i++) {
-			
+			if (playerInfoPanels.get(i).getName().equals(playerName)) {
+				playerInfoPanels.get(i).setToken(playerToken);
+			}
 		}
 	}
 	
 	private void addActionListeners() {
 		for (int i = 0; i < 8; i++) {
-			setUpTokenWindow(i);
+			setUpTokenButtons(i);
 		}
 	}
 	
-	private void setUpTokenWindow(int i) {
+	private void setUpTokenButtons(int i) {
 		tokenButtons.get(i).addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				playerToken = i;
-				refreshPlayers();
+				refreshPlayer(playerName, playerToken);
+				System.out.println(playerName + " " + playerToken);
 				client.sendMessage(playerName + "::Picked Token::" + playerToken);
+				for (int x = 0; x < 8; x++) {
+					tokenButtons.get(x).setEnabled(true);
+				}
+				tokenButtons.get(i).setEnabled(false);
 			}
 		});
+	}
+	
+	public void userJoined(String username) {
+		otherPlayerInfo.add(username + "::Picked Token::" + (-1));
+		for (int i = 0; i < 8; i++) {
+			if (playerInfoPanels.get(i).getName().equals("No Player")) {
+				playerInfoPanels.get(i).setName(username);
+				playerInfoPanels.get(i).setToken(-1);
+			}
+		}
 	}
 	
 	private class PlayerInfoLayout extends JPanel {
@@ -196,6 +222,16 @@ public class StartWindow extends JFrame {
 			return playerName;
 		}
 		
+		public void setName(String playerName) {
+			this.playerName = playerName;
+			this.repaint();
+		}
+		
+		public void setToken(int t) {
+			playerToken = t;
+			this.repaint();
+		}
+		
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			
@@ -205,7 +241,7 @@ public class StartWindow extends JFrame {
 			
 			g.drawRect(2, 2, getWidth()-4, getHeight()-4);
 			if (playerToken != -1) {
-				g.drawImage(tokenImages.get(playerToken), 5, 5, width/2-10, height-10, null);
+				g.drawImage(tokenImages.get(playerToken), 5, 5, height-10, height-10, null);
 			}
 			
 			g.drawString(playerName, width/2, height/4+fontHeight/2);

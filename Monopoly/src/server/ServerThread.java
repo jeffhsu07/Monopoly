@@ -100,6 +100,7 @@ public class ServerThread extends Thread  {
 			server.removeFromPlayerThread(this);
 			
 		}else if(message.contains("StartGame")){
+			server.stopServer(); // server doesnt take more people after host clicked start 
 			//the host(first player joined) clicked start game
 			//TODO
 			//send new ID to all players in actual player list 
