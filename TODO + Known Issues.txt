@@ -1,11 +1,11 @@
 To Do:
-	Add Menu Bar to the top of the main window
+	Add Menu Bar to the top of the main window (Jesse)
 	
-	Create a player statistics window for registered users
+	Create a player statistics window for registered users (Jesse)
 
 	Create a game winner window
 
-	Finish game logic in main window
+	Finish game logic in main window (Nick + Brandon)
 		Roll Dice at beginning to determine turn order
 		Chance Cards
 		Community Chest Cards
@@ -14,19 +14,17 @@ To Do:
 		Use Exit Game Button
 		Special Property Taxes / Costs
 
-	Paint houses and hotels to the game board (Jesse)
-
 	Finish the game setup window (Matt)
 
-	Utilize networking thorughout code
+	Utilize networking thorughout code (James + Matt)
 		Have connections set up on login screen
 		Use connections throughout game setup window to keep in sync
 		Use messages to have game actions occur simultaneously across clients
 
-	Finish Player Information Window
+	Finish Player Information Window (Nick)
 		Give each group a header so monopolies can be seen.
 
-	Finish Manage Buildings Window
+	Finish Manage Buildings Window (Jeff)
 
 	Pick fonts / Colors For Windows
 		Make the game look pretty
