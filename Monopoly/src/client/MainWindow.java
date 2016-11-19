@@ -10,6 +10,9 @@ import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -39,6 +42,10 @@ public class MainWindow extends JFrame {
 	private PlayerInformationGrid playerInformationGrid;
 	private GameBoard gameBoard;
 	private Property[] properties;
+	
+	// Menu options
+	JMenuItem menuExit;
+	JMenuItem menuPlayerStats;
 	
 	public MainWindow(ArrayList<Player> players) {
 		super("Monopoly");
@@ -71,11 +78,23 @@ public class MainWindow extends JFrame {
 		progressArea = new ProgressArea();
 		playerInformationGrid = new PlayerInformationGrid(players);
 		gameBoard = new GameBoard(players, properties);
+		
+		// Initialize menu items.
+		menuExit = new JMenuItem("Exit Game");
+		menuPlayerStats = new JMenuItem("View Player Statistics");
 	}
 
 	private void createGUI() {
 		this.setSize(1280,720);
 		this.setResizable(false);
+		
+		// Set up the menu bar
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menu = new JMenu("Menu");
+		menuBar.add(menu);
+		menu.add(menuPlayerStats);
+		menu.add(menuExit);
+		setJMenuBar(menuBar);
 		
 		// Use a border layout
 		this.setLayout(new BorderLayout());
