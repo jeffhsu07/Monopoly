@@ -34,6 +34,7 @@ public class Player implements Serializable {
 		jailCards = 0;
 		currentLocation = 0;
         bankrupt = false;
+        gameToken = -1;
 	}
 	
 	public String getName() {
