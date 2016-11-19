@@ -139,7 +139,9 @@ public class MainWindow extends JFrame {
 		// Add control panel to the main board
 		this.add(controlPanel, BorderLayout.CENTER);
 	}
-
+	public void updateProgressArea(String update){
+		progressArea.addProgress("\n" + update);
+	}
 	private void addListeners() {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		

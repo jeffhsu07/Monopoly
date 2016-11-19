@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -111,6 +113,11 @@ public class ManageBuildingsWindow extends JFrame{
 	private void addListeners(){
 		// Had to change to do nothing because it was quitting program - Jesse
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				dispose();
+			}
+		});
 		closeWindowButton.addActionListener(new ActionListener(){
 
 			@Override
@@ -131,7 +138,7 @@ public class ManageBuildingsWindow extends JFrame{
 					mw.revalidate();
 				}
 				else{
-					buyHouseDescriptionLabel.setText("Can't build a house on this property, you don't have a complete set");
+					buyHouseDescriptionLabel.setText("<html>Can't build a house on this property, <br>you don't have a complete set</br></html>");
 				}
 			}
 		});
@@ -252,6 +259,8 @@ public class ManageBuildingsWindow extends JFrame{
 			buyHouseDescriptionLabel.setText("<html>Added house to " + currentProperty.getName() + "<br> total number of houses built on this property: " + currentProperty.getNumHouses() + "</br></html>");
 			sellHouseDescriptionLabel.setText("<html>Clicking this button will remove a house from this property<br>Current number of houses on this property: " + 
 					currentProperty.getNumHouses() + "</br><html>");
+			mw.updateProgressArea(player.getName() + " built a house on " + currentProperty.getName() + ", Total number of houses on "
+									+ currentProperty.getName() + ": " + currentProperty.getNumHouses());
 		}
 		else{
 			buyHouseDescriptionLabel.setText("You do not have enough money to buy a house on this property!");
@@ -281,6 +290,8 @@ public class ManageBuildingsWindow extends JFrame{
 			player.addMoney(currentProperty.getSellHouseCost());
 			sellHouseDescriptionLabel.setText("<html>Removed house from <br>" + currentProperty.getName() + "<br>total number of houses built: " + currentProperty.getNumHouses() + "</br><html>");
 			buyHouseDescriptionLabel.setText("<html>Clicking this button will <br>add a house to the property<br>House cost: " + currentProperty.getHouseCost() + "</br><html>");
+			mw.updateProgressArea(player.getName() + " sold a house on " + currentProperty.getName() + ", Total number of houses on "
+					+ currentProperty.getName() + ": " + currentProperty.getNumHouses());
 		}
 		else{
 			sellHouseDescriptionLabel.setText("There are no houses on this property!");

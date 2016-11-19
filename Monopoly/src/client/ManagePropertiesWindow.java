@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -115,6 +117,11 @@ public class ManagePropertiesWindow extends JFrame{
 	private void addListeners(){
 		// Had to change to do nothing because it was quitting program - Jesse
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				dispose();
+			}
+		});
 		closeWindowButton.addActionListener(new ActionListener(){
 
 			@Override
@@ -179,6 +186,7 @@ public class ManagePropertiesWindow extends JFrame{
 			currentProperty.setMortgaged(true);
 			isMortgaged = currentProperty.isMortgaged();
 			updateMortgageStateLabel();
+			mw.updateProgressArea(player.getName() + " mortgaged " + currentProperty.getName());
 		}
 		else if(groupHasHouses()){
 			mortgageStateLabel.setText("<html>Can't mortgage property if properties in the same group has <br>buildings on them</br></html>");
@@ -188,6 +196,7 @@ public class ManagePropertiesWindow extends JFrame{
 				currentProperty.setMortgaged(false);
 				isMortgaged = currentProperty.isMortgaged();
 				updateMortgageStateLabel();
+				mw.updateProgressArea(player.getName() + " reclaimed " + currentProperty.getName());
 			}
 			else{
 				mortgageStateLabel.setText("Can't reclaim this property because you don't have enough money");
