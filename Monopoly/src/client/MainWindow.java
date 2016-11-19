@@ -42,7 +42,6 @@ public class MainWindow extends JFrame {
 	private PlayerInformationGrid playerInformationGrid;
 	private GameBoard gameBoard;
 	private Property[] properties;
-	
 	// Menu options
 	JMenuItem menuPlayerStats;
 	
@@ -330,14 +329,14 @@ public class MainWindow extends JFrame {
 		// Opens the Manage properties window when clicked
 		managePropertiesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this).setVisible(true);
+				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
 			}
 		});
 		
 		// Opens the Manage buildings window when clicked
 		manageBuildingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this).setVisible(true);
+				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
 			}
 		});
 	}
