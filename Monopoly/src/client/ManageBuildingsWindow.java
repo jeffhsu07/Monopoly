@@ -256,11 +256,19 @@ public class ManageBuildingsWindow extends JFrame{
 		if(player.getMoney() > currentProperty.getHouseCost()){
 			currentProperty.addBuilding();
 			player.subtractMoney(currentProperty.getHouseCost());
-			buyHouseDescriptionLabel.setText("<html>Added house to " + currentProperty.getName() + "<br> total number of houses built on this property: " + currentProperty.getNumHouses() + "</br></html>");
-			sellHouseDescriptionLabel.setText("<html>Clicking this button will remove a house from this property<br>Current number of houses on this property: " + 
+			if(currentProperty.getHotel()){
+				buyHouseDescriptionLabel.setText("Added a hotel to " + currentProperty.getName());
+				sellHouseDescriptionLabel.setText("<html>Clicking this button will remove a house from this property<br>Current number of houses on this property: 1 hotel</br><html>");
+				mw.updateProgressArea(player.getName() + " built a hotel on " + currentProperty.getName());
+			}
+			else{
+			
+				buyHouseDescriptionLabel.setText("<html>Added house to " + currentProperty.getName() + "<br> total number of houses built on this property: " + currentProperty.getNumHouses() + "</br></html>");
+				sellHouseDescriptionLabel.setText("<html>Clicking this button will remove a house from this property<br>Current number of houses on this property: " + 
 					currentProperty.getNumHouses() + "</br><html>");
-			mw.updateProgressArea(player.getName() + " built a house on " + currentProperty.getName() + ", Total number of houses on "
+				mw.updateProgressArea(player.getName() + " built a house on " + currentProperty.getName() + ", Total number of houses on "
 									+ currentProperty.getName() + ": " + currentProperty.getNumHouses());
+			}
 		}
 		else{
 			buyHouseDescriptionLabel.setText("You do not have enough money to buy a house on this property!");
@@ -268,6 +276,9 @@ public class ManageBuildingsWindow extends JFrame{
 	}
 	
 	public void sellHouse(){
+		if(currentProperty.getHotel()){
+			currentProperty.setHouses(4);
+		}
 		if(currentProperty.getNumHouses() > 0){
 			ArrayList<Property> group = new ArrayList<Property>();
 			for(int i = 0; i < groupLocation.size(); i++){
