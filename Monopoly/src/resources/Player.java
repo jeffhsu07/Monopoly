@@ -23,6 +23,7 @@ public class Player implements Serializable {
 	private int gameToken;
 	private boolean bankrupt;
 	private int ID; //added player ID 
+	private int doubles; //keeps track of the number of times doubles is rolled in a row.
 	public Player(String name, int wins, int gamesPlayed, int ID){
 		this.name = name;
 		this.wins = wins;
@@ -113,4 +114,11 @@ public class Player implements Serializable {
 		return false;
 	}
 
+	public int getDoubles() {
+		return doubles;
+	}
+	
+	public void setDoubles(int num) {
+		doubles = num;
+	}
 }
