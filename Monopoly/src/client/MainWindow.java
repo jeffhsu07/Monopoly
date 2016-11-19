@@ -161,6 +161,18 @@ public class MainWindow extends JFrame {
 				Player p = players.get(currentPlayer);
 				progressArea.addProgress(p.getName() + " rolled a " + roll1 +
 						" and a " + roll2 + ".\n");
+				if (roll1 == roll2) {
+					p.setDoubles(p.getDoubles()+1);
+					if (p.getDoubles() == 3) {
+						p.setDoubles(0);
+						p.setCurrentLocation(Constants.jailLocation);
+						p.setInJail(true);
+						progressArea.addProgress("    was sent to jail for rolling doubles too many times.\n\n");
+						gameBoard.repaint();
+						playerInformationGrid.repaint();
+						return;
+					}
+				}
 				int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
 				if(p.getCurrentLocation()+roll1+roll2 >= 40)
 				{
@@ -233,7 +245,8 @@ public class MainWindow extends JFrame {
 					if (properties[newLocation].getName().equals("Chance")) {
 						//TODO show card
 					} else if (properties[newLocation].getName().equals("Go To Jail")) {
-						//TODO move to jail. set player inJail
+						p.setCurrentLocation(Constants.jailLocation);
+						p.setInJail(true);
 					} else if (properties[newLocation].getName().equals("Community Chest")) {
 						//TODO show card
 					} else if (properties[newLocation].getName().equals("Income Tax")) {
