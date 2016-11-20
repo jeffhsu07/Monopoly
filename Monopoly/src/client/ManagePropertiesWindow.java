@@ -14,6 +14,7 @@
 package client;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -34,6 +35,7 @@ import javax.swing.JPanel;
 
 import resources.Player;
 import resources.Property;
+import utilities.AppearanceConstants;
 import utilities.AppearanceSettings;
 import utilities.Constants;
 
@@ -103,6 +105,14 @@ public class ManagePropertiesWindow extends JFrame{
 		GridBagConstraints c = new GridBagConstraints();
 		AppearanceSettings.setSize(100, 60, selectPropertyLabel);
 		AppearanceSettings.setTextAlignment(selectPropertyLabel, mortgageStateLabel, descriptionLabel);
+		AppearanceSettings.setFont(AppearanceConstants.fontMedium, selectPropertyLabel);
+		AppearanceSettings.setFont(AppearanceConstants.fontSmallest, mortgageButton, closeWindowButton);
+		AppearanceSettings.setBackground(Color.LIGHT_GRAY, mortgageButton,closeWindowButton);
+		AppearanceSettings.setForeground(Color.WHITE, mortgageButton, closeWindowButton);
+		AppearanceSettings.unSetBorderOnButtons(mortgageButton, closeWindowButton);
+		AppearanceSettings.setOpaque(mortgageButton, closeWindowButton);
+		AppearanceSettings.setFont(AppearanceConstants.fontSmall, closeWindowButton);
+		AppearanceSettings.setSize(100,50, closeWindowButton);
 		//AppearanceSettings.setSize(200, 80, mortgageButton);
 		
 		for(int i = 0; i < player.getProperties().size(); i++){

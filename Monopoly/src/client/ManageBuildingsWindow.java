@@ -14,10 +14,11 @@
 package client;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -27,6 +28,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -35,9 +37,9 @@ import javax.swing.JPanel;
 
 import resources.Player;
 import resources.Property;
+import utilities.AppearanceConstants;
 import utilities.AppearanceSettings;
 import utilities.Constants;
-
 //Edited by Jesse
 public class ManageBuildingsWindow extends JFrame{
 	private JLabel selectPropertyLabel;
@@ -53,6 +55,7 @@ public class ManageBuildingsWindow extends JFrame{
 	private Property currentProperty;
 	private MainWindow mw;
 	private Client client;
+	private ImageIcon icon;
 	public ManageBuildingsWindow(Player player, MainWindow mw, Client client){
 		super("Manage Properties Window");
 		this.player = player;
@@ -76,9 +79,10 @@ public class ManageBuildingsWindow extends JFrame{
 													currentProperty.getNumHouses() + "</br><html>");
 		}
 		else{
-			buyHouseDescriptionLabel = new JLabel("Clicking this button will add a house to a property");
-			sellHouseDescriptionLabel = new JLabel("Clicking this button will remove a house from a property");
+			buyHouseDescriptionLabel = new JLabel("<html>Clicking this button will add a house to a property</html>");
+			sellHouseDescriptionLabel = new JLabel("<html>Clicking this button will remove a house from a property</html>");
 		}
+		icon = new ImageIcon("images/board/dopebackground.jpg");
 		groupLocation = new ArrayList<Integer>();
 	}
 	
@@ -90,26 +94,36 @@ public class ManageBuildingsWindow extends JFrame{
 		GridBagConstraints c = new GridBagConstraints();
 		AppearanceSettings.setSize(100, 60, selectPropertyLabel);
 		AppearanceSettings.setTextAlignment(selectPropertyLabel, buyHouseDescriptionLabel, sellHouseDescriptionLabel);
-		
+		AppearanceSettings.setFont(AppearanceConstants.fontMedium, selectPropertyLabel);
+		AppearanceSettings.setFont(AppearanceConstants.fontSmallest, buyHouseButton, sellHouseButton);
+		AppearanceSettings.setFont(AppearanceConstants.fontSmall, closeWindowButton);
+		AppearanceSettings.setForeground(Color.white, buyHouseButton, sellHouseButton, closeWindowButton);
+		AppearanceSettings.setBackground(Color.lightGray, closeWindowButton, buyHouseButton,sellHouseButton);
+		AppearanceSettings.unSetBorderOnButtons(closeWindowButton, buyHouseButton, sellHouseButton);
+		AppearanceSettings.setSize(150, 200, buyHouseButton,sellHouseButton);
+		AppearanceSettings.setSize(100,50, closeWindowButton);
+		AppearanceSettings.setOpaque(closeWindowButton, buyHouseButton, sellHouseButton);
 		for(int i = 0; i < player.getProperties().size(); i++){
 			propertyDropDownComboBox.addItem(player.getProperties().get(i).getName());
 		}
 		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 0.1;
+		c.weightx = 0.2;
 		c.weighty = 0.1;
 		c.gridwidth = 1;
 		c.gridheight = 1;
 		c.gridx = 0;
 		c.gridy = 0;
-		buyHouseButton.setPreferredSize(new Dimension(200,50));
+		c.insets = new Insets(5,0,5,0);
+		//buyHouseButton.setPreferredSize(new Dimension(200,50));
 		centerPanel.add(buyHouseButton, c);
 		c.gridx = 0;
 		c.gridy = 4;
-		sellHouseButton.setPreferredSize(new Dimension(200,50));
+		//sellHouseButton.setPreferredSize(new Dimension(200,50));
 		centerPanel.add(sellHouseButton, c);
 		c.gridx = 4;
 		c.gridy = 0;
 		c.weightx = 0.3;
+		c.insets = new Insets(0,10,0,10);
 		centerPanel.add(buyHouseDescriptionLabel,c);
 		c.gridx = 4;
 		c.gridy = 4;
