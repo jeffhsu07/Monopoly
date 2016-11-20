@@ -2,17 +2,13 @@ To Do:
 	Finish game logic in main window
 		Chance Cards (Brandon)
 		Community Chest Cards (Brandon)
-		Bankruptcy (Jesse)
-		Announce Winner ()
-		Change turn during end turn button (Jesse)
 
 	Update wins and losses on server when a player wins
 	
 	Finish the game setup window (Matt)
 
 	Utilize networking thorughout code (everyone)
-		Use connections throughout game setup window to keep in sync
-		Use messages to have game actions occur simultaneously across clients
+		Use messages to have game actions occur simultaneously across clients (Jesse)
 
 	Pick fonts / Colors For Windows
 		Make the game look pretty
@@ -24,6 +20,10 @@ To Do:
 		Ensure all adapted code cites it's source
 
 	Add comment to top of every file with our names and group name.
+
+	Guest Functionality is Limited
+
+	Make a read me
 
 Known Issue:
 	Players aren't forced to pay after 3 turns failing to roll to leave jail
