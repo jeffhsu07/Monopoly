@@ -57,6 +57,7 @@ public class WinnerAnnouncementWindow extends JFrame {
 		recordLabel = new JLabel(player.getName() + " now has " +
 				player.getWins() + " W " +
 				(player.getGamesPlayed()-player.getWins()) + " L");
+		if (player.getName().startsWith("Guest")) recordLabel.setVisible(false);
 		closeButton = new JButton("Close");
 	}
 	

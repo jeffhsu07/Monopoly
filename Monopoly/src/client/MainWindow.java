@@ -145,11 +145,13 @@ public class MainWindow extends JFrame {
 		this.setMinimumSize(getSize());
 		
 		// Set up the menu bar
-		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("Menu");
-		menuBar.add(menu);
-		menu.add(menuPlayerStats);
-		setJMenuBar(menuBar);
+		if (!players.get(ownedPlayer).getName().startsWith("Guest")) {
+			JMenuBar menuBar = new JMenuBar();
+			JMenu menu = new JMenu("Menu");
+			menuBar.add(menu);
+			menu.add(menuPlayerStats);
+			setJMenuBar(menuBar);
+		}
 		
 		// Use a border layout
 		this.setLayout(new BorderLayout());

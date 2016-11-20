@@ -1,19 +1,15 @@
 To Do:
-	Update wins and losses on server when a player wins (Jesse + James)
+	Networking Stuff:
+		Update wins and losses on server when a player wins (Jesse + James)
+		Handle Player exiting game properly
 
-	Utilize networking thorughout code
-		Income Tax Uses Network
-
-	Pick fonts / Colors For Windows
-		Make the game look pretty
+	Make the windows look better
 
 	Rename Project to match assignment specifications
 
 	Clean up the repository
-		Make sure all old classes are removed
-		Ensure all adapted code cites it's source
-
-	Ensure Guest Functionality is Limited
+		Delete Main Package
+		Delete PlayerInformation.java
 
 	Update ReadMe.txt
 
