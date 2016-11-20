@@ -101,6 +101,11 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void initializeComponents() {
+		// Give the players a starting amount of money
+		for (Player p : players) {
+			p.addMoney(1500);
+		}
+		
 		// Initialize our player tracking to default values.
 		currentPlayer = 0;
 		ownedPlayer = client.getID();
@@ -111,6 +116,7 @@ public class MainWindow extends JFrame {
 			playersToRoll.add(i);
 		}
 		rollTies = new Vector<Integer>();
+		
 		// Initialize our various buttons.
 		rollButton = new JButton("Roll Dice");
 		manageBuildingsButton = new JButton("Manage Buildings");
@@ -268,7 +274,7 @@ public class MainWindow extends JFrame {
 	private void endTurn() {
 		//Find next player.
 		do {currentPlayer = (currentPlayer+1) % players.size();}
-		while (!players.get(currentPlayer).isBankrupt());
+		while (players.get(currentPlayer).isBankrupt());
 		
 		progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.\n");
 		managePropertiesButton.setEnabled(true);
@@ -303,8 +309,8 @@ public class MainWindow extends JFrame {
 		int roll1 = rand.nextInt(6)+1;
 		int roll2 = rand.nextInt(6)+1;
 
-		rollDice(roll1, roll2);
 		client.sendMessage("Rolled::"+roll1+"::"+roll2);
+		rollDice(roll1, roll2);
 	}
 	
 	// Public rollDice can be called by client when game change occurs
@@ -461,7 +467,7 @@ public class MainWindow extends JFrame {
 				}
 			} else {
 				// The property is owned, so check to pay rent
-				if (properties[newLocation].isMortgaged()) {
+				if (properties[newLocation].isMortgaged() || properties[newLocation].getOwner() == p) {
 					//Nothing
 				} else {
 					int rent = 0;
