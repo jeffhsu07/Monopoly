@@ -6,17 +6,12 @@ To Do:
 		Go To Jail
 			Different Ways to get out / forced to leave
 		Use Exit Game Button
-		Special Property Taxes / Costs
 
 	Finish the game setup window (Matt)
 
 	Utilize networking thorughout code (James + Matt)
-		Have connections set up on login screen
 		Use connections throughout game setup window to keep in sync
 		Use messages to have game actions occur simultaneously across clients
-
-	Finish Player Information Window (Nick)
-		Give each group a header so monopolies can be seen.
 
 	Pick fonts / Colors For Windows
 		Make the game look pretty
@@ -30,3 +25,7 @@ To Do:
 		Ensure all adapted code cites it's source
 
 	Add comment to top of every file with our names and group name.
+
+Known Issue:
+	Management Windows Crash if user has no properties
+	Rolling doubles favors last player to roll

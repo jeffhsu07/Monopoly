@@ -98,6 +98,8 @@ public class GameBoard extends JPanel {
 	}
 	
 	private void paintBoard(Graphics g) {
+		this.setPreferredSize(new Dimension(this.getHeight(),this.getHeight()));
+		
 		// Draw the board Background
 		g.setColor(new Color(205, 230, 208));
 		g.fillRect(0, 0, getWidth(), getHeight());
@@ -148,7 +150,7 @@ public class GameBoard extends JPanel {
 		for (int i = 1; i < 9; i++) {
 			int currentHeight = gridHeight*(1+i);
 			g.drawLine(0, currentHeight, gridWidth, currentHeight);
-			g.drawLine(width-gridWidth, currentHeight, width, currentHeight);
+			g.drawLine(gridWidth*10, currentHeight, width, currentHeight);
 		}
 		
 		// Draw our vertical lines
@@ -211,7 +213,7 @@ public class GameBoard extends JPanel {
 		// Draw a mouseover text for each property
 		for (int i = 0; i < 40; i++) {
 			if (isMouseWithinLocation(i)) {
-				g.drawString("Mouse Over Property: " + properties[i].getName(), 100, 100);
+				g.drawString("Mouse Over Property: " + properties[i].getName(), gridWidth+20, gridWidth+20);
 			}
 		}
 	}
@@ -351,7 +353,7 @@ public class GameBoard extends JPanel {
 			result = location * (this.getWidth()/11);
 		} else if (location < 21) {
 			// In the right Column
-			result = this.getWidth() - this.getWidth()/11;
+			result = (this.getWidth()/11)*10;
 		} else if (location < 31) {
 			// In the bottom Row
 			result = (location - 30) * (0-1) * (this.getWidth()/11);
