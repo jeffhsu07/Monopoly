@@ -15,12 +15,15 @@ package client;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import utilities.AppearanceSettings;
 
 //Made by Jesse
 public class ProgressArea extends JPanel {
@@ -41,6 +44,10 @@ public class ProgressArea extends JPanel {
 	private void initializeComponents() {
 		// Set up the Progress Label.
 		progressLabel = new JLabel("Game Progress");
+		Font boldNormal = new Font(progressLabel.getFont().getFontName(), Font.BOLD, 
+				progressLabel.getFont().getSize());
+		AppearanceSettings.setFont(boldNormal, progressLabel);
+		AppearanceSettings.setTextAlignment(progressLabel);
 		
 		// Set up the text area.
 		progressText = new JTextArea();
