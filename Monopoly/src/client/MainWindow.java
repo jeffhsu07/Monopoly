@@ -237,6 +237,10 @@ public class MainWindow extends JFrame {
 		});
 	}
 	
+	public ArrayList<Player> getPlayerList() {
+		return players;
+	}
+	
 	private class inJailPopup extends JFrame {
 		private JLabel inJailLabel, imageLabel;
 		private JButton payButton, rollDiceButton, jailFreeButton;
