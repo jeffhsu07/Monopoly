@@ -341,6 +341,7 @@ public class MainWindow extends JFrame {
 					progressArea.addProgress(players.get(currentPlayer).getName() +" gets to roll again.\n");
 					rollButton.setEnabled(true);
 				} else {
+					p.setDoubles(0);
 					endTurnButton.setEnabled(true);
 				}
 			}
