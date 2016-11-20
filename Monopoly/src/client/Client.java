@@ -43,6 +43,7 @@ public class Client extends Thread{
 			System.out.println("ioe construct: " + ioe.getMessage());
 		}
 	}
+
 	public void sendMessage(String message) {
 		try {
 			oos.writeObject(message);
@@ -99,7 +100,7 @@ public class Client extends Thread{
 									System.out.println("Players' names are: " + p.getName());
 								}
 							}
-							mainWindow = new MainWindow(playerList);
+							mainWindow = new MainWindow(playerList, this);
 							//start main game gui
 						}
 					}else{//this player is the first player who logged in, button in startwindow should be set to start instead of ready

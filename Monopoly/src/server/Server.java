@@ -234,7 +234,7 @@ public class Server extends Thread{
 	//give an id to the login user or guest, ID is based on the capacity of arraylist
 	public void setID(ServerThread serverThread){
 		if(actualPlayerTheads.size() <= 8){
-			int serverThreadID = actualPlayerTheads.size() ;
+			int serverThreadID = actualPlayerTheads.size() -1;
 			serverThread.setServerThreadID(serverThreadID);
 		}else{
 			

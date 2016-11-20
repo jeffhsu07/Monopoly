@@ -43,7 +43,7 @@ public class Main {
 		p5.setCurrentLocation(0);
 		player.add(p5);
 		
-		new MainWindow(player).setVisible(true);
+		//new MainWindow(player).setVisible(true);
 		
 		//new LoginWindow().setVisible(true);
 	}
