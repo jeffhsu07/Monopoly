@@ -241,10 +241,6 @@ public class MainWindow extends JFrame {
 		});
 	}
 	
-	public ArrayList<Player> getPlayerList() {
-		return players;
-	}
-	
 	private class inJailPopup extends JFrame {
 		private JLabel inJailLabel, imageLabel;
 		private JButton payButton, rollDiceButton, jailFreeButton;
@@ -563,19 +559,29 @@ public class MainWindow extends JFrame {
 		
 		//Determine if player went bankrupt
 		if (debt > 0) {
-			//TODO let player sell buildings and mortgage properties
-			//determine if player cannot repay their debt
-			if (true /*can afford to pay back*/) {
+			int worth = 0;
+			for (Property property : p.getProperties()) {
+				if (!property.isMortgaged()) {
+					if (property.getHotel()) {
+						worth += (5 * (property.getHouseCost()/2));
+					} else {
+						worth += (property.getNumHouses() * (property.getHouseCost()/2));
+					}
+					worth += property.getMortgageValue();
+				}
+			}
+			if (worth < debt) {
+				//TODO: set bankrupt and handle bankrupt player
+				//give the creditor all mortgaged properties if not null
+				progressArea.addProgress("    is bankrupt.\n");
+			} else {
 				payingDebt = true;
 				debtOwed = debt;
 				endTurnButton.setText("Repay Debt");
 				payingPlayer = players.get(currentPlayer);
 				paidPlayer = creditor;
 				progressArea.addProgress("    needs to sell / mortgage to pay debt.\n");
-			}/* else {
-				progressArea.addProgress("    is bankrupt.\n");
-				//TODO handle bankrupt player
-			}*/
+			}
 		}
 
 		//Find next player. If doubles was rolled and player is not in jail, player goes again.
