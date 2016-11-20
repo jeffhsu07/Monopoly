@@ -53,10 +53,11 @@ public class ChanceCardStuff
 			if(p.getCurrentLocation() > 24)
 				p.addMoney(Constants.goMoney);
 			p.setCurrentLocation(24);
+			mw.rollDice(0,0);
 		}
 		else if(deckPosition == 2)
 		{
-			progress.addProgress("Advance to nearest Utility. If unwoned, you may buy it from the Bank. If owned, throw dice and ay owner ten times the amount thrown.\n");
+			progress.addProgress("Advance to nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and ay owner ten times the amount thrown.\n");
 			if(p.getCurrentLocation() >= 13 && p.getCurrentLocation() < 29)
 			{
 				p.setCurrentLocation(29);
@@ -68,6 +69,7 @@ public class ChanceCardStuff
 			}
 			else
 				p.setCurrentLocation(13);
+			mw.rollDice(0,0);
 		}
 		else if(deckPosition == 3 || deckPosition == 12)
 		{
@@ -94,6 +96,7 @@ public class ChanceCardStuff
 			{
 				p.setCurrentLocation(35);
 			}
+			mw.rollDice(0,0);
 		}
 		else if(deckPosition == 4)
 		{
@@ -104,6 +107,8 @@ public class ChanceCardStuff
 			}
 		
 			p.setCurrentLocation(11);
+			
+			mw.rollDice(0,0);
 		}
 		else if(deckPosition == 5)
 		{
@@ -140,6 +145,7 @@ public class ChanceCardStuff
 			progress.addProgress("Go Directly to Jail\n");
 			p.setCurrentLocation(10);
 			p.setInJail(true);
+			mw.rollDice(0,0);
 		}
 		else if(deckPosition == 9)
 		{
@@ -169,11 +175,13 @@ public class ChanceCardStuff
 				p.addMoney(Constants.goMoney);
 			}
 			p.setCurrentLocation(5);
+			mw.rollDice(0,0);
 		}
 		else if(deckPosition == 16)
 		{
 			progress.addProgress("Take a walk on the boardwalk\n");
 			p.setCurrentLocation(39);
+			mw.rollDice(0,0);
 		}
 		else if(deckPosition == 13) //pay each player 50
 		{
