@@ -14,8 +14,6 @@
 package resources;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import utilities.Constants;
 
 
@@ -30,7 +28,6 @@ public class Property {
 	private int price;
 	private String group;
 	private int[] rentCosts;
-	private List<Property> propertiesInGroup;
 	boolean mortgaged;
 	int boardPosition; 
 	private boolean canBuild;
@@ -49,7 +46,7 @@ public class Property {
 		hasHotel = false;
 		numHouses = 0;
 		boardPosition = bp;
-		propertiesInGroup = new ArrayList<Property>();
+		new ArrayList<Property>();
 		canBuild = false;
 	}
 	

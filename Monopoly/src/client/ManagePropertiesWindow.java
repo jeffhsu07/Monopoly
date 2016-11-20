@@ -41,11 +41,16 @@ import utilities.Constants;
 
 // Edited by Jesse
 public class ManagePropertiesWindow extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private JLabel selectPropertyLabel;
 	private JLabel mortgageStateLabel;
 	private JButton mortgageButton;
 	private JButton closeWindowButton;
-	private JComboBox propertyDropDownComboBox;
+	private JComboBox<String> propertyDropDownComboBox;
 	private  Player player;
 	private int mortgageValue;
 	private Property currentProperty; 
@@ -54,7 +59,6 @@ public class ManagePropertiesWindow extends JFrame{
 	private boolean isMortgaged;
 	private MainWindow mw;
 	private ArrayList<Integer> groupLocation;
-	private int numPropertiesInGroupOwned = 0;
 	private Client client;
 	public ManagePropertiesWindow(Player player, MainWindow mw, Client client){
 		super("Manage Properties Window");
@@ -71,7 +75,7 @@ public class ManagePropertiesWindow extends JFrame{
 		mortgageStateLabel = new JLabel();
 		mortgageButton = new JButton();
 		closeWindowButton = new JButton("Close Window");
-		propertyDropDownComboBox = new JComboBox();
+		propertyDropDownComboBox = new JComboBox<String>();
 		if(player.getProperties().size() > 0){
 			mortgageValue =  player.getProperties().get(0).getMortgageValue();
 			descriptionLabel = new JLabel("<html>Mortgage Value: " + mortgageValue + "<br>You won't be able to utilize this property if mortgage it</html>");

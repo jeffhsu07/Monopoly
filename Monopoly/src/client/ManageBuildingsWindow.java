@@ -28,7 +28,6 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -42,11 +41,15 @@ import utilities.AppearanceSettings;
 import utilities.Constants;
 //Edited by Jesse
 public class ManageBuildingsWindow extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JLabel selectPropertyLabel;
 	private JButton buyHouseButton;
 	private JButton sellHouseButton;
 	private JButton closeWindowButton;
-	private JComboBox propertyDropDownComboBox;
+	private JComboBox<String> propertyDropDownComboBox;
 	private JLabel buyHouseDescriptionLabel;
 	private JLabel sellHouseDescriptionLabel;
 	private Player player;
@@ -55,7 +58,6 @@ public class ManageBuildingsWindow extends JFrame{
 	private Property currentProperty;
 	private MainWindow mw;
 	private Client client;
-	private ImageIcon icon;
 	public ManageBuildingsWindow(Player player, MainWindow mw, Client client){
 		super("Manage Properties Window");
 		this.player = player;
@@ -71,7 +73,7 @@ public class ManageBuildingsWindow extends JFrame{
 		buyHouseButton = new JButton("Buy House");
 		sellHouseButton = new JButton("Sell House");
 		closeWindowButton = new JButton("Close Window");
-		propertyDropDownComboBox = new JComboBox();
+		propertyDropDownComboBox = new JComboBox<String>();
 		if(player.getProperties().size() != 0){
 			currentProperty = player.getProperties().get(0);
 			buyHouseDescriptionLabel = new JLabel("<html>Clicking this button will add a house to the property<br>House cost: " + currentProperty.getHouseCost() + "</br><html>");
@@ -82,8 +84,6 @@ public class ManageBuildingsWindow extends JFrame{
 			buyHouseDescriptionLabel = new JLabel("<html>Clicking this button will add a house to a property</html>");
 			sellHouseDescriptionLabel = new JLabel("<html>Clicking this button will remove a house from a property</html>");
 		}
-		icon = new ImageIcon("images/board/dopebackground.jpg");
-		groupLocation = new ArrayList<Integer>();
 	}
 	
 	private void createGUI(){
@@ -183,7 +183,6 @@ public class ManageBuildingsWindow extends JFrame{
 				mw.revalidate();
 			}
 		});
-		final int temp = 0;
 		propertyDropDownComboBox.addItemListener(new ItemListener(){
 
 			@Override

@@ -30,7 +30,6 @@ public class Player implements Serializable {
 	private int money;
 	private boolean inJail;
 	private Vector<Property> properties;
-	private Vector<String> completeSets;
 	private int jailCards;
 	private int currentLocation;
 	private int gameToken;
@@ -47,7 +46,7 @@ public class Player implements Serializable {
 		properties = new Vector<Property>();
 		jailCards = 0;
 		currentLocation = 0;
-		completeSets = new Vector<String>();
+		new Vector<String>();
         bankrupt = false;
 
 	}
