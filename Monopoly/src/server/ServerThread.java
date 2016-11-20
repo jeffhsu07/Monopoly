@@ -100,10 +100,10 @@ public class ServerThread extends Thread  {
 	
 	private void interpretMessage(String message){
 		if(message.contains("Guest Login: ")){	//guest login
-			server.addGuestName(this); //set guest name from server
-			server.addToPalyerThread(this);
-			server.setID(this);
-			if(!server.cannotAddPlayer()){
+			if(!server.cannotAddPlayer()){	
+				server.addGuestName(this); //set guest name from server
+				server.addToPalyerThread(this);
+				server.setID(this);
 				sendMessage("Login success: "+clientName);
 				server.sendOtherPlayerInfo(this);
 				server.sendMessageToAllOtherClients(message+clientName, this); //send this guest client's name to all other clients
@@ -178,6 +178,7 @@ public class ServerThread extends Thread  {
 		return clientName;
 	}
 	public void setGuestName(String name){
+		clientName = name;
 		if(name.contains("Guest")){ //guest doesn't have a name so we give them one
 			sendMessage("Guest name: "+ name);
 		}

@@ -44,7 +44,6 @@ public class Server extends Thread{
 	private ArrayList<ServerThread> serverThreads; 
 	private ArrayList<ServerThread> actualPlayerTheads; //keep track of player who actually logs in order
 	private JDBCDriver jDBCDriver;
-	private ArrayList<String> teamNames; 
 	private ArrayList<Player> players;
 	 //who logged in, what token they picked
 	private int numberOfGuests = 1; //used to assign guest name 
@@ -262,9 +261,7 @@ public class Server extends Thread{
 	
 	public void removeFromPlayerThread(ServerThread st){
 		if(st != null){
-			synchronized(teamNames){
-				teamNames.remove(st.getClientName());
-			}
+			
 			synchronized(actualPlayerTheads){
 				actualPlayerTheads.remove(st);
 			}
@@ -294,11 +291,7 @@ public class Server extends Thread{
 					return;
 				}
 			}
-			synchronized(teamNames){
-				if(!st.getClientName().contains("Guest")){ // if contain Guest, then its name is already added to teamNames through addGuestName method 
-					teamNames.add(st.getClientName());
-				}
-			}
+		
 		}
 		
 	}
@@ -306,9 +299,6 @@ public class Server extends Thread{
 	public void addGuestName(ServerThread st){
 		String newGuestName = "Guest" + Integer.toString(numberOfGuests);
 		System.out.println("set new guestname: " +newGuestName );
-		synchronized(teamNames){
-			teamNames.add(newGuestName);
-		}
 		numberOfGuests++;
 		st.setGuestName(newGuestName);
 	}
@@ -336,7 +326,6 @@ public class Server extends Thread{
 	 			serverThreads = new ArrayList<ServerThread>();
 	 			actualPlayerTheads = new ArrayList<ServerThread>();
 	 			players = new ArrayList<Player>();
-	 			teamNames = new ArrayList<String>();
 	 			stop = false;
 	 			jDBCDriver = new JDBCDriver();
 	 			System.out.println("Server constructed");
