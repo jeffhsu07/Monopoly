@@ -2,19 +2,18 @@ To Do:
 	Finish game logic in main window
 		Chance Cards (Brandon)
 		Community Chest Cards (Brandon)
-		Selling Properties if you can't pay rent
-		Bankruptcy
-
+		Bankruptcy (Jesse)
+		Announce Winner ()
+		Change turn during end turn button (Jesse)
+	
 	Finish the game setup window (Matt)
 
-	Utilize networking thorughout code (James + Matt)
+	Utilize networking thorughout code (everyone)
 		Use connections throughout game setup window to keep in sync
 		Use messages to have game actions occur simultaneously across clients
 
 	Pick fonts / Colors For Windows
 		Make the game look pretty
-
-	Ensure Progress Area is internally gramatically consistent
 
 	Rename Project to match assignment specifications
 
@@ -25,6 +24,4 @@ To Do:
 	Add comment to top of every file with our names and group name.
 
 Known Issue:
-	Management Windows Crash if user has no properties
-	Rolling for first turn favors last player to roll
 	Players aren't forced to pay after 3 turns failing to roll to leave jail
