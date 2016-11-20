@@ -34,7 +34,7 @@ public class Client extends Thread{
 		
 		try {
 			//teamNames = new ArrayList<String>();
-			s = new Socket(Constants.defaultHostname, Constants.defaultPort);
+			s = new Socket("172.20.10.3", Constants.defaultPort);
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
 			
@@ -101,7 +101,7 @@ public class Client extends Thread{
 							}
 							mainWindow = new MainWindow(playerList);
 							mainWindow.setVisible(true);
-							mainWindow.setVisible(false);
+							startWindow.dispose();
 							//start main game gui
 						}
 					}else{//this player is the first player who logged in, button in startwindow should be set to start instead of ready
@@ -169,7 +169,7 @@ public class Client extends Thread{
 			//let other players know
 			//ready to start unless quit
 		}else if(message.contains("Ready: ") && startWindow != null){
-			if(thisPlayerID ==1){
+			if(thisPlayerID == 0){
 				//TODO
 				//if this client is host do sth
 				startWindow.addReadyPlayer();

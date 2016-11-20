@@ -3,14 +3,20 @@ package main;
 import java.util.ArrayList;
 
 import client.Client;
+import client.LoginWindow;
 import client.MainWindow;
-import client.StartWindow;
 import resources.Player;;
 
 public class Main {
 	public static void main (String [] args){
-		//new StartWindow(new Player("Matt", 1, 0,0)).setVisible(true);
+		Client client = new Client();
+		client.start();
+		new LoginWindow(client).setVisible(true);
 		
+		Client client2 = new Client();
+		client2.start();
+		new LoginWindow(client2).setVisible(true);
+		/*
 		// For Testing Main Window
 		ArrayList<Player> player = new ArrayList<Player>();
 		Player p1 = new Player("Jesse",0,0,1);
@@ -46,5 +52,6 @@ public class Main {
 		//new MainWindow(player).setVisible(true);
 		
 		//new LoginWindow().setVisible(true);
+		*/
 	}
 }
