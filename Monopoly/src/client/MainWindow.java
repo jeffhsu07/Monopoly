@@ -292,6 +292,9 @@ public class MainWindow extends JFrame {
 		do {currentPlayer = (currentPlayer+1) % players.size();}
 		while (players.get(currentPlayer).isBankrupt());
 		
+		playerInformationGrid.setCurrentPlayer(currentPlayer);
+		playerInformationGrid.repaint();
+		
 		progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.\n");
 		managePropertiesButton.setEnabled(true);
 		manageBuildingsButton.setEnabled(true);
@@ -452,6 +455,8 @@ public class MainWindow extends JFrame {
 				currentPlayer = rollTies.get(0);
 				progressArea.addProgress("\n"+players.get(currentPlayer).getName() + " goes first.\n");
 				determineOrder = false;
+				playerInformationGrid.setCurrentPlayer(currentPlayer);
+				playerInformationGrid.repaint();
 			}
 		} else {
 			// We are not done. Check which player needs to roll next

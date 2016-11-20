@@ -38,6 +38,7 @@ public class PlayerInformationGrid extends JPanel {
 	ArrayList<Player> players;
 	ArrayList<JButton> playerButtons;
 	ArrayList<PlayerInfoLayout> playerInfoLayouts;
+	int currentPlayer = -1;
 	
 	public PlayerInformationGrid(ArrayList<Player> players) {
 		this.players = players;
@@ -82,6 +83,10 @@ public class PlayerInformationGrid extends JPanel {
 		}
 	}
 	
+	public void setCurrentPlayer(int i) {
+		currentPlayer = i;
+	}
+	
 	private class PlayerInfoLayout extends JPanel {
 		private static final long serialVersionUID = -6341876191272116746L;
 		
@@ -115,6 +120,13 @@ public class PlayerInformationGrid extends JPanel {
 			int height = this.getHeight();
 			int fontHeight = g.getFont().getSize();
 			
+			if (currentPlayer == playerInfoLayouts.indexOf(this)) {
+				g.setColor(Color.LIGHT_GRAY);
+			} else {
+				g.setColor(Color.WHITE);
+			}
+			g.fillRect(2, 2, getWidth()-4, getHeight()-4);
+			g.setColor(Color.BLACK);
 			g.drawRect(2, 2, getWidth()-4, getHeight()-4);
 			g.drawImage(playerIcon, (width/4-(height-10)/2), 5, height-10, height-10, null);
 			

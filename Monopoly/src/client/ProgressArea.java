@@ -57,7 +57,7 @@ public class ProgressArea extends JPanel {
 		
 		// Set up the progress area and add the text to it.
 		progressArea = new JScrollPane(progressText);
-		progressArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		progressArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 	}
 
 	private void createGUI() {
