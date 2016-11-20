@@ -1,15 +1,8 @@
 To Do:
-	Finish game logic in main window
-		Chance Cards (Brandon)
-		Community Chest Cards (Brandon)
-
-	Update wins and losses on server when a player wins
+	Update wins and losses on server when a player wins (Jesse + James)
 
 	Utilize networking thorughout code
 		Income Tax Uses Network
-
-		Chance Cards Use Network
-		Community Chest Cards Use Network
 
 	Pick fonts / Colors For Windows
 		Make the game look pretty
@@ -26,3 +19,4 @@ To Do:
 
 Known Issue:
 	Players aren't forced to pay after 3 turns failing to roll to leave jail
+	Community chest don't print to progress area
