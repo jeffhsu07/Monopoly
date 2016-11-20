@@ -133,7 +133,7 @@ public class MainWindow extends JFrame {
 		// Add the progress area
 		c.gridy = 2;
 		c.gridx = 1;
-		c.weightx = .25;
+		c.weightx = 1;
 		c.gridheight = 5;
 		controlPanel.add(progressArea, c);
 		
@@ -360,17 +360,19 @@ public class MainWindow extends JFrame {
 		// Opens the Manage properties window when clicked
 		managePropertiesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this).setVisible(true);
+				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
 			}
 		});
 		
 		// Opens the Manage buildings window when clicked
 		manageBuildingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this).setVisible(true);
+				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
 			}
 		});
 	}
 	
-	
+	public void updateProgressArea(String update){
+		progressArea.addProgress(update + ".\n");
+	}
 }

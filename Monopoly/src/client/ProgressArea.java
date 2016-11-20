@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,6 +45,8 @@ public class ProgressArea extends JPanel {
 		
 		this.add(progressLabel, BorderLayout.NORTH);
 		this.add(progressArea, BorderLayout.CENTER);
+		
+		this.setPreferredSize(new Dimension(1,1));
 	}
 
 	private void addListeners() {
