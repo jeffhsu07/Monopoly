@@ -1,48 +1,59 @@
+package resources;
 /**
  * CSCI 201 Final Project
  * Group 14:
- * 				Monopoly
+ *                 Monopoly
  * Team Members:
- * 				Matthew van Niekerk
- * 				Jesse Werner
- * 				Brandon Ho
- * 				Nicholas Terrile
- * 				Kuiren "James" Su
- * 				Chin-Yuan "Jeffrey" Hsu
+ *                 Matthew van Niekerk
+ *                 Jesse Werner
+ *                 Brandon Ho
+ *                 Nicholas Terrile
+ *                 Kuiren "James" Su
+ *                 Chin-Yuan "Jeffrey" Hsu
  */
 
-import resources.Player;
-import resources.Property;
+
+import java.util.ArrayList;
+
+import client.ProgressArea;
 import utilities.Constants;
 
 public class ChanceCardStuff 
 {
 	
 	private int deckPosition;
+	private ArrayList<Player> players;
+	private ProgressArea progress;
 	
-	public ChanceCardStuff()
+	public ChanceCardStuff(ArrayList<Player> woo, ProgressArea lesgo)
 	{
 		deckPosition = 0;
+		players = woo;
+		progress = lesgo;
 	}
 
 	public void handleChance(Player p)
 	{
-		if(deckPosition == 16)
+		progress.addProgress(p.getName() + " has drawn a chance card that reads: ");
+		if(deckPosition == 17)
 			deckPosition = 0;
 		
 		if(deckPosition == 0)
 		{
+			progress.addProgress("Advance to Go\n");
 			p.addMoney(Constants.goMoney);
 			p.setCurrentLocation(0);
 		}
 		else if(deckPosition == 1)
 		{
+			progress.addProgress("Advance to Illinois Ave.\n");
 			if(p.getCurrentLocation() > 24)
 				p.addMoney(Constants.goMoney);
 			p.setCurrentLocation(24);
 		}
 		else if(deckPosition == 2)
 		{
+			progress.addProgress("Advance to nearest Utility. If unwoned, you may buy it from the Bank. If owned, throw dice and ay owner ten times the amount thrown.\n");
 			if(p.getCurrentLocation() >= 13 && p.getCurrentLocation() < 29)
 			{
 				p.setCurrentLocation(29);
@@ -55,9 +66,10 @@ public class ChanceCardStuff
 			else
 				p.setCurrentLocation(13);
 		}
-		else if(deckPosition == 3)
+		else if(deckPosition == 3 || deckPosition == 12)
 		{
 			//5, 15, 25, 35
+			progress.addProgress("Advance to the nearest Railroad and pay owner twice the rental to which he/she is otherwise entitled. If Railroad is unowned, you may buy it from the Bank.");
 			if(p.getCurrentLocation() < 5 )
 			{
 				p.setCurrentLocation(5);
@@ -82,6 +94,7 @@ public class ChanceCardStuff
 		}
 		else if(deckPosition == 4)
 		{
+			progress.addProgress("Advance to St. Charles Place\n");
 			if(p.getCurrentLocation() > 11)
 			{
 				p.addMoney(Constants.goMoney);
@@ -91,14 +104,17 @@ public class ChanceCardStuff
 		}
 		else if(deckPosition == 5)
 		{
+			progress.addProgress("Bank pays you dividend of $50\n");
 			p.addMoney(50);
 		}
 		else if(deckPosition == 6)
 		{
+			progress.addProgress("Get out of Jail free Card!\n");
 			p.setJailCards(p.getJailCards() + 1);
 		}
 		else if(deckPosition == 7)
 		{
+			progress.addProgress("Go back 3 spaces\n");
 			if(p.getCurrentLocation() >= 3)
 			{
 				p.setCurrentLocation(p.getCurrentLocation() - 3);
@@ -144,6 +160,25 @@ public class ChanceCardStuff
 				p.addMoney(Constants.goMoney);
 			}
 			p.setCurrentLocation(5);
+		}
+		else if(deckPosition == 16)
+		{
+			p.setCurrentLocation(39);
+		}
+		else if(deckPosition == 13) //pay each player 50
+		{
+			for(Player aa : players)
+			{
+				if(!aa.getName().equals(p.getName()))
+				{
+					aa.addMoney(50);
+					p.addMoney(-50);
+				}
+			}
+		}
+		else if(deckPosition == 14)
+		{
+			p.addMoney(150);
 		}
 		else if(deckPosition == 15)
 		{

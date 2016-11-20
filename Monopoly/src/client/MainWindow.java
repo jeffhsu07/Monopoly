@@ -35,6 +35,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import resources.ChanceCardStuff;
+import resources.CommunityChestStuff;
 import resources.Player;
 import resources.PropertiesSetUp;
 import resources.Property;
@@ -76,7 +78,8 @@ public class MainWindow extends JFrame {
 	private int debtOwed;
 	private Player payingPlayer;
 	private Player creditor;
-	
+	private ChanceCardStuff chanceCardHandler;
+	private CommunityChestStuff comChestHandler;
 	// Reference to client object for communication
 	private Client client;
 	private int ownedPlayer; // Index of client in players array
@@ -88,6 +91,8 @@ public class MainWindow extends JFrame {
 		// Initialize our variables
 		PropertiesSetUp p = new PropertiesSetUp();
 		properties = p.getProperties();
+		chanceCardHandler = new ChanceCardStuff(players, progressArea);
+		comChestHandler = new CommunityChestStuff(players, progressArea);
 		this.players = players;
 		this.client = client;
 		
@@ -508,11 +513,13 @@ public class MainWindow extends JFrame {
 		} else {
 			if (properties[newLocation].getName().equals("Chance")) {
 				//TODO Deal with chance location
+				chanceCardHandler.handleChance(p);
 			} else if (properties[newLocation].getName().equals("Go To Jail")) {
 				p.setCurrentLocation(Constants.jailLocation);
 				p.setInJail(true);
 			} else if (properties[newLocation].getName().equals("Community Chest")) {
 				//TODO Deal with community chest
+				comChestHandler.handleCommunity(p);
 			} else if (properties[newLocation].getName().equals("Income Tax")) {
 				Object[] options = {"Pay $"+Constants.incomeTax,
                 "Pay 10% of Total Worth"};
