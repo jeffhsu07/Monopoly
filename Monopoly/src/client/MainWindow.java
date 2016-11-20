@@ -342,10 +342,14 @@ public class MainWindow extends JFrame {
 		Random rand = new Random();
 		int roll1 = rand.nextInt(6)+1;
 		int roll2 = rand.nextInt(6)+1;
+
 		
 		Player p = players.get(currentPlayer);
 		progressArea.addProgress(p.getName() + " rolled a " + roll1 +
 				" and a " + roll2 + ".\n");
+		if (roll1 != roll2 && p.getDoubles() > 0) {
+			p.setDoubles(0);
+		}
 		
 		//Determine who goes first
 		if (determineOrder) {
@@ -619,7 +623,6 @@ public class MainWindow extends JFrame {
 			rollButton.setEnabled(true);
 		} else {
 			endTurnButton.setEnabled(true);
-			p.setDoubles(0);
 		}
 	}
 }
