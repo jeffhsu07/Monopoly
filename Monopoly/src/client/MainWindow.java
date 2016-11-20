@@ -42,6 +42,7 @@ public class MainWindow extends JFrame {
 	private PlayerInformationGrid playerInformationGrid;
 	private GameBoard gameBoard;
 	private Property[] properties;
+	
 	// Menu options
 	JMenuItem menuPlayerStats;
 	
@@ -67,9 +68,7 @@ public class MainWindow extends JFrame {
 		Property temp2 = new Property("Test Property 2", 100, "Group9", tempCosts, 20, 80, 5);
 		temp2.setMortgaged(true);
 		players.get(currentPlayer).addProperty(properties[1]);
-		properties[1].setOwner(players.get(currentPlayer));
 		players.get(currentPlayer).addProperty(properties[3]);
-		properties[3].setOwner(players.get(currentPlayer));
 		// Initialize our various buttons.
 		rollButton = new JButton("Roll Dice");
 		manageBuildingsButton = new JButton("Manage Buildings");
@@ -141,9 +140,7 @@ public class MainWindow extends JFrame {
 		// Add control panel to the main board
 		this.add(controlPanel, BorderLayout.CENTER);
 	}
-	public void updateProgressArea(String update){
-		progressArea.addProgress(update + ".\n");
-	}
+
 	private void addListeners() {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
@@ -173,7 +170,7 @@ public class MainWindow extends JFrame {
 						p.setDoubles(0);
 						p.setCurrentLocation(Constants.jailLocation);
 						p.setInJail(true);
-						progressArea.addProgress("   was sent to jail for rolling doubles too many times.\n\n");
+						progressArea.addProgress("    was sent to jail for rolling doubles too many times.\n\n");
 						gameBoard.repaint();
 						playerInformationGrid.repaint();
 						return;
@@ -198,6 +195,8 @@ public class MainWindow extends JFrame {
 				//"if(properties[newLocation].getName().equals("Chance")){}" in the case of testing to see if the player landed on chance space
 				//-bho
 				
+				int debt = 0;
+				Player creditor = null;
 				if (properties[newLocation].getPrice() != 0) {
 					if (properties[newLocation].getOwner() == null) {
 						if (p.getMoney() >= properties[newLocation].getPrice()) {
@@ -242,6 +241,13 @@ public class MainWindow extends JFrame {
 							} else {
 								rent = properties[newLocation].getRent();
 							}
+							debt = rent;
+							if (p.getMoney() < debt) {
+								debt -= p.getMoney();
+							} else {
+								debt = 0;
+							}
+							creditor = properties[newLocation].getOwner();
 							p.addMoney(-rent);
 							properties[newLocation].getOwner().addMoney(rent);
 							progressArea.addProgress("    paid $"+rent+" in rent.\n");
@@ -267,6 +273,12 @@ public class MainWindow extends JFrame {
 								options,  //the titles of buttons
 								options[0]);
 						if (n == 0) {
+							debt = Constants.incomeTax;
+							if (p.getMoney() < debt) {
+								debt -= p.getMoney();
+							} else {
+								debt = 0;
+							}
 							p.addMoney(-Constants.incomeTax);
 							progressArea.addProgress("    paid $"+Constants.incomeTax+" in tax.\n");
 						} else {
@@ -280,6 +292,12 @@ public class MainWindow extends JFrame {
 								}
 							}
 							int tax = totalWorth/10;
+							debt = tax;
+							if (p.getMoney() < debt) {
+								debt -= p.getMoney();
+							} else {
+								debt = 0;
+							}
 							p.addMoney(-tax);
 							progressArea.addProgress("    paid $"+tax+" in tax.\n");
 						}
@@ -290,15 +308,23 @@ public class MainWindow extends JFrame {
 					} else if (properties[newLocation].getName().equals("Free Parking")) {
 						//Nothing
 					} else if (properties[newLocation].getName().equals("Luxury Tax")) {
+						debt = Constants.luxuryTax;
+						if (p.getMoney() < debt) {
+							debt -= p.getMoney();
+						} else {
+							debt = 0;
+						}
 						p.addMoney(-Constants.luxuryTax);
 						progressArea.addProgress("    paid $"+Constants.luxuryTax+" in tax.\n");
 					}
 				}
 				
 				//Determine if player went bankrupt
-				if (p.isBankrupt()) {
+				if (debt > 0) {
+					//TODO let player sell buildings and mortgage properties
+					//determine if player cannot repay their debt
 					progressArea.addProgress("    is bankrupt.\n");
-					//TODO
+					//TODO handle bankrupt player
 				}
 				
 				//Find next player. If doubles was rolled and player is not in jail, player goes again.
@@ -333,14 +359,14 @@ public class MainWindow extends JFrame {
 		// Opens the Manage properties window when clicked
 		managePropertiesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
+				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this).setVisible(true);
 			}
 		});
 		
 		// Opens the Manage buildings window when clicked
 		manageBuildingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
+				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this).setVisible(true);
 			}
 		});
 	}
