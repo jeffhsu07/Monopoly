@@ -58,17 +58,17 @@ public class ChanceCardStuff
 		else if(deckPosition == 2)
 		{
 			progress.addProgress("Advance to nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and ay owner ten times the amount thrown.\n");
-			if(p.getCurrentLocation() >= 13 && p.getCurrentLocation() < 29)
+			if(p.getCurrentLocation() >= 12 && p.getCurrentLocation() < 28)
 			{
-				p.setCurrentLocation(29);
+				p.setCurrentLocation(28);
 			}
 			else if(p.getCurrentLocation() <= 39)
 			{
-				p.setCurrentLocation(13);
+				p.setCurrentLocation(12);
 				p.addMoney(Constants.goMoney);
 			}
 			else
-				p.setCurrentLocation(13);
+				p.setCurrentLocation(12);
 			mw.rollDice(0,0);
 		}
 		else if(deckPosition == 3 || deckPosition == 12)
