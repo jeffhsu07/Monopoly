@@ -273,10 +273,7 @@ public class Client extends Thread{
 			if(startWindow != null){// a client in startwindow logs out 
 				startWindow.userLeft(username);
 				
-			}else if(mainWindow != null){// a client in mainwindow logs out 
-				
 			}
-			//do something if client logs out 
 		}else if(message.contains("Host Logout: ")){
 			//TODO
 			if(startWindow != null){// a client in startwindow logs out 
@@ -295,10 +292,22 @@ public class Client extends Thread{
 			    	thisPlayerID = -1;
 			    }
 	
-			}else if(mainWindow != null){// a client in mainwindow logs out 
-				
 			}
-			//do something if client logs out 
+		}else if (message.contains("ExitGame")){
+			if(mainWindow != null){
+				Object[] options = {"OK"};
+			    int n = JOptionPane.showOptionDialog(mainWindow,
+			                   "Sorry, someone exited the game. The game will be terminate","Message",
+			                   JOptionPane.PLAIN_MESSAGE,
+			                   JOptionPane.QUESTION_MESSAGE,
+			                   null,
+			                   options,
+			                   options[0]);
+			    if(n==0){
+			    	System.exit(0);
+			    }
+			}
+			
 		}
 	}
 	

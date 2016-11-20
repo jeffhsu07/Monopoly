@@ -132,6 +132,9 @@ public class ServerThread extends Thread  {
 			message = message.trim();
 			String winnerName = message;
 			server.incrementWins(winnerName);
+		}else if(message.contains("ExitGame")){
+			server.sendMessageToAllOtherClients(message, this);
+			server.removeEveryPlayer();
 		}else{
 			server.sendMessageToAllOtherClients(message, this); //if it is other message,  send to other players
 		}
