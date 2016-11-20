@@ -39,17 +39,24 @@ public class StartWindow extends JFrame {
 	private int playerToken;
 	private Client client;
 	private ArrayList<Image> tokenImages;
-	private ArrayList<String> otherPlayerInfo;
+	private ArrayList<String> allPlayerInfo;
+	private int readyPlayers;
+	private boolean playerReady;
 
 	public StartWindow(String playerName, ArrayList<String> otherPlayerInfo, Client client) {
 		this.playerName = playerName;
 		this.client = client;
 		playerToken = -1;
-		this.otherPlayerInfo = otherPlayerInfo;
-		this.otherPlayerInfo.add(playerName + "::Picked Token::" + playerToken);
+		if (otherPlayerInfo == null) {
+			allPlayerInfo = new ArrayList<String>();
+		} else {
+			allPlayerInfo = otherPlayerInfo;
+		}
+		allPlayerInfo.add(playerName + "::Picked Token::" + playerToken);
 		initializeVariables();
 		createGUI();
 		addActionListeners();
+		setTokenButtons();
 	}
 	
 	private void initializeVariables() {
@@ -59,11 +66,14 @@ public class StartWindow extends JFrame {
 		playersLabel = new JLabel("Players:", JLabel.CENTER);
 		tokensLabel = new JLabel("Tokens:", JLabel.CENTER);
 		readyButton = new JButton("Ready");
-		
+		readyButton.setEnabled(false);
+		if (allPlayerInfo.size() == 1) {
+			readyButton.setText("Start");
+		}
 		playerInfoPanels = new ArrayList<PlayerInfoLayout>(8);
 		for (int i = 0; i < 8; i++) {
-			if (i < otherPlayerInfo.size()) {
-				String[] temp = otherPlayerInfo.get(i).split("::");
+			if (i < allPlayerInfo.size()) {
+				String[] temp = allPlayerInfo.get(i).split("::");
 				String clientName = temp[0];
 				int tokenID = Integer.parseInt(temp[2]);
 				playerInfoPanels.add(i, new PlayerInfoLayout(clientName, tokenID));
@@ -92,6 +102,8 @@ public class StartWindow extends JFrame {
 		playerGrid = new JPanel();
 		tokenGrid = new JPanel();
 		s = new Socket();
+		readyPlayers = 0;
+		playerReady = false;
 	}
 	
 	private void createGUI() {
@@ -160,10 +172,23 @@ public class StartWindow extends JFrame {
 	}
 	
 	protected void refreshPlayer(String playerName, int playerToken) {
+		//	updates the player's token in the respective PlayerInfoLayout and
+		//	sets the player's token in allPlayerInfo
 		for (int i = 0; i < 8; i++) {
 			if (playerInfoPanels.get(i).getName().equals(playerName)) {
 				playerInfoPanels.get(i).setToken(playerToken);
+				allPlayerInfo.set(i, playerName + "::Picked Token::" + playerToken);
 			}
+		}
+	}
+	
+	protected void addReadyPlayer() {
+		readyPlayers++;
+	}
+	
+	protected void checkReady() {
+		if (readyPlayers == allPlayerInfo.size()-1 && playerToken != -1) {
+			readyButton.setEnabled(true);
 		}
 	}
 	
@@ -171,6 +196,22 @@ public class StartWindow extends JFrame {
 		for (int i = 0; i < 8; i++) {
 			setUpTokenButtons(i);
 		}
+		readyButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				for (int i = 0; i < 8; i++) {
+					tokenButtons.get(i).setEnabled(false);	
+				}
+				if (readyButton.getText().equals("Ready")) {
+					readyButton.setEnabled(false);
+					client.sendMessage("Ready: " + playerName);
+					playerReady = true;
+				} else {
+					//	start game
+					client.sendMessage("Startgame");
+				}
+			}
+		});
 	}
 	
 	private void setUpTokenButtons(int i) {
@@ -179,22 +220,53 @@ public class StartWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				playerToken = i;
 				refreshPlayer(playerName, playerToken);
-				System.out.println(playerName + " " + playerToken);
+				/*for (int x = 0; x < 8; x++) {
+					String[] temp = allPlayerInfo.get(x).split("::");
+					String clientName = temp[0];
+					int tokenID = Integer.parseInt(temp[2]);
+					if (playerName.equals(clientName)) {
+						allPlayerInfo.set(x, playerName + "::Picked Token::" + playerToken);
+						break;
+					}
+				}*/
 				client.sendMessage(playerName + "::Picked Token::" + playerToken);
-				for (int x = 0; x < 8; x++) {
+				/*for (int x = 0; x < 8; x++) {
 					tokenButtons.get(x).setEnabled(true);
 				}
 				tokenButtons.get(i).setEnabled(false);
+				*/
+				setTokenButtons();
+				if (readyButton.getText().equals("Ready")) {
+					readyButton.setEnabled(true);
+				} else {
+					checkReady();
+				}
 			}
 		});
 	}
 	
+	public void setTokenButtons() {
+		if (!playerReady) {
+			for (int i = 0; i < 8; i++) {
+				tokenButtons.get(i).setEnabled(true);
+			}
+			for (int i = 0; i < allPlayerInfo.size(); i++) {
+				String[] temp = allPlayerInfo.get(i).split("::");
+				int tokenID = Integer.parseInt(temp[2]);
+				if (tokenID != -1) {
+					tokenButtons.get(tokenID).setEnabled(false);
+				}
+			}
+		}
+	}
+	
 	public void userJoined(String username) {
-		otherPlayerInfo.add(username + "::Picked Token::" + (-1));
+		allPlayerInfo.add(username + "::Picked Token::" + (-1));
 		for (int i = 0; i < 8; i++) {
 			if (playerInfoPanels.get(i).getName().equals("No Player")) {
 				playerInfoPanels.get(i).setName(username);
 				playerInfoPanels.get(i).setToken(-1);
+				break;
 			}
 		}
 	}
