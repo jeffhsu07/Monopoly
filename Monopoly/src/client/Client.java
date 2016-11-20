@@ -100,6 +100,8 @@ public class Client extends Thread{
 								}
 							}
 							mainWindow = new MainWindow(playerList);
+							mainWindow.setVisible(true);
+							mainWindow.setVisible(false);
 							//start main game gui
 						}
 					}else{//this player is the first player who logged in, button in startwindow should be set to start instead of ready
@@ -119,15 +121,19 @@ public class Client extends Thread{
 	private void interpretMessage(String message){
 		if(message.contains("Login success: ")){
 			System.out.println(message);
+			loginWindow.setAlertLabel(message);
 			message = message.replace("Login success: ", "");
 			message = message.trim();
 			thisPlayerName = message; //set this player's name 
 		}else if(message.contains("Login deny")){
 			System.out.println(message);
+			loginWindow.setAlertLabel(message);
 		}else if(message.contains("Creating account success")){
 			System.out.println(message);
+			loginWindow.setAlertLabel(message);
 		}else if(message.contains("Creating account deny")){
 			System.out.println(message);
+			loginWindow.setAlertLabel(message);
 		}else if(message.contains("Guest name: ")){ //guest doesn't have a name so we give them one
 			message = message.replace("Guest name: ", "");
 			message = message.trim();
@@ -158,6 +164,7 @@ public class Client extends Thread{
 			int tokenID = Integer.parseInt(command[2]);
 			//TODO
 			startWindow.refreshPlayer(clientName, tokenID);
+			startWindow.setTokenButtons();
 			//do something after the client picked a token
 			//let other players know
 			//ready to start unless quit
@@ -165,10 +172,12 @@ public class Client extends Thread{
 			if(thisPlayerID ==1){
 				//TODO
 				//if this client is host do sth
+				startWindow.addReadyPlayer();
+				startWindow.checkReady();
 			}else{
 				System.out.println(message);
 			}
-		}else if(message.contains("StartGame") && startWindow != null){
+		}else if(message.contains("Startgame") && startWindow != null){
 			//obtain the correct teamnames and team id at this point 
 			//TODO 
 			//start the game 
