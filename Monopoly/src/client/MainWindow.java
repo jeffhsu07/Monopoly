@@ -571,9 +571,21 @@ public class MainWindow extends JFrame {
 				}
 			}
 			if (worth < debt) {
-				//TODO: set bankrupt and handle bankrupt player
-				//give the creditor all mortgaged properties if not null
+				if (creditor == null) {
+					for (Property property : p.getProperties()) {
+						property.resetProperty();
+					}
+				} else {
+					creditor.addMoney(worth);
+					for (Property property : p.getProperties()) {
+						property.resetProperty();
+						property.setMortgaged(true);
+						property.setOwner(creditor);
+						creditor.addProperty(property);
+					}
+				}
 				progressArea.addProgress("    is bankrupt.\n");
+				//TODO: handle bankrupt player
 			} else {
 				payingDebt = true;
 				debtOwed = debt;
