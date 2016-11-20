@@ -91,8 +91,7 @@ public class MainWindow extends JFrame {
 		// Initialize our variables
 		PropertiesSetUp p = new PropertiesSetUp();
 		properties = p.getProperties();
-		chanceCardHandler = new ChanceCardStuff(players, progressArea, this);
-		comChestHandler = new CommunityChestStuff(players, progressArea);
+		
 		this.players = players;
 		this.client = client;
 		
@@ -137,6 +136,9 @@ public class MainWindow extends JFrame {
 		
 		// Initialize menu items.
 		menuPlayerStats = new JMenuItem("View Player Statistics");
+		
+		chanceCardHandler = new ChanceCardStuff(players, progressArea, this);
+		comChestHandler = new CommunityChestStuff(players, progressArea);
 	}
 
 	private void createGUI() {

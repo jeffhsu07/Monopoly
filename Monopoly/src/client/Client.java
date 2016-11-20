@@ -49,7 +49,7 @@ public class Client extends Thread{
 		
 		try {
 			//teamNames = new ArrayList<String>();
-			s = new Socket("172.20.10.3", Constants.defaultPort);
+			s = new Socket("172.20.10.4", Constants.defaultPort);
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
 			System.out.println("client constructed");
