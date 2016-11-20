@@ -82,7 +82,7 @@ public class MainWindow extends JFrame {
 	private void initializeComponents() {
 		// Initialize our player tracking to default values.
 		currentPlayer = 0;
-		ownedPlayer = 0;
+		ownedPlayer = client.getID();
 		determineOrder = true;
 		firstPlayer = 0;
 		highRoll = 0;

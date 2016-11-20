@@ -278,7 +278,9 @@ public class Client extends Thread{
 		}
 	}
 	
-	
+	public int getID() {
+		return thisPlayerID;
+	}
 	
 	
 	public void setLoginWindow(LoginWindow loginWindow ){
