@@ -20,7 +20,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Box;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import resources.LoginInfo;
 import resources.Player;
@@ -46,17 +50,8 @@ public class Client extends Thread{
 	private StartWindow startWindow;
 	private MainWindow mainWindow;
 	public Client() {
+		new IpAndPortPane();
 		
-		try {
-			//teamNames = new ArrayList<String>();
-			s = new Socket("172.20.10.4", Constants.defaultPort);
-			oos = new ObjectOutputStream(s.getOutputStream());
-			ois = new ObjectInputStream(s.getInputStream());
-			System.out.println("client constructed");
-			
-		} catch (IOException ioe) {
-			System.out.println("ioe construct: " + ioe.getMessage());
-		}
 	}
 	public void sendMessage(String message) {
 		try {
@@ -312,11 +307,58 @@ public class Client extends Thread{
 	public void setLoginWindow(LoginWindow loginWindow ){
 		this.loginWindow = loginWindow;
 	}
+	public boolean ableToStart(){
+		return (s!=null);
+	}
+	
+	private class IpAndPortPane {
+	   public IpAndPortPane() {
+	      JTextField xField = new JTextField(5);
+	      JTextField yField = new JTextField(5);
+
+	      JPanel myPanel = new JPanel();
+	      myPanel.add(new JLabel("Ip:"));
+	      myPanel.add(xField);
+	      myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+	      myPanel.add(new JLabel("Port:"));
+	      myPanel.add(yField);
+
+	      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+	               "Please Enter Ip and Port Values", JOptionPane.OK_CANCEL_OPTION);
+	      if (result == JOptionPane.OK_OPTION) {
+	         System.out.println("Ip: " + xField.getText());
+	         System.out.println("Port: " + yField.getText());
+	         
+	         try {
+	 			//teamNames = new ArrayList<String>();
+	 			
+	 			s = new Socket(xField.getText(), Integer.parseInt(yField.getText()));
+	 			oos = new ObjectOutputStream(s.getOutputStream());
+	 			ois = new ObjectInputStream(s.getInputStream());
+	 			System.out.println("client constructed");
+
+	 			
+	 		} catch (IOException ioe) {
+	 			System.out.println("ioe construct: " + ioe.getMessage());
+	 			s = null;
+	 		}
+	      }
+	   }
+	   
+	}
 	
 	public static void main(String args[]){
 		
+		
 		Client client = new Client();
-		client.start();
-		new LoginWindow(client).setVisible(true);
+		if(client.ableToStart()){
+			client.start();
+			new LoginWindow(client).setVisible(true);
+		}else{
+			System.out.println("Unable to connect, self terminate");
+			return;
+		}
+		
 	}
+	
 }
