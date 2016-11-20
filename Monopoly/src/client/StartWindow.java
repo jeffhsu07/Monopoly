@@ -1,3 +1,16 @@
+/**
+ * CSCI 201 Final Project
+ * Group 14:
+ * 				Monopoly
+ * Team Members:
+ * 				Matthew van Niekerk
+ * 				Jesse Werner
+ * 				Brandon Ho
+ * 				Nicholas Terrile
+ * 				Kuiren "James" Su
+ * 				Chin-Yuan "Jeffrey" Hsu
+ */
+
 //	Author: Matthew van Niekerk
 package client;
 

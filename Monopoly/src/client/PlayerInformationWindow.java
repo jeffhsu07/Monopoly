@@ -1,5 +1,18 @@
 /**
- * Merged Nick and Jeffrey's versions of PlayerInformationWindow.java
+ * CSCI 201 Final Project
+ * Group 14:
+ * 				Monopoly
+ * Team Members:
+ * 				Matthew van Niekerk
+ * 				Jesse Werner
+ * 				Brandon Ho
+ * 				Nicholas Terrile
+ * 				Kuiren "James" Su
+ * 				Chin-Yuan "Jeffrey" Hsu
+ */
+
+/**
+* Merged Nick and Jeffrey's versions of PlayerInformationWindow.java
  */
 
 package client;
