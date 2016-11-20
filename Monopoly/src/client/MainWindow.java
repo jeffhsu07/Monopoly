@@ -200,7 +200,7 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void addListeners() {
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		// Show the player statistics Window
 		menuPlayerStats.addActionListener(new ActionListener() {
