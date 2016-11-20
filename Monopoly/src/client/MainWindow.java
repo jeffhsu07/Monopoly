@@ -407,7 +407,7 @@ public class MainWindow extends JFrame {
 				} else {
 					int rent = 0;
 					if (properties[newLocation].getGroup().equals("Stations")) {
-						rent = properties[newLocation].getRent();
+						rent = 25;
 						for (Property property : properties[newLocation].getOwner().getProperties()) {
 							if (property.getGroup().equals("Stations")) {
 								rent *= 2;
