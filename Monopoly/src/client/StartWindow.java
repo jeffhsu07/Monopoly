@@ -373,7 +373,11 @@ public class StartWindow extends JFrame {
 		     
 			 if (answer == JOptionPane.YES_OPTION) {
 				 System.out.println(playerName);
-				 client.sendMessage("Client Logout: ");
+				 if (client.getID() == 0) {
+					 client.sendMessage("Host Logout: ");
+				 } else {
+					 client.sendMessage("Client Logout: ");
+				 }
 				 frame.dispose();
 			 } 
 		 }

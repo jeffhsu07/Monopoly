@@ -39,7 +39,7 @@ public class Client extends Thread{
 			s = new Socket("172.20.10.3", Constants.defaultPort);
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
-			
+			System.out.println("client constructed");
 			
 		} catch (IOException ioe) {
 			System.out.println("ioe construct: " + ioe.getMessage());
