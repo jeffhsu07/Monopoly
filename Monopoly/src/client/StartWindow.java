@@ -26,9 +26,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -42,17 +40,19 @@ import utilities.AppearanceConstants;
 
 public class StartWindow extends JFrame {
 	
+	private static final long serialVersionUID = 7971764919438259602L;
+	
 	private JLabel selectPrompt;
 	private JLabel yourName;
 	private JLabel playersLabel;
 	private JLabel tokensLabel;
 	private JButton readyButton;
 	private ArrayList<PlayerInfoLayout> playerInfoPanels;
-	private ArrayList<Image> chosenIcons;
+	//private ArrayList<Image> chosenIcons;
 	private ArrayList<JButton> tokenButtons;
 	private JPanel playerGrid;
 	private JPanel tokenGrid;
-	private Socket s;
+	//private Socket s;
 	private String playerName;
 	private int playerToken;
 	private Client client;
@@ -100,7 +100,7 @@ public class StartWindow extends JFrame {
 			}
 		}
 		
-		chosenIcons = new ArrayList<Image>();
+		//chosenIcons = new ArrayList<Image>();
 		tokenImages = new ArrayList<Image>(8);
 		tokenButtons = new ArrayList<JButton>(8);
 		
@@ -119,7 +119,7 @@ public class StartWindow extends JFrame {
 		
 		playerGrid = new JPanel();
 		tokenGrid = new JPanel();
-		s = new Socket();
+		//s = new Socket();
 		readyPlayers = new ArrayList<String>();
 		playerReady = false;
 	}
@@ -207,7 +207,7 @@ public class StartWindow extends JFrame {
 	
 	protected void checkReady() {
 		System.out.println("Ready Players: " + readyPlayers + "  Player Token: " + playerToken);
-		if (readyPlayers.size() == allPlayerInfo.size()-1 && playerToken != -1) {
+		if (readyPlayers.size() == allPlayerInfo.size()-1 && allPlayerInfo.size() > 1 && playerToken != -1) {
 			readyButton.setEnabled(true);
 		}
 	}
