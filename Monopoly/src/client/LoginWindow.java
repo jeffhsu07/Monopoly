@@ -33,7 +33,7 @@ public class LoginWindow extends JFrame {
 	private Client client;
 	public LoginWindow(Client client) {
 		this.client = client;
-		//client.setLoginWindow(this);
+		client.setLoginWindow(this);
 		initializeVariables();
 		createGUI();
 		addListeners();
@@ -164,6 +164,10 @@ public class LoginWindow extends JFrame {
 				}
 			}
 		});
+	}
+	
+	public void setAlertLabel(String alert) {
+		alertLabel.setText(alert);
 	}
 	
 	private boolean haveText() {

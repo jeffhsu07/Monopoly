@@ -10,6 +10,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -47,7 +48,6 @@ public class MainWindow extends JFrame {
 	private PlayerInformationGrid playerInformationGrid;
 	private GameBoard gameBoard;
 	private Property[] properties;
-	private Client client;
 	// Menu options
 	JMenuItem menuPlayerStats;
 	
@@ -55,12 +55,14 @@ public class MainWindow extends JFrame {
 	private int firstPlayer;
 	private int highRoll;
 	
-	public MainWindow(ArrayList<Player> players, Client client) {
+	private Vector<Integer> playersToRoll;
+	private Vector<Integer> rollTies;
+	
+	public MainWindow(ArrayList<Player> players) {
 		super("Monopoly");
 		PropertiesSetUp p = new PropertiesSetUp();
 		properties = p.getProperties();
 		this.players = players;
-		this.client = client;
 		initializeComponents();
 		createGUI();
 		addListeners();
@@ -77,6 +79,11 @@ public class MainWindow extends JFrame {
 		determineOrder = true;
 		firstPlayer = 0;
 		highRoll = 0;
+		playersToRoll = new Vector<Integer>();
+		for (int i = 1; i < players.size(); i++) {
+			playersToRoll.add(i);
+		}
+		rollTies = new Vector<Integer>();
 		// Initialize our various buttons.
 		rollButton = new JButton("Roll Dice");
 		manageBuildingsButton = new JButton("Manage Buildings");
@@ -198,14 +205,14 @@ public class MainWindow extends JFrame {
 		// Opens the Manage properties window when clicked
 		managePropertiesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this, client).setVisible(true);
+				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
 			}
 		});
 		
 		// Opens the Manage buildings window when clicked
 		manageBuildingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this, client).setVisible(true);
+				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
 			}
 		});
 	}
@@ -293,9 +300,6 @@ public class MainWindow extends JFrame {
 		}
 	}
 	
-	public ArrayList<Player> getPlayerList(){
-		return players;
-	}
 	public void rollDice(){
 		rollButton.setEnabled(false);
 		
@@ -303,22 +307,37 @@ public class MainWindow extends JFrame {
 		Random rand = new Random();
 		int roll1 = rand.nextInt(6)+1;
 		int roll2 = rand.nextInt(6)+1;
-		// Move the player
+		
 		Player p = players.get(currentPlayer);
 		progressArea.addProgress(p.getName() + " rolled a " + roll1 +
 				" and a " + roll2 + ".\n");
 		
+		//Determine who goes first
 		if (determineOrder) {
-			if (roll1+roll2 > highRoll) {
+			if (roll1+roll2 == highRoll) {
+				rollTies.add(currentPlayer);
+			} else if (roll1+roll2 > highRoll) {
+				rollTies.removeAllElements();
+				rollTies.add(currentPlayer);
 				firstPlayer = currentPlayer;
 				highRoll = roll1+roll2;
 			}
-			if (currentPlayer == players.size()-1) {
-				currentPlayer = firstPlayer;
-				progressArea.addProgress("\n"+players.get(currentPlayer).getName() + " goes first.\n");
-				determineOrder = false;
+			if (playersToRoll.size() == 0) {
+				if (rollTies.size() > 1) {
+					for (int i = 0; i < rollTies.size(); i++) {
+						playersToRoll.add(rollTies.get(i));
+					}
+					currentPlayer = playersToRoll.get(0);
+					playersToRoll.remove(0);
+					progressArea.addProgress("\nThere was a tie. "+players.get(currentPlayer).getName() + ", roll again.\n");
+				} else {
+					currentPlayer = rollTies.get(0);
+					progressArea.addProgress("\n"+players.get(currentPlayer).getName() + " goes first.\n");
+					determineOrder = false;
+				}
 			} else {
-				currentPlayer = (currentPlayer + 1) % players.size();
+				currentPlayer = playersToRoll.get(0);
+				playersToRoll.remove(0);
 				progressArea.addProgress("\n"+players.get(currentPlayer).getName() + ", roll to see who goes first.\n");
 			}
 			rollButton.setEnabled(true);
@@ -409,7 +428,7 @@ public class MainWindow extends JFrame {
 				} else {
 					int rent = 0;
 					if (properties[newLocation].getGroup().equals("Stations")) {
-						rent = properties[newLocation].getRent();
+						rent = 25;
 						for (Property property : properties[newLocation].getOwner().getProperties()) {
 							if (property.getGroup().equals("Stations")) {
 								rent *= 2;
