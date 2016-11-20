@@ -6,7 +6,6 @@ To Do:
 		Go To Jail
 			Different Ways to get out / forced to leave
 		Use Exit Game Button
-		Special Property Taxes / Costs
 
 	Finish the game setup window (Matt)
 
@@ -28,4 +27,4 @@ To Do:
 	Add comment to top of every file with our names and group name.
 
 Known Issue:
-	Progress Area Resizes Randomly
+	Management Windows Crash if user has no properties

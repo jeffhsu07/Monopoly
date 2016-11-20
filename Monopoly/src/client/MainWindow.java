@@ -5,6 +5,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -96,7 +102,8 @@ public class MainWindow extends JFrame {
 
 	private void createGUI() {
 		this.setSize(1280,720);
-		this.setResizable(false);
+		this.setResizable(true);
+		this.setMinimumSize(getSize());
 		
 		// Set up the menu bar
 		JMenuBar menuBar = new JMenuBar();
@@ -155,6 +162,13 @@ public class MainWindow extends JFrame {
 		menuPlayerStats.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new PlayerStatisticsWindow(players.get(ownedPlayer)).setVisible(true);;
+			}
+		});
+		
+		this.addWindowStateListener(new WindowStateListener() {
+			public void windowStateChanged(WindowEvent arg0) {
+				gameBoard.repaint();
+				repaint();
 			}
 		});
 		
