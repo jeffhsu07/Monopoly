@@ -1,11 +1,11 @@
 To Do:
-	Finish game logic in main window (Nick + Brandon)
-		Roll Dice at beginning to determine turn order
-		Chance Cards
-		Community Chest Cards
-		Go To Jail
+	Finish game logic in main window
+		Chance Cards (Brandon)
+		Community Chest Cards (Brandon)
+		Selling Properties if you can't pay rent
+		Bankruptcy
+		Go To Jail (Jeffrey)
 			Different Ways to get out / forced to leave
-		Use Exit Game Button
 
 	Finish the game setup window (Matt)
 
