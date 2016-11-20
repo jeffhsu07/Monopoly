@@ -187,6 +187,7 @@ public class StartWindow extends JFrame {
 	}
 	
 	protected void checkReady() {
+		System.out.println("Ready Players: " + readyPlayers + "  Player Token: " + playerToken);
 		if (readyPlayers == allPlayerInfo.size()-1 && playerToken != -1) {
 			readyButton.setEnabled(true);
 		}
