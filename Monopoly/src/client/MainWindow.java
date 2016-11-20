@@ -673,8 +673,15 @@ public class MainWindow extends JFrame {
 				if (gameIsOver()) {
 					for (Player winner: players) {
 						if (!winner.isBankrupt()) {
-							// To Do: Update wins and losses on server.
+							// Display the winner
+							winner.addWin();
 							new WinnerAnnouncementWindow(winner).setVisible(true);
+							
+							// Send the winner to the database. Only do this once from the host
+							if (!winner.getName().startsWith("Guest")) {
+								
+								if (ownedPlayer == 0) client.sendMessage("Winner: " + winner.getName());
+							}
 						}
 					}
 				}

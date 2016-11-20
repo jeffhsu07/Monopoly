@@ -141,4 +141,9 @@ public class Player implements Serializable {
 	public void setDoubles(int num) {
 		doubles = num;
 	}
+	
+	public void addWin() {
+		wins += 1;
+		gamesPlayed += 1;
+	}
 }
