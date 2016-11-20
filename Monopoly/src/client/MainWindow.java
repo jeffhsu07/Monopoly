@@ -91,7 +91,7 @@ public class MainWindow extends JFrame {
 		// Initialize our variables
 		PropertiesSetUp p = new PropertiesSetUp();
 		properties = p.getProperties();
-		chanceCardHandler = new ChanceCardStuff(players, progressArea);
+		chanceCardHandler = new ChanceCardStuff(players, progressArea, this);
 		comChestHandler = new CommunityChestStuff(players, progressArea);
 		this.players = players;
 		this.client = client;
@@ -323,6 +323,7 @@ public class MainWindow extends JFrame {
 		// Disable the button. Let the player only roll once
 		rollButton.setEnabled(false);
 		Player p = players.get(currentPlayer);
+		if(roll1 != 0)
 		progressArea.addProgress(p.getName() + " rolled a " + roll1 +
 				" and a " + roll2 + ".\n");
 		

@@ -15,6 +15,7 @@ package resources;
 
 import java.util.ArrayList;
 
+import client.MainWindow;
 import client.ProgressArea;
 import utilities.Constants;
 
@@ -24,12 +25,14 @@ public class ChanceCardStuff
 	private int deckPosition;
 	private ArrayList<Player> players;
 	private ProgressArea progress;
+	private MainWindow mw;
 	
-	public ChanceCardStuff(ArrayList<Player> woo, ProgressArea lesgo)
+	public ChanceCardStuff(ArrayList<Player> woo, ProgressArea lesgo, MainWindow m)
 	{
 		deckPosition = 0;
 		players = woo;
 		progress = lesgo;
+		mw = m;
 	}
 
 	public void handleChance(Player p)
@@ -118,6 +121,7 @@ public class ChanceCardStuff
 			if(p.getCurrentLocation() >= 3)
 			{
 				p.setCurrentLocation(p.getCurrentLocation() - 3);
+				mw.rollDice(0, 0);
 			}
 			else
 			{
@@ -127,16 +131,19 @@ public class ChanceCardStuff
 					p.setCurrentLocation(38);
 				else if(p.getCurrentLocation() == 0)
 					p.setCurrentLocation(37);
+				mw.rollDice(0,0);
 			}
 			
 		}
 		else if(deckPosition == 8)
 		{
+			progress.addProgress("Go Directly to Jail\n");
 			p.setCurrentLocation(10);
 			p.setInJail(true);
 		}
 		else if(deckPosition == 9)
 		{
+			progress.addProgress("Make general repairs on all your property - for each house pay $25, for each hotel pay $100\n");
 			int owed = 0;
 			for(Property a : p.getProperties())
 			{
@@ -151,10 +158,12 @@ public class ChanceCardStuff
 		}
 		else if(deckPosition == 10)
 		{
+			progress.addProgress("Pay poor tax of $15\n");
 			p.addMoney(-15);
 		}
 		else if(deckPosition == 11)
 		{
+			progress.addProgress("Take a trip to Reading Railroad - If you pass Go collect $200\n");
 			if(p.getCurrentLocation() >= 5)
 			{
 				p.addMoney(Constants.goMoney);
@@ -163,10 +172,12 @@ public class ChanceCardStuff
 		}
 		else if(deckPosition == 16)
 		{
+			progress.addProgress("Take a walk on the boardwalk\n");
 			p.setCurrentLocation(39);
 		}
 		else if(deckPosition == 13) //pay each player 50
 		{
+			progress.addProgress("You have been elected chairman of the  board - pay each player $50");
 			for(Player aa : players)
 			{
 				if(!aa.getName().equals(p.getName()))
@@ -178,10 +189,12 @@ public class ChanceCardStuff
 		}
 		else if(deckPosition == 14)
 		{
+			progress.addProgress("Your building loan matures\n");
 			p.addMoney(150);
 		}
 		else if(deckPosition == 15)
 		{
+			progress.addProgress("You have won a crossword competition\n");
 			p.addMoney(100);
 		}
 		
