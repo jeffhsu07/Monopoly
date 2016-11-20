@@ -19,6 +19,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
@@ -202,6 +203,12 @@ public class MainWindow extends JFrame {
 	
 	private void addListeners() {
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				client.sendMessage("ExitGame");
+				System.exit(0);
+			}
+		});
 		
 		// Show the player statistics Window
 		menuPlayerStats.addActionListener(new ActionListener() {
