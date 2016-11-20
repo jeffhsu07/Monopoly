@@ -57,9 +57,11 @@ public class MainWindow extends JFrame {
 	
 	// Debt Paying Stuff
 	private boolean payingDebt;
+	private boolean doubleRolledWhilePaying;
 	private int debtOwed;
 	private Player payingPlayer;
 	private Player paidPlayer;
+	
 	private Client client;
 	private Vector<Integer> playersToRoll;
 	private Vector<Integer> rollTies;
@@ -203,6 +205,7 @@ public class MainWindow extends JFrame {
 						debtOwed = 0;
 						endTurnButton.setText("End Turn");
 						payingDebt = false;
+						if (doubleRolledWhilePaying) endTurnButton.setEnabled(false);
 					} else {
 						JOptionPane.showMessageDialog(null, "Need more money to repay debt.");
 						return;
@@ -594,6 +597,8 @@ public class MainWindow extends JFrame {
 				payingPlayer = players.get(currentPlayer);
 				paidPlayer = creditor;
 				progressArea.addProgress("    needs to sell / mortgage to pay debt.\n");
+				endTurnButton.setEnabled(true);
+				doubleRolledWhilePaying = (roll1 == roll2);
 			}
 		}
 
