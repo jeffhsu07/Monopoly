@@ -324,6 +324,7 @@ public class MainWindow extends JFrame {
 			p.setCurrentLocation(Constants.jailLocation);
 			p.setInJail(true);
 			progressArea.addProgress(p.getName() + " landed on go to jail, " + p.getName() + " has been sent to jail");
+			endTurnButton.setEnabled(true);
 			return;
 		}
 		if(p.isInJail() && roll1 == roll2){
@@ -355,6 +356,7 @@ public class MainWindow extends JFrame {
 				progressArea.addProgress("   was sent to jail for rolling doubles too many times.\n\n");
 				gameBoard.repaint();
 				playerInformationGrid.repaint();
+				endTurnButton.setEnabled(true);
 				return;
 			}
 		}
@@ -525,6 +527,7 @@ public class MainWindow extends JFrame {
 			rollButton.setEnabled(true);
 		} else {
 			endTurnButton.setEnabled(true);
+			p.setDoubles(0);
 		}
 	}
 }
