@@ -55,6 +55,12 @@ public class MainWindow extends JFrame {
 	private int firstPlayer;
 	private int highRoll;
 	
+	// Debt Paying Stuff
+	private boolean payingDebt;
+	private int debtOwed;
+	private Player payingPlayer;
+	private Player paidPlayer;
+	
 	private Vector<Integer> playersToRoll;
 	private Vector<Integer> rollTies;
 	
@@ -184,21 +190,35 @@ public class MainWindow extends JFrame {
 		// Have the End Turn button increment the current player.
 		endTurnButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//currentPlayer = (currentPlayer + 1) % players.size();
-				progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.\n");
-				managePropertiesButton.setEnabled(true);
-				manageBuildingsButton.setEnabled(true);
-				if(players.get(currentPlayer).isInJail() == true){
-					managePropertiesButton.setEnabled(false);
-					manageBuildingsButton.setEnabled(false);
-					rollButton.setEnabled(false);
+				if (payingDebt) {
+					if (payingPlayer.getMoney() >= 0) {
+						payingPlayer = null;
+						if (paidPlayer != null) paidPlayer.addMoney(debtOwed);
+						paidPlayer = null;
+						debtOwed = 0;
+						endTurnButton.setText("End Turn");
+						payingDebt = false;
+					} else {
+						JOptionPane.showMessageDialog(null, "Need more money to repay debt.");
+						return;
+					}
+				} else {
+					//currentPlayer = (currentPlayer + 1) % players.size();
+					progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.\n");
+					managePropertiesButton.setEnabled(true);
+					manageBuildingsButton.setEnabled(true);
+					if(players.get(currentPlayer).isInJail() == true){
+						managePropertiesButton.setEnabled(false);
+						manageBuildingsButton.setEnabled(false);
+						rollButton.setEnabled(false);
+						endTurnButton.setEnabled(false);
+						inJailPopup popup = new inJailPopup();
+						popup.setVisible(true);
+						return;
+					}
+					rollButton.setEnabled(true);
 					endTurnButton.setEnabled(false);
-					inJailPopup popup = new inJailPopup();
-					popup.setVisible(true);
-					return;
 				}
-				rollButton.setEnabled(true);
-				endTurnButton.setEnabled(false);
 			}
 		});
 		
@@ -301,6 +321,12 @@ public class MainWindow extends JFrame {
 	}
 	
 	public void rollDice(){
+		if (payingDebt) {
+			// Button should do nothing
+			JOptionPane.showMessageDialog(null, "Repay Debt Before Rolling Again");
+			return;
+		}
+		
 		rollButton.setEnabled(false);
 		
 		// Get a random dice roll
@@ -531,11 +557,19 @@ public class MainWindow extends JFrame {
 		if (debt > 0) {
 			//TODO let player sell buildings and mortgage properties
 			//determine if player cannot repay their debt
-			progressArea.addProgress("    is bankrupt.\n");
-			//TODO handle bankrupt player
+			if (true /*can afford to pay back*/) {
+				payingDebt = true;
+				debtOwed = debt;
+				endTurnButton.setText("Repay Debt");
+				payingPlayer = players.get(currentPlayer);
+				paidPlayer = creditor;
+				progressArea.addProgress("    needs to sell / mortgage to pay debt.\n");
+			}/* else {
+				progressArea.addProgress("    is bankrupt.\n");
+				//TODO handle bankrupt player
+			}*/
 		}
 
-		
 		//Find next player. If doubles was rolled and player is not in jail, player goes again.
 		currentPlayer = (roll1 == roll2 && !p.isInJail()) ? 
 				currentPlayer : (currentPlayer+1) % players.size();
