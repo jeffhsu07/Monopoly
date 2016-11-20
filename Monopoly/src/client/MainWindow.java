@@ -3,13 +3,16 @@ package client;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -156,168 +159,8 @@ public class MainWindow extends JFrame {
 		// Have the roll button move the current player.
 		rollButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				rollButton.setEnabled(false);
-				
-				// Get a random dice roll
-				Random rand = new Random();
-				int roll1 = rand.nextInt(6)+1;
-				int roll2 = rand.nextInt(6)+1;
-				
-				// Move the player
-				Player p = players.get(currentPlayer);
-				progressArea.addProgress(p.getName() + " rolled a " + roll1 +
-						" and a " + roll2 + ".\n");
-				if (roll1 == roll2) {
-					p.setDoubles(p.getDoubles()+1);
-					if (p.getDoubles() == 3) {
-						p.setDoubles(0);
-						p.setCurrentLocation(Constants.jailLocation);
-						p.setInJail(true);
-						progressArea.addProgress("   was sent to jail for rolling doubles too many times.\n\n");
-						gameBoard.repaint();
-						playerInformationGrid.repaint();
-						return;
-					}
-				}
-				int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
-				if(p.getCurrentLocation()+roll1+roll2 >= 40)
-				{
-					p.addMoney(Constants.goMoney);
-					progressArea.addProgress("    passed Go and collected $"+Constants.goMoney+".\n");
-				}
-				p.setCurrentLocation(newLocation);
-				
-				progressArea.addProgress("    landed on "+properties[newLocation].getName()+".\n");
-				
-				// Repaint the game board and update the progress area
-				gameBoard.repaint();
-				playerInformationGrid.repaint();
-				
-				//put game logic here, I would recommend testing to see if properties[newLocation].getPrice() != 0 to determine if its an actual
-				//property you can buy, then a super long if else statement for example you could use
-				//"if(properties[newLocation].getName().equals("Chance")){}" in the case of testing to see if the player landed on chance space
-				//-bho
-				
-				if (properties[newLocation].getPrice() != 0) {
-					if (properties[newLocation].getOwner() == null) {
-						if (p.getMoney() >= properties[newLocation].getPrice()) {
-							int n = JOptionPane.showConfirmDialog(
-								    getContentPane(),
-								    "Would you like to buy "+properties[newLocation].getName()+
-								    " for $"+properties[newLocation].getPrice()+"?",
-								    "Buy Property?",
-								    JOptionPane.YES_NO_OPTION);
-							if (n == 0) {
-								p.addMoney(-properties[newLocation].getPrice());
-								p.addProperty(properties[newLocation]);
-								properties[newLocation].setOwner(p);
-								progressArea.addProgress("    bought "+properties[newLocation].getName()
-										+" for $"+properties[newLocation].getPrice()+".\n");
-							}
-						}
-					} else {
-						if (properties[newLocation].isMortgaged()) {
-							//Nothing
-						} else {
-							int rent = 0;
-							if (properties[newLocation].getGroup().equals("Stations")) {
-								rent = properties[newLocation].getRent();
-								for (Property property : properties[newLocation].getOwner().getProperties()) {
-									if (property.getGroup().equals("Stations")) {
-										rent *= 2;
-									}
-								}
-							} else if (properties[newLocation].getGroup().equals("Utilities")) {
-								int count = 0;
-								for (Property property : properties[newLocation].getOwner().getProperties()) {
-									if (property.getGroup().equals("Utilities")) {
-										count++;
-									}
-								}
-								if (count == 1) {
-									rent = 4 * (roll1+roll2);
-								} else {
-									rent = 10 * (roll1+roll2);
-								}
-							} else {
-								rent = properties[newLocation].getRent();
-							}
-							p.addMoney(-rent);
-							properties[newLocation].getOwner().addMoney(rent);
-							progressArea.addProgress("    paid $"+rent+" in rent.\n");
-						}
-					}
-				} else {
-					if (properties[newLocation].getName().equals("Chance")) {
-						//TODO show card
-					} else if (properties[newLocation].getName().equals("Go To Jail")) {
-						p.setCurrentLocation(Constants.jailLocation);
-						p.setInJail(true);
-					} else if (properties[newLocation].getName().equals("Community Chest")) {
-						//TODO show card
-					} else if (properties[newLocation].getName().equals("Income Tax")) {
-						Object[] options = {"Pay $"+Constants.incomeTax,
-	                    "Pay 10% of Total Worth"};
-						int n = JOptionPane.showOptionDialog(getContentPane(),
-								"Would you like to estimate your tax at $"+Constants.incomeTax+" or pay 10% of your total worth (including cash, properties, and buildings)?",
-								"Income Tax",
-								JOptionPane.DEFAULT_OPTION,
-								JOptionPane.QUESTION_MESSAGE,
-								null,     //do not use a custom Icon
-								options,  //the titles of buttons
-								options[0]);
-						if (n == 0) {
-							p.addMoney(-Constants.incomeTax);
-							progressArea.addProgress("    paid $"+Constants.incomeTax+" in tax.\n");
-						} else {
-							int totalWorth = p.getMoney();
-							for (Property property : p.getProperties()) {
-								totalWorth += property.getPrice();
-								if (property.getHotel()) {
-									totalWorth += 5 * property.getHouseCost();
-								} else {
-									totalWorth += property.getNumHouses() * property.getHouseCost();
-								}
-							}
-							int tax = totalWorth/10;
-							p.addMoney(-tax);
-							progressArea.addProgress("    paid $"+tax+" in tax.\n");
-						}
-					} else if (properties[newLocation].getName().equals("Go")) {
-						//Nothing. Go money handled above.
-					} else if (properties[newLocation].getName().equals("Just Visiting")) {
-						//Nothing
-					} else if (properties[newLocation].getName().equals("Free Parking")) {
-						//Nothing
-					} else if (properties[newLocation].getName().equals("Luxury Tax")) {
-						p.addMoney(-Constants.luxuryTax);
-						progressArea.addProgress("    paid $"+Constants.luxuryTax+" in tax.\n");
-					}
-				}
-				
-				//Determine if player went bankrupt
-				if (p.isBankrupt()) {
-					progressArea.addProgress("    is bankrupt.\n");
-					//TODO
-				}
-				
-				//Find next player. If doubles was rolled and player is not in jail, player goes again.
-				currentPlayer = (roll1 == roll2 && !p.isInJail()) ? 
-						currentPlayer : (currentPlayer+1) % players.size();
-				
-				// Repaint the game board and update the progress area
-				gameBoard.repaint();
-				playerInformationGrid.repaint();
-				
-				progressArea.addProgress("\n");
-				
-				if (players.get(currentPlayer).getDoubles() > 0) {
-					progressArea.addProgress(players.get(currentPlayer).getName() +" gets to roll again.\n");
-					rollButton.setEnabled(true);
-				} else {
-					endTurnButton.setEnabled(true);
-				}
-			}
+				rollDice();
+			}	
 		});
 		
 		// Have the End Turn button increment the current player.
@@ -325,6 +168,17 @@ public class MainWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				//currentPlayer = (currentPlayer + 1) % players.size();
 				progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.\n");
+				managePropertiesButton.setEnabled(true);
+				manageBuildingsButton.setEnabled(true);
+				if(players.get(currentPlayer).isInJail() == true){
+					managePropertiesButton.setEnabled(false);
+					manageBuildingsButton.setEnabled(false);
+					rollButton.setEnabled(false);
+					endTurnButton.setEnabled(false);
+					inJailPopup popup = new inJailPopup();
+					popup.setVisible(true);
+					return;
+				}
 				rollButton.setEnabled(true);
 				endTurnButton.setEnabled(false);
 			}
@@ -345,5 +199,275 @@ public class MainWindow extends JFrame {
 		});
 	}
 	
+	private class inJailPopup extends JFrame {
+		private JLabel inJailLabel, imageLabel;
+		private JButton payButton, rollDiceButton, jailFreeButton;
+		public inJailPopup(){
+			initializeComponents();
+			createGUI();
+			addListeners();
+		}
+		
+		private void initializeComponents(){
+			inJailLabel = new JLabel("You are currently in jail");
+			
+			ImageIcon icon = new ImageIcon("images/board/jail.png");
+			imageLabel = new JLabel(icon, JLabel.CENTER);
+			payButton = new JButton("Pay $50");
+			rollDiceButton = new JButton ("Roll Dice");
+			jailFreeButton = new JButton ("Use get out of jail free card");
+		}
+		
+		private void createGUI(){
+			setSize(700, 250);
+			setLocation(300,350);
+			JPanel centerPanel = new JPanel();
+			JPanel buttonPanel = new JPanel(new GridLayout(1,3));
+			centerPanel.add(inJailLabel);
+			buttonPanel.add(payButton);
+			buttonPanel.add(rollDiceButton);
+			buttonPanel.add(jailFreeButton);
+			add(centerPanel, BorderLayout.NORTH);
+			add(imageLabel, BorderLayout.CENTER);
+			add(buttonPanel, BorderLayout.SOUTH);
+		}
+		
+		private void addListeners(){
+			payButton.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(players.get(currentPlayer).getMoney() >= 50){
+						players.get(currentPlayer).subtractMoney(50);
+						players.get(currentPlayer).setInJail(false);
+						rollButton.setEnabled(false);
+						endTurnButton.setEnabled(true);
+						
+						dispose();
+					}
+					else{
+						inJailLabel.setText("You do not have enough money to pay with, please choose another option");
+					}
+					
+				}
+				
+			});
+			
+			rollDiceButton.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					rollDice();
+					dispose();
+				}
+				
+			});
+			
+			jailFreeButton.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					if(players.get(currentPlayer).getJailCards() > 0){
+						players.get(currentPlayer).useJailCard();
+						players.get(currentPlayer).setInJail(false);
+						rollButton.setEnabled(false);
+						endTurnButton.setEnabled(true);
+						dispose();
+					}
+					else{
+						inJailLabel.setText("You do not have any get out of jail free cards, please choose another option");
+					}
+				}
+				
+			});
+		}
+	}
 	
+	public void rollDice(){
+		rollButton.setEnabled(false);
+		
+		// Get a random dice roll
+		Random rand = new Random();
+		int roll1 = rand.nextInt(6)+1;
+		int roll2 = rand.nextInt(6)+1;
+		// Move the player
+		Player p = players.get(currentPlayer);
+		progressArea.addProgress(p.getName() + " rolled a " + roll1 +
+				" and a " + roll2 + ".\n");
+		if(p.getCurrentLocation() + roll1 + roll2 % 40 == 30){
+			p.setCurrentLocation(Constants.jailLocation);
+			p.setInJail(true);
+			progressArea.addProgress(p.getName() + " landed on go to jail, " + p.getName() + " has been sent to jail");
+			return;
+		}
+		if(p.isInJail() && roll1 == roll2){
+			p.setInJail(false);
+			//rollButton.setEnabled(false);
+			endTurnButton.setEnabled(true);
+			progressArea.addProgress(p.getName() + " rolled a double and is now free! \n");
+		}
+		else if(p.isInJail()){
+			progressArea.addProgress(p.getName() + " is still stuck in jail. \n");
+			//rollButton.setEnabled(false);
+			endTurnButton.setEnabled(true);
+			currentPlayer = (roll1 == roll2 && !p.isInJail()) ? 
+					currentPlayer : (currentPlayer+1) % players.size();
+			
+			// Repaint the game board and update the progress area
+			gameBoard.repaint();
+			playerInformationGrid.repaint();
+			
+			progressArea.addProgress("\n");
+			return;
+		}
+		else if (roll1 == roll2) {
+			p.setDoubles(p.getDoubles()+1);
+			if (p.getDoubles() == 3) {
+				p.setDoubles(0);
+				p.setCurrentLocation(Constants.jailLocation);
+				p.setInJail(true);
+				progressArea.addProgress("   was sent to jail for rolling doubles too many times.\n\n");
+				gameBoard.repaint();
+				playerInformationGrid.repaint();
+				return;
+			}
+		}
+		int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
+		if(p.getCurrentLocation()+roll1+roll2 >= 40)
+		{
+			p.addMoney(Constants.goMoney);
+			progressArea.addProgress("    passed Go and collected $"+Constants.goMoney+".\n");
+		}
+		p.setCurrentLocation(newLocation);
+		
+		progressArea.addProgress("    landed on "+properties[newLocation].getName()+".\n");
+		
+		// Repaint the game board and update the progress area
+		gameBoard.repaint();
+		playerInformationGrid.repaint();
+		
+		//put game logic here, I would recommend testing to see if properties[newLocation].getPrice() != 0 to determine if its an actual
+		//property you can buy, then a super long if else statement for example you could use
+		//"if(properties[newLocation].getName().equals("Chance")){}" in the case of testing to see if the player landed on chance space
+		//-bho
+		
+		if (properties[newLocation].getPrice() != 0) {
+			if (properties[newLocation].getOwner() == null) {
+				if (p.getMoney() >= properties[newLocation].getPrice()) {
+					int n = JOptionPane.showConfirmDialog(
+						    getContentPane(),
+						    "Would you like to buy "+properties[newLocation].getName()+
+						    " for $"+properties[newLocation].getPrice()+"?",
+						    "Buy Property?",
+						    JOptionPane.YES_NO_OPTION);
+					if (n == 0) {
+						p.addMoney(-properties[newLocation].getPrice());
+						p.addProperty(properties[newLocation]);
+						properties[newLocation].setOwner(p);
+						progressArea.addProgress("    bought "+properties[newLocation].getName()
+								+" for $"+properties[newLocation].getPrice()+".\n");
+					}
+				}
+			} else {
+				if (properties[newLocation].isMortgaged()) {
+					//Nothing
+				} else {
+					int rent = 0;
+					if (properties[newLocation].getGroup().equals("Stations")) {
+						rent = properties[newLocation].getRent();
+						for (Property property : properties[newLocation].getOwner().getProperties()) {
+							if (property.getGroup().equals("Stations")) {
+								rent *= 2;
+							}
+						}
+					} else if (properties[newLocation].getGroup().equals("Utilities")) {
+						int count = 0;
+						for (Property property : properties[newLocation].getOwner().getProperties()) {
+							if (property.getGroup().equals("Utilities")) {
+								count++;
+							}
+						}
+						if (count == 1) {
+							rent = 4 * (roll1+roll2);
+						} else {
+							rent = 10 * (roll1+roll2);
+						}
+					} else {
+						rent = properties[newLocation].getRent();
+					}
+					p.addMoney(-rent);
+					properties[newLocation].getOwner().addMoney(rent);
+					progressArea.addProgress("    paid $"+rent+" in rent.\n");
+				}
+			}
+		} else {
+			if (properties[newLocation].getName().equals("Chance")) {
+				//TODO show card
+			} else if (properties[newLocation].getName().equals("Go To Jail")) {
+				p.setCurrentLocation(Constants.jailLocation);
+				p.setInJail(true);
+			} else if (properties[newLocation].getName().equals("Community Chest")) {
+				//TODO show card
+			} else if (properties[newLocation].getName().equals("Income Tax")) {
+				Object[] options = {"Pay $"+Constants.incomeTax,
+                "Pay 10% of Total Worth"};
+				int n = JOptionPane.showOptionDialog(getContentPane(),
+						"Would you like to estimate your tax at $"+Constants.incomeTax+" or pay 10% of your total worth (including cash, properties, and buildings)?",
+						"Income Tax",
+						JOptionPane.DEFAULT_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						null,     //do not use a custom Icon
+						options,  //the titles of buttons
+						options[0]);
+				if (n == 0) {
+					p.addMoney(-Constants.incomeTax);
+					progressArea.addProgress("    paid $"+Constants.incomeTax+" in tax.\n");
+				} else {
+					int totalWorth = p.getMoney();
+					for (Property property : p.getProperties()) {
+						totalWorth += property.getPrice();
+						if (property.getHotel()) {
+							totalWorth += 5 * property.getHouseCost();
+						} else {
+							totalWorth += property.getNumHouses() * property.getHouseCost();
+						}
+					}
+					int tax = totalWorth/10;
+					p.addMoney(-tax);
+					progressArea.addProgress("    paid $"+tax+" in tax.\n");
+				}
+			} else if (properties[newLocation].getName().equals("Go")) {
+				//Nothing. Go money handled above.
+			} else if (properties[newLocation].getName().equals("Just Visiting")) {
+				//Nothing
+			} else if (properties[newLocation].getName().equals("Free Parking")) {
+				//Nothing
+			} else if (properties[newLocation].getName().equals("Luxury Tax")) {
+				p.addMoney(-Constants.luxuryTax);
+				progressArea.addProgress("    paid $"+Constants.luxuryTax+" in tax.\n");
+			}
+		}
+		
+		//Determine if player went bankrupt
+		if (p.isBankrupt()) {
+			progressArea.addProgress("    is bankrupt.\n");
+			//TODO
+		}
+		
+		//Find next player. If doubles was rolled and player is not in jail, player goes again.
+		currentPlayer = (roll1 == roll2 && !p.isInJail()) ? 
+				currentPlayer : (currentPlayer+1) % players.size();
+		
+		// Repaint the game board and update the progress area
+		gameBoard.repaint();
+		playerInformationGrid.repaint();
+		
+		progressArea.addProgress("\n");
+		
+		if (players.get(currentPlayer).getDoubles() > 0) {
+			progressArea.addProgress(players.get(currentPlayer).getName() +" gets to roll again.\n");
+			rollButton.setEnabled(true);
+		} else {
+			endTurnButton.setEnabled(true);
+		}
+	}
 }

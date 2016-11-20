@@ -71,6 +71,9 @@ public class Player implements Serializable {
 		return jailCards;
 	}
 	
+	public void useJailCard(){
+		jailCards--;
+	}
 	public void setJailCards(int num) {
 		jailCards = num;
 	}
