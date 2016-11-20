@@ -9,6 +9,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
@@ -20,7 +22,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import utilities.AppearanceConstants;
 
 public class StartWindow extends JFrame {
 	
@@ -40,7 +45,7 @@ public class StartWindow extends JFrame {
 	private Client client;
 	private ArrayList<Image> tokenImages;
 	private ArrayList<String> allPlayerInfo;
-	private int readyPlayers;
+	private ArrayList<String> readyPlayers;
 	private boolean playerReady;
 
 	public StartWindow(String playerName, ArrayList<String> otherPlayerInfo, Client client) {
@@ -102,7 +107,7 @@ public class StartWindow extends JFrame {
 		playerGrid = new JPanel();
 		tokenGrid = new JPanel();
 		s = new Socket();
-		readyPlayers = 0;
+		readyPlayers = new ArrayList<String>();
 		playerReady = false;
 	}
 	
@@ -119,6 +124,7 @@ public class StartWindow extends JFrame {
 		mainPanel.add(southPanel, BorderLayout.SOUTH);
 		
 		add(mainPanel);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setSize(600, 800);
 		setLocationRelativeTo(null);
 	}
@@ -182,21 +188,24 @@ public class StartWindow extends JFrame {
 		}
 	}
 	
-	protected void addReadyPlayer() {
-		readyPlayers++;
+	protected void addReadyPlayer(String username) {
+		readyPlayers.add(username);
 	}
 	
 	protected void checkReady() {
 		System.out.println("Ready Players: " + readyPlayers + "  Player Token: " + playerToken);
-		if (readyPlayers == allPlayerInfo.size()-1 && playerToken != -1) {
+		if (readyPlayers.size() == allPlayerInfo.size()-1 && playerToken != -1) {
 			readyButton.setEnabled(true);
 		}
 	}
 	
 	private void addActionListeners() {
+		addWindowListener(new ExitWindowListener(this));
+		
 		for (int i = 0; i < 8; i++) {
 			setUpTokenButtons(i);
 		}
+		
 		readyButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
@@ -205,7 +214,7 @@ public class StartWindow extends JFrame {
 				}
 				if (readyButton.getText().equals("Ready")) {
 					readyButton.setEnabled(false);
-					client.sendMessage("Ready: " + playerName);
+					client.sendMessage("Ready::" + playerName);
 					playerReady = true;
 				} else {
 					//	start game
@@ -272,6 +281,36 @@ public class StartWindow extends JFrame {
 		}
 	}
 	
+	public void userLeft(String username) {
+		for (int i = 0; i < allPlayerInfo.size(); i++) {
+			String[] temp = allPlayerInfo.get(i).split("::");
+			String name = temp[0];
+			int tokenID = Integer.parseInt(temp[2]);
+			if (name.equals(username)) {
+				allPlayerInfo.remove(i);
+				playerInfoPanels.remove(i);
+				playerInfoPanels.add(new PlayerInfoLayout("No Player", -1)); 
+				playerGrid.removeAll();
+				for (int x = 0; x < 8; x++) {
+					playerGrid.add(playerInfoPanels.get(x));
+				}
+				playerGrid.repaint();
+				playerGrid.revalidate();
+				if (!playerReady) {
+					if (tokenID!=-1) {
+						tokenButtons.get(tokenID).setEnabled(true);
+					}
+				}
+				if (readyPlayers.size() > 0) {//host
+					if (readyPlayers.contains(name)) {
+						readyPlayers.remove(name);
+					}
+				}
+				checkReady();
+			}
+		}
+	}
+	
 	private class PlayerInfoLayout extends JPanel {
 		private static final long serialVersionUID = -6341876191272116746L;
 		
@@ -319,5 +358,24 @@ public class StartWindow extends JFrame {
 			
 			g.drawString(playerName, width/2, height/4+fontHeight/2);
 		}
+	}
+	
+	private class ExitWindowListener extends WindowAdapter{
+
+		private JFrame frame;
+		
+		public ExitWindowListener(JFrame frame) {
+			this.frame = frame;
+		}
+		
+		 public void windowClosing(WindowEvent e) {
+			 int answer = JOptionPane.showConfirmDialog(frame, "Are you sure you want to quit?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, AppearanceConstants.exitIcon);
+		     
+			 if (answer == JOptionPane.YES_OPTION) {
+				 System.out.println(playerName);
+				 client.sendMessage("Client Logout: ");
+				 frame.dispose();
+			 } 
+		 }
 	}
 }

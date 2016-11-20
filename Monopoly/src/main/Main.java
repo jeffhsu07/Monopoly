@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import client.Client;
 import client.LoginWindow;
 import client.MainWindow;
+import client.StartWindow;
 import resources.Player;;
 
 public class Main {
@@ -16,6 +17,10 @@ public class Main {
 		Client client2 = new Client();
 		client2.start();
 		new LoginWindow(client2).setVisible(true);
+		
+		/*Client client = new Client();
+		ArrayList<String> k = new ArrayList<String>();
+		new StartWindow("matt", k, client).setVisible(true);*/
 		/*
 		// For Testing Main Window
 		ArrayList<Player> player = new ArrayList<Player>();

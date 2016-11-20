@@ -168,11 +168,13 @@ public class Client extends Thread{
 			//do something after the client picked a token
 			//let other players know
 			//ready to start unless quit
-		}else if(message.contains("Ready: ") && startWindow != null){
+		}else if(message.contains("Ready::") && startWindow != null){
+			String[] command = message.split("::");
+			String clientName = command[1];
 			if(thisPlayerID == 0){
 				//TODO
 				//if this client is host do sth
-				startWindow.addReadyPlayer();
+				startWindow.addReadyPlayer(clientName);
 				startWindow.checkReady();
 			}else{
 				System.out.println(message);
@@ -251,17 +253,6 @@ public class Client extends Thread{
 			int clientID = Integer.parseInt(command[0]);
 			int cardID = Integer.parseInt(command[2]); //house on the property
 			//TODO
-			
-		}else if(message.contains("")){
-			
-		}else if(message.contains("")){
-			
-		}else if(message.contains("")){
-			
-		}else if(message.contains("")){
-			
-		}else if(message.contains("")){
-			
 		}else if(message.contains("You are connected")){
 			System.out.println("You are connected");
 		}else if(message.contains("Client Logout: ")){
@@ -270,6 +261,17 @@ public class Client extends Thread{
 			String username = message;
 			//TODO
 			if(startWindow != null){// a client in startwindow logs out 
+				startWindow.userLeft(username);
+				
+			}else if(mainWindow != null){// a client in mainwindow logs out 
+				
+			}
+			//do something if client logs out 
+		}else if(message.contains("Host Logout: ")){
+			//TODO
+			if(startWindow != null){// a client in startwindow logs out 
+				
+				
 				
 			}else if(mainWindow != null){// a client in mainwindow logs out 
 				
