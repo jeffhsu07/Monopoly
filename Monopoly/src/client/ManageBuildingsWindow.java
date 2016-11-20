@@ -282,7 +282,7 @@ public class ManageBuildingsWindow extends JFrame{
 		if(currentProperty.getNumHouses() > 0){
 			ArrayList<Property> group = new ArrayList<Property>();
 			for(int i = 0; i < groupLocation.size(); i++){
-				for(int j = 0; i < player.getProperties().size(); i++){
+				for(int j = 0; j< player.getProperties().size(); j++){
 					if(player.getProperties().get(j).getBoardPosition() == groupLocation.get(i)){
 						group.add(player.getProperties().get(j));
 					}
