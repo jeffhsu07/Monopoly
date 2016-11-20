@@ -196,6 +196,9 @@ public class Client extends Thread{
 			// End turn message only states end turn.
 			// No other information sent in message
 			mainWindow.endTurnButtonPushed();
+		}else if(message.startsWith("ExitGame") && mainWindow != null ) {
+			// A player has left. Close game
+			mainWindow.quitGame();
 		}else if(message.contains("Rolled::") && mainWindow != null){
 			// Each client receives which dice the active player rolled
 			String[] command = message.split("::");

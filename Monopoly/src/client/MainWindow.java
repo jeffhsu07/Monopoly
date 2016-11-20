@@ -83,6 +83,7 @@ public class MainWindow extends JFrame {
 	// Reference to client object for communication
 	private Client client;
 	private int ownedPlayer; // Index of client in players array
+	private boolean gameOver = false; // keeps track if game ended for quitting.
 	
 	
 	public MainWindow(ArrayList<Player> players, Client client) {
@@ -252,6 +253,7 @@ public class MainWindow extends JFrame {
 		
 		exitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				client.sendMessage("ExitGame");
 				System.exit(0);
 			}
 		});
@@ -675,6 +677,7 @@ public class MainWindow extends JFrame {
 						if (!winner.isBankrupt()) {
 							// Display the winner
 							winner.addWin();
+							gameOver = true;
 							new WinnerAnnouncementWindow(winner).setVisible(true);
 							
 							// Send the winner to the database. Only do this once from the host
@@ -737,6 +740,13 @@ public class MainWindow extends JFrame {
 		progressArea.addProgress("    used a get out of jail free card.");
 		rollButton.setEnabled(false);
 		endTurnButton.setEnabled(true);
+	}
+	
+	public void quitGame() {
+		if (!gameOver) {
+			JOptionPane.showMessageDialog(null, "Another Player Left. Closing the Game.");
+			System.exit(0);
+		}
 	}
 	
 	// Helper Class For Custom Jail Behavior

@@ -1,18 +1,13 @@
 To Do:
-	Networking Stuff:
-		Update wins and losses on server when a player wins (Jesse + James)
-		Handle Player exiting game properly
-
-	Make the windows look better
+	Make the Game Look Pretty
 
 	Rename Project to match assignment specifications
 
 	Clean up the repository
-		Delete Main Package
-		Delete PlayerInformation.java
+		Make sure all old classes are removed
+		Ensure all adapted code cites it's source
 
 	Update ReadMe.txt
 
 Known Issue:
 	Players aren't forced to pay after 3 turns failing to roll to leave jail
-	Community chest don't print to progress area
