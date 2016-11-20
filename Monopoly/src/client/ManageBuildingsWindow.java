@@ -56,10 +56,16 @@ public class ManageBuildingsWindow extends JFrame{
 		sellHouseButton = new JButton("Sell House");
 		closeWindowButton = new JButton("Close Window");
 		propertyDropDownComboBox = new JComboBox();
-		currentProperty = player.getProperties().get(0);
-		buyHouseDescriptionLabel = new JLabel("<html>Clicking this button will add a house to the property<br>House cost: " + currentProperty.getHouseCost() + "</br><html>");
-		sellHouseDescriptionLabel = new JLabel("<html>Clicking this button will remove a house from this property<br>Current number of houses on this property: " + 
-												currentProperty.getNumHouses() + "</br><html>");
+		if(player.getProperties().size() != 0){
+			currentProperty = player.getProperties().get(0);
+			buyHouseDescriptionLabel = new JLabel("<html>Clicking this button will add a house to the property<br>House cost: " + currentProperty.getHouseCost() + "</br><html>");
+			sellHouseDescriptionLabel = new JLabel("<html>Clicking this button will remove a house from this property<br>Current number of houses on this property: " + 
+													currentProperty.getNumHouses() + "</br><html>");
+		}
+		else{
+			buyHouseDescriptionLabel = new JLabel("Clicking this button will add a house to a property");
+			sellHouseDescriptionLabel = new JLabel("Clicking this button will remove a house from a property");
+		}
 		groupLocation = new ArrayList<Integer>();
 	}
 	
@@ -172,43 +178,48 @@ public class ManageBuildingsWindow extends JFrame{
 	}
 	
 	public void findWhichSet(){ //finds which group the current property is in
+		if(currentProperty != null){
 		Integer currPropertyPosition = currentProperty.getBoardPosition();
-		if(currPropertyPosition == 1 || currPropertyPosition == 3){
-			groupLocation = Constants.group1Locations;
+			if(currPropertyPosition == 1 || currPropertyPosition == 3){
+				groupLocation = Constants.group1Locations;
 
-		}
-		else if(currPropertyPosition == 6 || currPropertyPosition == 8 || currPropertyPosition == 9){
-			groupLocation = Constants.group2Locations;
+			}
+			else if(currPropertyPosition == 6 || currPropertyPosition == 8 || currPropertyPosition == 9){
+				groupLocation = Constants.group2Locations;
 
-		}
-		else if(currPropertyPosition == 11 || currPropertyPosition == 13 || currPropertyPosition == 14){
-			groupLocation = Constants.group3Locations;
+			}
+			else if(currPropertyPosition == 11 || currPropertyPosition == 13 || currPropertyPosition == 14){
+				groupLocation = Constants.group3Locations;
 
-		}
-		else if(currPropertyPosition == 16 || currPropertyPosition == 18 || currPropertyPosition == 19){
-			groupLocation = Constants.group4Locations;
+			}
+			else if(currPropertyPosition == 16 || currPropertyPosition == 18 || currPropertyPosition == 19){
+				groupLocation = Constants.group4Locations;
 
-		}
-		else if(currPropertyPosition == 21 || currPropertyPosition == 23 || currPropertyPosition == 24){
-			groupLocation = Constants.group5Locations;
+			}
+			else if(currPropertyPosition == 21 || currPropertyPosition == 23 || currPropertyPosition == 24){
+				groupLocation = Constants.group5Locations;
 
-		}
-		else if(currPropertyPosition == 26 || currPropertyPosition == 27 || currPropertyPosition == 29){
-			groupLocation = Constants.group6Locations;
+			}
+			else if(currPropertyPosition == 26 || currPropertyPosition == 27 || currPropertyPosition == 29){
+				groupLocation = Constants.group6Locations;
 
-		}
-		else if(currPropertyPosition == 31 || currPropertyPosition == 32 || currPropertyPosition == 34){
-			groupLocation = Constants.group7Locations;
+			}
+			else if(currPropertyPosition == 31 || currPropertyPosition == 32 || currPropertyPosition == 34){
+				groupLocation = Constants.group7Locations;
 
-		}
-		else if(currPropertyPosition == 37 || currPropertyPosition == 39){
-			groupLocation = Constants.group8Locations;
+			}
+			else if(currPropertyPosition == 37 || currPropertyPosition == 39){
+				groupLocation = Constants.group8Locations;
 
+			}
 		}
 		//numPropertiesInGroupOwned++;
 	}
 	
 	public boolean hasAllPropertiesInGroup(){ //checks if player has all properties in the current property group
+		if(currentProperty == null){
+			return false;
+		}
 		findWhichSet();
 
 		for(int i = 0; i < groupLocation.size(); i++){
@@ -276,6 +287,9 @@ public class ManageBuildingsWindow extends JFrame{
 	}
 	
 	public void sellHouse(){
+		if(currentProperty == null){
+			return;
+		}
 		if(currentProperty.getHotel()){
 			currentProperty.setHouses(4);
 		}

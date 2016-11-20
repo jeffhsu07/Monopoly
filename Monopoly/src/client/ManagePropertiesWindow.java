@@ -57,9 +57,17 @@ public class ManagePropertiesWindow extends JFrame{
 		mortgageButton = new JButton();
 		closeWindowButton = new JButton("Close Window");
 		propertyDropDownComboBox = new JComboBox();
-		mortgageValue =  player.getProperties().get(0).getMortgageValue();
-		currentProperty = player.getProperties().get(0);
-		isMortgaged = currentProperty.isMortgaged();
+		if(player.getProperties().size() > 0){
+			mortgageValue =  player.getProperties().get(0).getMortgageValue();
+			descriptionLabel = new JLabel("<html>Mortgage Value: " + mortgageValue + "<br>You won't be able to utilize this property if mortgage it</html>");
+			currentProperty = player.getProperties().get(0);
+			isMortgaged = currentProperty.isMortgaged();
+		}
+		else{
+			descriptionLabel = new JLabel("No property to mortgage");
+		}
+
+
 		groupLocation = new ArrayList<Integer>();
 		if(isMortgaged){
 			mortgageButton.setText("Reclaim Property");
@@ -69,7 +77,7 @@ public class ManagePropertiesWindow extends JFrame{
 			mortgageButton.setText("Mortgage Property");
 			mortgageStateLabel.setText("This property has not been mortgaged yet");
 		}
-		descriptionLabel = new JLabel("<html>Mortgage Value: " + mortgageValue + "<br>You won't be able to utilize this property if mortgage it</html>");
+		
 		
 	}
 	
@@ -180,6 +188,9 @@ public class ManagePropertiesWindow extends JFrame{
 	}
 	
 	private void mortgageProperty(){
+		if(currentProperty == null){
+			return;
+		}
 		findWhichSet();
 		if(!isMortgaged && !groupHasHouses()){
 			player.addMoney(mortgageValue);
@@ -207,6 +218,9 @@ public class ManagePropertiesWindow extends JFrame{
 	}
 	
 	public void findWhichSet(){ //finds which group the current property is in
+		if(currentProperty == null){
+			return;
+		}
 		Integer currPropertyPosition = currentProperty.getBoardPosition();
 		if(currPropertyPosition == 1 || currPropertyPosition == 3){
 			groupLocation = Constants.group1Locations;
