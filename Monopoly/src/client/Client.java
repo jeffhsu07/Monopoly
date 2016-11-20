@@ -9,6 +9,7 @@ import java.util.List;
 
 import resources.LoginInfo;
 import resources.Player;
+import resources.Property;
 import server.Server;
 import utilities.Constants;
 /*-----------------------------------------
@@ -198,14 +199,20 @@ public class Client extends Thread{
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]); //house on the property
+			Player currentPlayer = mainWindow.getPlayerList().get(clientID-1);
+			Property property = mainWindow.getPropertiesArray()[propertyID];
+			currentPlayer.subtractMoney(property.getHouseCost());
+			mainWindow.updateProgressArea(currentPlayer.getName() + " built a house on " + property.getName()); 
+			mainWindow.updateProgressArea("Total number of houses on " + property.getName() + ": " + property.getNumHouses());
+			mainWindow.repaint();
 			//TODO
 		}else if(message.contains("::MortgagedProperty::") && mainWindow != null){
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]);
 			mainWindow.getPropertiesArray()[propertyID].setMortgaged(true);
-			mainWindow.getPlayerList().get(clientID).addMoney(mainWindow.getPropertiesArray()[propertyID].getMortgageValue());
-			mainWindow.updateProgressArea(mainWindow.getPlayerList().get(clientID).getName() +
+			mainWindow.getPlayerList().get(clientID-1).addMoney(mainWindow.getPropertiesArray()[propertyID].getMortgageValue());
+			mainWindow.updateProgressArea(mainWindow.getPlayerList().get(clientID-1).getName() +
 					" mortgaged " + mainWindow.getPropertiesArray()[propertyID].getName());
 			//TODO
 		}else if(message.contains("::ReclaimedProperty::") && mainWindow != null){
@@ -213,14 +220,20 @@ public class Client extends Thread{
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]);
 			mainWindow.getPropertiesArray()[propertyID].setMortgaged(false);
-			mainWindow.getPlayerList().get(clientID).subtractMoney(mainWindow.getPropertiesArray()[propertyID].getMortgageValue());
-			mainWindow.updateProgressArea(mainWindow.getPlayerList().get(clientID).getName() +
+			mainWindow.getPlayerList().get(clientID-1).subtractMoney(mainWindow.getPropertiesArray()[propertyID].getMortgageValue());
+			mainWindow.updateProgressArea(mainWindow.getPlayerList().get(clientID-1).getName() +
 										" reclaimed " + mainWindow.getPropertiesArray()[propertyID].getName());
 			//TODO
 		}else if(message.contains("::MortgagedHouse::") && mainWindow != null){
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]); //house on the property
+			Player currentPlayer = mainWindow.getPlayerList().get(clientID-1);
+			Property property = mainWindow.getPropertiesArray()[propertyID];
+			currentPlayer.addMoney(property.getSellHouseCost());
+			mainWindow.updateProgressArea(currentPlayer.getName() + " sold a house on " + property.getName()); 
+			mainWindow.updateProgressArea("Total number of houses on " + property.getName() + ": " + property.getNumHouses());
+			mainWindow.repaint();
 			//TODO
 		}else if(message.contains("::DrewCard::") && mainWindow != null){
 			String[] command = message.split("::");
