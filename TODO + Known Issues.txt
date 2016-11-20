@@ -5,6 +5,8 @@ To Do:
 		Bankruptcy (Jesse)
 		Announce Winner ()
 		Change turn during end turn button (Jesse)
+
+	Update wins and losses on server when a player wins
 	
 	Finish the game setup window (Matt)
 

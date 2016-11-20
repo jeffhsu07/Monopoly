@@ -84,7 +84,7 @@ public class MainWindow extends JFrame {
 	private void initializeComponents() {
 		// Initialize our player tracking to default values.
 		currentPlayer = 0;
-		ownedPlayer = client.getID();
+		//ownedPlayer = client.getID();
 		determineOrder = true;
 		firstPlayer = 0;
 		highRoll = 0;
@@ -212,10 +212,15 @@ public class MainWindow extends JFrame {
 						return;
 					}
 				} else {
-					//currentPlayer = (currentPlayer + 1) % players.size();
+					//Find next player.
+					do {currentPlayer = (currentPlayer+1) % players.size();}
+					while (!players.get(currentPlayer).isBankrupt());
+					
 					progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.\n");
 					managePropertiesButton.setEnabled(true);
 					manageBuildingsButton.setEnabled(true);
+					
+					// Check if the new player is in jail and handle it appropriately.
 					if(players.get(currentPlayer).isInJail() == true){
 						managePropertiesButton.setEnabled(false);
 						manageBuildingsButton.setEnabled(false);
@@ -225,6 +230,7 @@ public class MainWindow extends JFrame {
 						popup.setVisible(true);
 						return;
 					}
+					
 					rollButton.setEnabled(true);
 					endTurnButton.setEnabled(false);
 				}
@@ -594,8 +600,20 @@ public class MainWindow extends JFrame {
 						creditor.addProperty(property);
 					}
 				}
+				
+				// The player is bankrupt now :(
 				progressArea.addProgress("    is bankrupt.\n");
-				//TODO: handle bankrupt player
+				players.get(currentPlayer).setBankrupt(true);
+				
+				// Check for game end
+				if (gameIsOver()) {
+					for (Player winner: players) {
+						if (!winner.isBankrupt()) {
+							// To Do: Update wins and losses on server.
+							new WinnerAnnouncementWindow(winner).setVisible(true);
+						}
+					}
+				}
 			} else {
 				payingDebt = true;
 				debtOwed = debt;
@@ -608,10 +626,6 @@ public class MainWindow extends JFrame {
 			}
 		}
 
-		//Find next player. If doubles was rolled and player is not in jail, player goes again.
-		currentPlayer = (roll1 == roll2 && !p.isInJail()) ? 
-				currentPlayer : (currentPlayer+1) % players.size();
-		
 		// Repaint the game board and update the progress area
 		gameBoard.repaint();
 		playerInformationGrid.repaint();
@@ -624,5 +638,15 @@ public class MainWindow extends JFrame {
 		} else {
 			endTurnButton.setEnabled(true);
 		}
+	}
+	
+	private boolean gameIsOver() {
+		int remainingPlayers = 0;
+		
+		for (Player p : players) {
+			if (!p.isBankrupt()) remainingPlayers++;
+		}
+		
+		return remainingPlayers == 1;
 	}
 }
