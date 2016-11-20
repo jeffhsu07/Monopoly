@@ -377,7 +377,7 @@ public class MainWindow extends JFrame {
 			
 			progressArea.addProgress("\n");
 			return;
-		} else if (roll1 == roll2) {
+		} else if (roll1 == roll2 && roll1 != 0) {
 			// If three doubles are rolled in a row, send the player to jail
 			p.setDoubles(p.getDoubles()+1);
 			if (p.getDoubles() == 3) {
@@ -391,7 +391,7 @@ public class MainWindow extends JFrame {
 				return;
 			}
 			// If we rolled doubles, let the player roll again. Otherwise Player may end turn
-			progressArea.addProgress("    " + players.get(currentPlayer).getName() +" will get to roll again.\n");
+			progressArea.addProgress("    will get to roll again.\n");
 		}
 		
 		// Move the player
