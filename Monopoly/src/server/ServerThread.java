@@ -100,6 +100,8 @@ public class ServerThread extends Thread  {
 			server.sendMessageToAllOtherClients(message+ clientName, this); // tell all other client that this client logs out with its ID number
 			server.removeFromPlayerThread(this);
 			
+		}else if (message.contains("Host Logout: ")){
+			server.removeEveryPlayer();
 		}else if(message.contains("Startgame")){
 			server.stopServer(); // server doesnt take more people after host clicked start 
 			server.sendPlayersToClients();

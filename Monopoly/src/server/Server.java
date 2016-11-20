@@ -104,6 +104,11 @@ public class Server extends Thread{
 			System.out.println("ioe: " + ioe.getMessage());
 		} 
 	}
+	public void removeEveryPlayer(){
+		actualPlayerTheads.clear();
+	}
+	
+	
 	//check login info match database
 	public boolean verifyUser(String username, String password){
 		jDBCDriver.connect();

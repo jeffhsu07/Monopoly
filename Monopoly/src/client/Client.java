@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import resources.LoginInfo;
 import resources.Player;
 import resources.Property;
@@ -270,9 +272,21 @@ public class Client extends Thread{
 		}else if(message.contains("Host Logout: ")){
 			//TODO
 			if(startWindow != null){// a client in startwindow logs out 
-				
-				
-				
+				Object[] options = {"OK"};
+			    int n = JOptionPane.showOptionDialog(startWindow,
+			                   "Host exited the game ","Message",
+			                   JOptionPane.PLAIN_MESSAGE,
+			                   JOptionPane.QUESTION_MESSAGE,
+			                   null,
+			                   options,
+			                   options[0]);
+			    if(n==0){
+			    	loginWindow.setVisible(true);
+			    	startWindow.dispose();
+			    	startWindow = null;
+			    	thisPlayerID = -1;
+			    }
+	
 			}else if(mainWindow != null){// a client in mainwindow logs out 
 				
 			}
