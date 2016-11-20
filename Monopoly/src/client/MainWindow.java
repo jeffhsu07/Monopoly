@@ -40,14 +40,13 @@ import resources.PropertiesSetUp;
 import resources.Property;
 import utilities.Constants;
 
-// Made by Jesse
 public class MainWindow extends JFrame {
 
 	private static final long serialVersionUID = 424155134277101665L;
 
+	// Tracks the game state
 	private ArrayList<Player> players;
 	private int currentPlayer;
-	private int ownedPlayer;
 	
 	// Control Buttons
 	private JButton rollButton;
@@ -61,45 +60,51 @@ public class MainWindow extends JFrame {
 	private PlayerInformationGrid playerInformationGrid;
 	private GameBoard gameBoard;
 	private Property[] properties;
-	// Menu options
+	
+	// Menu option
 	JMenuItem menuPlayerStats;
 	
+	// Tracks Rolling to Play First
 	private boolean determineOrder;
-	private int firstPlayer;
 	private int highRoll;
+	private Vector<Integer> playersToRoll;
+	private Vector<Integer> rollTies;
 	
 	// Debt Paying Stuff
 	private boolean payingDebt;
 	private boolean doubleRolledWhilePaying;
 	private int debtOwed;
 	private Player payingPlayer;
-	private Player paidPlayer;
+	private Player creditor;
 	
+	// Reference to client object for communication
 	private Client client;
-	private Vector<Integer> playersToRoll;
-	private Vector<Integer> rollTies;
+	private int ownedPlayer; // Index of client in players array
+	
 	
 	public MainWindow(ArrayList<Player> players, Client client) {
 		super("Monopoly");
+		
+		// Initialize our variables
 		PropertiesSetUp p = new PropertiesSetUp();
 		properties = p.getProperties();
 		this.players = players;
 		this.client = client;
+		
+		// Set the the GUI
 		initializeComponents();
 		createGUI();
 		addListeners();
+		
+		// Game starts with players rolling to see who goes first.
 		progressArea.addProgress(players.get(currentPlayer).getName() + ", roll to see who goes first.\n");
 	}
 	
-	public Property[] getPropertiesArray(){
-		return properties;
-	}
 	private void initializeComponents() {
 		// Initialize our player tracking to default values.
 		currentPlayer = 0;
-		//ownedPlayer = client.getID();
+		ownedPlayer = client.getID();
 		determineOrder = true;
-		firstPlayer = 0;
 		highRoll = 0;
 		playersToRoll = new Vector<Integer>();
 		for (int i = 1; i < players.size(); i++) {
@@ -178,28 +183,26 @@ public class MainWindow extends JFrame {
 		// Add control panel to the main board
 		this.add(controlPanel, BorderLayout.CENTER);
 	}
-	public void updateProgressArea(String update){
-		progressArea.addProgress(update + ".\n");
-	}
 	
-	public ArrayList<Player> getPlayerList(){
-		return players;
-	}
 	private void addListeners() {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
+		// Show the player statistics Window
 		menuPlayerStats.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new PlayerStatisticsWindow(players.get(ownedPlayer)).setVisible(true);;
 			}
 		});
 		
+		// Repaint the window when it is resized.
+		// Froces the gameBoard to stay square
 		this.addWindowStateListener(new WindowStateListener() {
 			public void windowStateChanged(WindowEvent arg0) {
 				gameBoard.repaint();
 				repaint();
 			}
 		});
+		
 		// Have the roll button move the current player.
 		rollButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -208,44 +211,13 @@ public class MainWindow extends JFrame {
 		});
 		
 		// Have the End Turn button increment the current player.
+		// The same button is overloaded for paying off game debt.
 		endTurnButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (payingDebt) {
-					if (payingPlayer.getMoney() >= 0) {
-						payingPlayer = null;
-						if (paidPlayer != null) paidPlayer.addMoney(debtOwed);
-						paidPlayer = null;
-						debtOwed = 0;
-						endTurnButton.setText("End Turn");
-						payingDebt = false;
-						if (doubleRolledWhilePaying) endTurnButton.setEnabled(false);
-						progressArea.addProgress(players.get(currentPlayer).getName() +" gets to roll again.\n");
-					} else {
-						JOptionPane.showMessageDialog(null, "Need more money to repay debt.");
-						return;
-					}
+					payDebt();
 				} else {
-					//Find next player.
-					do {currentPlayer = (currentPlayer+1) % players.size();}
-					while (!players.get(currentPlayer).isBankrupt());
-					
-					progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.\n");
-					managePropertiesButton.setEnabled(true);
-					manageBuildingsButton.setEnabled(true);
-					
-					// Check if the new player is in jail and handle it appropriately.
-					if(players.get(currentPlayer).isInJail() == true){
-						managePropertiesButton.setEnabled(false);
-						manageBuildingsButton.setEnabled(false);
-						rollButton.setEnabled(false);
-						endTurnButton.setEnabled(false);
-						inJailPopup popup = new inJailPopup();
-						popup.setVisible(true);
-						return;
-					}
-					
-					rollButton.setEnabled(true);
-					endTurnButton.setEnabled(false);
+					endTurn();
 				}
 			}
 		});
@@ -264,144 +236,87 @@ public class MainWindow extends JFrame {
 			}
 		});
 	}
-	
-	private class inJailPopup extends JFrame {
-		private JLabel inJailLabel, imageLabel;
-		private JButton payButton, rollDiceButton, jailFreeButton;
-		public inJailPopup(){
-			initializeComponents();
-			createGUI();
-			addListeners();
-		}
 		
-		private void initializeComponents(){
-			inJailLabel = new JLabel("You are currently in jail");
+	private void payDebt() {
+		// Check if the player has gained enough money to settle debt
+		if (payingPlayer.getMoney() >= 0) {
+			payingPlayer = null;
+			if (creditor != null) creditor.addMoney(debtOwed);
+			creditor = null;
+			debtOwed = 0;
+			endTurnButton.setText("End Turn");
+			payingDebt = false;
 			
-			ImageIcon icon = new ImageIcon("images/board/jail.png");
-			imageLabel = new JLabel(icon, JLabel.CENTER);
-			payButton = new JButton("Pay $50");
-			rollDiceButton = new JButton ("Roll Dice");
-			jailFreeButton = new JButton ("Use get out of jail free card");
-		}
-		
-		private void createGUI(){
-			setSize(700, 250);
-			setLocation(300,350);
-			JPanel centerPanel = new JPanel();
-			JPanel buttonPanel = new JPanel(new GridLayout(1,3));
-			centerPanel.add(inJailLabel);
-			buttonPanel.add(payButton);
-			buttonPanel.add(rollDiceButton);
-			buttonPanel.add(jailFreeButton);
-			add(centerPanel, BorderLayout.NORTH);
-			add(imageLabel, BorderLayout.CENTER);
-			add(buttonPanel, BorderLayout.SOUTH);
-		}
-		
-		private void addListeners(){
-			payButton.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if(players.get(currentPlayer).getMoney() >= 50){
-						players.get(currentPlayer).subtractMoney(50);
-						players.get(currentPlayer).setInJail(false);
-						rollButton.setEnabled(false);
-						endTurnButton.setEnabled(true);
-						
-						dispose();
-					}
-					else{
-						inJailLabel.setText("You do not have enough money to pay with, please choose another option");
-					}
-					
-				}
-				
-			});
-			
-			rollDiceButton.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					rollDice();
-					dispose();
-				}
-				
-			});
-			
-			jailFreeButton.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					if(players.get(currentPlayer).getJailCards() > 0){
-						players.get(currentPlayer).useJailCard();
-						players.get(currentPlayer).setInJail(false);
-						rollButton.setEnabled(false);
-						endTurnButton.setEnabled(true);
-						dispose();
-					}
-					else{
-						inJailLabel.setText("You do not have any get out of jail free cards, please choose another option");
-					}
-				}
-				
-			});
+			// Remind the player to roll again now that debt is settled.
+			if (doubleRolledWhilePaying) {
+				endTurnButton.setEnabled(false);
+				progressArea.addProgress(players.get(currentPlayer).getName() +" gets to roll again.\n");
+			}
+		} else {
+			// Remind the player what they need to do to continue.
+			JOptionPane.showMessageDialog(null, "Need more money to repay debt.");
 		}
 	}
 	
-	public void rollDice(){
+	private void endTurn() {
+		//Find next player.
+		do {currentPlayer = (currentPlayer+1) % players.size();}
+		while (!players.get(currentPlayer).isBankrupt());
+		
+		progressArea.addProgress(players.get(currentPlayer).getName() +"'s turn to go.\n");
+		managePropertiesButton.setEnabled(true);
+		manageBuildingsButton.setEnabled(true);
+		
+		// Check if the new player is in jail and handle it appropriately.
+		if(players.get(currentPlayer).isInJail() == true){
+			managePropertiesButton.setEnabled(false);
+			manageBuildingsButton.setEnabled(false);
+			rollButton.setEnabled(false);
+			endTurnButton.setEnabled(false);
+			InJailPopup popup = new InJailPopup();
+			popup.setVisible(true);
+		} else {
+			rollButton.setEnabled(true);
+			endTurnButton.setEnabled(false);
+		}
+	}
+	
+	// Private Roll Dice used when player pushes button
+	private void rollDice(){
 		if (payingDebt) {
-			// Button should do nothing
+			// Remind the player to not roll the dice before rolling
 			JOptionPane.showMessageDialog(null, "Repay Debt Before Rolling Again");
 			return;
 		}
-		
-		rollButton.setEnabled(false);
-		
+
 		// Get a random dice roll
 		Random rand = new Random();
 		int roll1 = rand.nextInt(6)+1;
 		int roll2 = rand.nextInt(6)+1;
 
-		
+		rollDice(roll1, roll2);
+	}
+	
+	// Public rollDice can be called by client when game change occurs
+	public void rollDice(int roll1, int roll2) {
+		// Disable the button. Let the player only roll once
+		rollButton.setEnabled(false);
 		Player p = players.get(currentPlayer);
 		progressArea.addProgress(p.getName() + " rolled a " + roll1 +
 				" and a " + roll2 + ".\n");
+		
+		// Determine who goes first if needed
+		if (determineOrder) {
+			rollToDetermineOrder(roll1,roll2);
+			return;
+		}
+		
+		// Reset the double count if no doubles rolled
 		if (roll1 != roll2 && p.getDoubles() > 0) {
 			p.setDoubles(0);
 		}
 		
-		//Determine who goes first
-		if (determineOrder) {
-			if (roll1+roll2 == highRoll) {
-				rollTies.add(currentPlayer);
-			} else if (roll1+roll2 > highRoll) {
-				rollTies.removeAllElements();
-				rollTies.add(currentPlayer);
-				firstPlayer = currentPlayer;
-				highRoll = roll1+roll2;
-			}
-			if (playersToRoll.size() == 0) {
-				if (rollTies.size() > 1) {
-					for (int i = 0; i < rollTies.size(); i++) {
-						playersToRoll.add(rollTies.get(i));
-					}
-					currentPlayer = playersToRoll.get(0);
-					playersToRoll.remove(0);
-					progressArea.addProgress("\nThere was a tie. "+players.get(currentPlayer).getName() + ", roll again.\n");
-				} else {
-					currentPlayer = rollTies.get(0);
-					progressArea.addProgress("\n"+players.get(currentPlayer).getName() + " goes first.\n");
-					determineOrder = false;
-				}
-			} else {
-				currentPlayer = playersToRoll.get(0);
-				playersToRoll.remove(0);
-				progressArea.addProgress("\n"+players.get(currentPlayer).getName() + ", roll to see who goes first.\n");
-			}
-			rollButton.setEnabled(true);
-			return;
-		}
-		
+		// Check if we land in go to jail
 		if(p.getCurrentLocation() + roll1 + roll2 % 40 == 30){
 			p.setCurrentLocation(Constants.jailLocation);
 			p.setInJail(true);
@@ -409,15 +324,14 @@ public class MainWindow extends JFrame {
 			endTurnButton.setEnabled(true);
 			return;
 		}
+		
+		// If doubles are rolled in jail, remove the player from jail
 		if(p.isInJail() && roll1 == roll2){
 			p.setInJail(false);
-			//rollButton.setEnabled(false);
 			endTurnButton.setEnabled(true);
 			progressArea.addProgress(p.getName() + " rolled a double and is now free! \n");
-		}
-		else if(p.isInJail()){
+		} else if(p.isInJail()) {
 			progressArea.addProgress(p.getName() + " is still stuck in jail. \n");
-			//rollButton.setEnabled(false);
 			endTurnButton.setEnabled(true);
 			currentPlayer = (roll1 == roll2 && !p.isInJail()) ? 
 					currentPlayer : (currentPlayer+1) % players.size();
@@ -428,8 +342,8 @@ public class MainWindow extends JFrame {
 			
 			progressArea.addProgress("\n");
 			return;
-		}
-		else if (roll1 == roll2) {
+		} else if (roll1 == roll2) {
+			// If three doubles are rolled in a row, send the player to jail
 			p.setDoubles(p.getDoubles()+1);
 			if (p.getDoubles() == 3) {
 				p.setDoubles(0);
@@ -442,6 +356,8 @@ public class MainWindow extends JFrame {
 				return;
 			}
 		}
+		
+		// Move the player
 		int newLocation = (p.getCurrentLocation()+roll1+roll2) % 40;
 		if(p.getCurrentLocation()+roll1+roll2 >= 40)
 		{
@@ -449,22 +365,78 @@ public class MainWindow extends JFrame {
 			progressArea.addProgress("    passed Go and collected $"+Constants.goMoney+".\n");
 		}
 		p.setCurrentLocation(newLocation);
-		
 		progressArea.addProgress("    landed on "+properties[newLocation].getName()+".\n");
 		
 		// Repaint the game board and update the progress area
 		gameBoard.repaint();
 		playerInformationGrid.repaint();
-		
-		//put game logic here, I would recommend testing to see if properties[newLocation].getPrice() != 0 to determine if its an actual
-		//property you can buy, then a super long if else statement for example you could use
-		//"if(properties[newLocation].getName().equals("Chance")){}" in the case of testing to see if the player landed on chance space
-		//-bho
 
+		// Process the new location. Receives debt if applicable
+		int debt = processNewLocation(newLocation, roll1, roll2);
+		
+		//Determine if player went bankrupt
+		checkBankruptcy(debt, roll1, roll2);
+
+		// Repaint the game board and update the progress area
+		gameBoard.repaint();
+		playerInformationGrid.repaint();
+		progressArea.addProgress("\n");
+		
+		// If we rolled doubles, let the player roll again. Otherwise Player may end turn
+		if (players.get(currentPlayer).getDoubles() > 0 && !payingDebt) {
+			progressArea.addProgress(players.get(currentPlayer).getName() +" gets to roll again.\n");
+			rollButton.setEnabled(true);
+		} else {
+			endTurnButton.setEnabled(true);
+		}
+	}
+	
+	private void rollToDetermineOrder(int roll1, int roll2) {
+		if (roll1+roll2 == highRoll) {
+			// Tied the high Roll
+			rollTies.add(currentPlayer);
+		} else if (roll1+roll2 > highRoll) {
+			// New, lone leader in rolling
+			rollTies.removeAllElements();
+			rollTies.add(currentPlayer);
+			highRoll = roll1+roll2;
+		}
+		
+		// We are done rolling
+		if (playersToRoll.size() == 0) {
+			if (rollTies.size() > 1) {
+				// If there was a tie restart the rolling process with the tied players
+				for (int i = 0; i < rollTies.size(); i++) {
+					playersToRoll.add(rollTies.get(i));
+				}
+				currentPlayer = playersToRoll.get(0);
+				playersToRoll.remove(0);
+				progressArea.addProgress("\nThere was a tie. "+players.get(currentPlayer).getName() + ", roll again.\n");
+			} else {
+				// There was no tie.
+				currentPlayer = rollTies.get(0);
+				progressArea.addProgress("\n"+players.get(currentPlayer).getName() + " goes first.\n");
+				determineOrder = false;
+			}
+		} else {
+			// We are not done. Check which player needs to roll next
+			currentPlayer = playersToRoll.get(0);
+			playersToRoll.remove(0);
+			progressArea.addProgress("\n"+players.get(currentPlayer).getName() + ", roll to see who goes first.\n");
+		}
+		rollButton.setEnabled(true);
+	}
+	
+	private int processNewLocation(int newLocation, int roll1, int roll2) {
+		// Handle Cost of new location if needed
 		int debt = 0;
-		Player creditor = null; 
+		// Reset the creditor when we roll.
+		creditor = null;
+		Player p = players.get(currentPlayer);
 		if(properties[newLocation].getPrice() != 0) {
+			// Landed on a property
 			if (properties[newLocation].getOwner() == null) {
+				// Offer the player to buy the new property if they can afford it
 				if (p.getMoney() >= properties[newLocation].getPrice()) {
 					int n = JOptionPane.showConfirmDialog(
 						    getContentPane(),
@@ -473,14 +445,11 @@ public class MainWindow extends JFrame {
 						    "Buy Property?",
 						    JOptionPane.YES_NO_OPTION);
 					if (n == 0) {
-						p.addMoney(-properties[newLocation].getPrice());
-						p.addProperty(properties[newLocation]);
-						properties[newLocation].setOwner(p);
-						progressArea.addProgress("    bought "+properties[newLocation].getName()
-								+" for $"+properties[newLocation].getPrice()+".\n");
+						buyProperty(newLocation);
 					}
 				}
 			} else {
+				// The property is owned, so check to pay rent
 				if (properties[newLocation].isMortgaged()) {
 					//Nothing
 				} else {
@@ -521,12 +490,12 @@ public class MainWindow extends JFrame {
 			}
 		} else {
 			if (properties[newLocation].getName().equals("Chance")) {
-				//TODO show card
+				//TODO Deal with chance location
 			} else if (properties[newLocation].getName().equals("Go To Jail")) {
 				p.setCurrentLocation(Constants.jailLocation);
 				p.setInJail(true);
 			} else if (properties[newLocation].getName().equals("Community Chest")) {
-				//TODO show card
+				//TODO Deal with community chest
 			} else if (properties[newLocation].getName().equals("Income Tax")) {
 				Object[] options = {"Pay $"+Constants.incomeTax,
                 "Pay 10% of Total Worth"};
@@ -585,9 +554,27 @@ public class MainWindow extends JFrame {
 			}
 		}
 		
-		//Determine if player went bankrupt
+		// Return the debt value.
+		return debt;
+	}
+	
+	// Public so clients can call this and stay in sync
+	public void buyProperty(int location) {
+		Player p = players.get(currentPlayer);
+		p.addMoney(-properties[location].getPrice());
+		p.addProperty(properties[location]);
+		properties[location].setOwner(p);
+		progressArea.addProgress("    bought "+properties[location].getName()
+				+" for $"+properties[location].getPrice()+".\n");
+	}
+	
+	private void checkBankruptcy(int debt, int roll1, int roll2) {
+		Player p = players.get(currentPlayer);
 		if (debt > 0) {
+			// Player could not fully afford rent
 			progressArea.addProgress("    still owes "+debt+" in debt.\n");
+			
+			// Check how much money the player could generate
 			int worth = 0;
 			for (Property property : p.getProperties()) {
 				if (!property.isMortgaged()) {
@@ -599,6 +586,8 @@ public class MainWindow extends JFrame {
 					worth += property.getMortgageValue();
 				}
 			}
+			
+			// Can't afford to pay rent even selling
 			if (worth < debt) {
 				if (creditor == null) {
 					for (Property property : p.getProperties()) {
@@ -632,27 +621,19 @@ public class MainWindow extends JFrame {
 				debtOwed = debt;
 				endTurnButton.setText("Repay Debt");
 				payingPlayer = players.get(currentPlayer);
-				paidPlayer = creditor;
 				progressArea.addProgress("    needs to sell/mortgage to pay remaining debt.\n");
 				endTurnButton.setEnabled(true);
 				doubleRolledWhilePaying = (roll1 == roll2);
 			}
 		}
-
-		// Repaint the game board and update the progress area
-		gameBoard.repaint();
-		playerInformationGrid.repaint();
-		
-		progressArea.addProgress("\n");
-		
-		if (players.get(currentPlayer).getDoubles() > 0 && !payingDebt) {
-			progressArea.addProgress(players.get(currentPlayer).getName() +" gets to roll again.\n");
-			rollButton.setEnabled(true);
-		} else {
-			endTurnButton.setEnabled(true);
-		}
 	}
 	
+	// Allows objects to print to the main window's progress area.
+	public void updateProgressArea(String update){
+		progressArea.addProgress(update + ".\n");
+	}
+	
+	// Helper method to check for end of game
 	private boolean gameIsOver() {
 		int remainingPlayers = 0;
 		
@@ -661,5 +642,95 @@ public class MainWindow extends JFrame {
 		}
 		
 		return remainingPlayers == 1;
+	}
+	
+	// Access Method
+	public Property[] getPropertiesArray(){
+		return properties;
+	}
+	
+	// Access Method
+	public ArrayList<Player> getPlayerList(){
+		return players;
+	}
+	
+	// Helper Class For Custom Jail Behavior
+	private class InJailPopup extends JFrame {
+		private static final long serialVersionUID = 8782904345955253349L;
+		private JLabel inJailLabel, imageLabel;
+		private JButton payButton, rollDiceButton, jailFreeButton;
+		
+		public InJailPopup(){
+			initializeComponents();
+			createGUI();
+			addListeners();
+		}
+		
+		private void initializeComponents(){
+			inJailLabel = new JLabel("You are currently in jail");
+			
+			ImageIcon icon = new ImageIcon("images/board/jail.png");
+			imageLabel = new JLabel(icon, JLabel.CENTER);
+			payButton = new JButton("Pay $50");
+			rollDiceButton = new JButton ("Roll Dice");
+			jailFreeButton = new JButton ("Use get out of jail free card");
+		}
+		
+		private void createGUI(){
+			setSize(700, 250);
+			setLocation(300,350);
+			JPanel centerPanel = new JPanel();
+			JPanel buttonPanel = new JPanel(new GridLayout(1,3));
+			centerPanel.add(inJailLabel);
+			buttonPanel.add(payButton);
+			buttonPanel.add(rollDiceButton);
+			buttonPanel.add(jailFreeButton);
+			add(centerPanel, BorderLayout.NORTH);
+			add(imageLabel, BorderLayout.CENTER);
+			add(buttonPanel, BorderLayout.SOUTH);
+		}
+		
+		private void addListeners(){
+			payButton.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					// Check the player can afford to get our of jail
+					if(players.get(currentPlayer).getMoney() >= 50){
+						players.get(currentPlayer).subtractMoney(50);
+						players.get(currentPlayer).setInJail(false);
+						rollButton.setEnabled(false);
+						endTurnButton.setEnabled(true);
+						
+						dispose();
+					}
+					else{
+						inJailLabel.setText("You do not have enough money to pay with, please choose another option");
+					}
+				}
+			});
+			
+			rollDiceButton.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					// Attempt to roll the dice to leave jail
+					rollDice();
+					dispose();
+				}
+			});
+			
+			jailFreeButton.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					// Attempt to use a get out of jail free card
+					if(players.get(currentPlayer).getJailCards() > 0){
+						players.get(currentPlayer).useJailCard();
+						players.get(currentPlayer).setInJail(false);
+						rollButton.setEnabled(false);
+						endTurnButton.setEnabled(true);
+						dispose();
+					}
+					else{
+						inJailLabel.setText("You do not have any get out of jail free cards, please choose another option");
+					}
+				}
+			});
+		}
 	}
 }
