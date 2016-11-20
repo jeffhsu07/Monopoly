@@ -98,15 +98,16 @@ public class Player implements Serializable {
 		properties.add(property);
 	}
     
+	public void setBankrupt(boolean b) {
+		bankrupt = b;
+	}
+	
     public boolean isBankrupt(){
         return bankrupt;
     }
 	
 	public void addMoney(int amount){
 		money += amount;
-		if(money <= 0){
-			bankrupt = true;
-		}
 	}
 	
 	public boolean subtractMoney(int amount){
@@ -123,9 +124,5 @@ public class Player implements Serializable {
 	
 	public void setDoubles(int num) {
 		doubles = num;
-	}
-	
-	public int getID(){
-		return ID;
 	}
 }
