@@ -266,8 +266,8 @@ public class ManageBuildingsWindow extends JFrame{
 				buyHouseDescriptionLabel.setText("<html>Added house to " + currentProperty.getName() + "<br> total number of houses built on this property: " + currentProperty.getNumHouses() + "</br></html>");
 				sellHouseDescriptionLabel.setText("<html>Clicking this button will remove a house from this property<br>Current number of houses on this property: " + 
 					currentProperty.getNumHouses() + "</br><html>");
-				mw.updateProgressArea(player.getName() + " built a house on " + currentProperty.getName() + ", Total number of houses on "
-									+ currentProperty.getName() + ": " + currentProperty.getNumHouses());
+				mw.updateProgressArea(player.getName() + " built a house on " + currentProperty.getName()); 
+				mw.updateProgressArea("Total number of houses on " + currentProperty.getName() + ": " + currentProperty.getNumHouses());
 			}
 		}
 		else{
@@ -301,8 +301,8 @@ public class ManageBuildingsWindow extends JFrame{
 			player.addMoney(currentProperty.getSellHouseCost());
 			sellHouseDescriptionLabel.setText("<html>Removed house from <br>" + currentProperty.getName() + "<br>total number of houses built: " + currentProperty.getNumHouses() + "</br><html>");
 			buyHouseDescriptionLabel.setText("<html>Clicking this button will <br>add a house to the property<br>House cost: " + currentProperty.getHouseCost() + "</br><html>");
-			mw.updateProgressArea(player.getName() + " sold a house on " + currentProperty.getName() + ", Total number of houses on "
-					+ currentProperty.getName() + ": " + currentProperty.getNumHouses());
+			mw.updateProgressArea(player.getName() + " sold a house on " + currentProperty.getName());
+			mw.updateProgressArea("Total number of houses on " + currentProperty.getName() + ": " + currentProperty.getNumHouses());
 		}
 		else{
 			sellHouseDescriptionLabel.setText("There are no houses on this property!");

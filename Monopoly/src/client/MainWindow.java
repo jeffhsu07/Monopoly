@@ -142,7 +142,7 @@ public class MainWindow extends JFrame {
 		this.add(controlPanel, BorderLayout.CENTER);
 	}
 	public void updateProgressArea(String update){
-		progressArea.addProgress("\n" + update);
+		progressArea.addProgress(update + ".\n");
 	}
 	private void addListeners() {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -173,7 +173,7 @@ public class MainWindow extends JFrame {
 						p.setDoubles(0);
 						p.setCurrentLocation(Constants.jailLocation);
 						p.setInJail(true);
-						progressArea.addProgress("    was sent to jail for rolling doubles too many times.\n\n");
+						progressArea.addProgress("   was sent to jail for rolling doubles too many times.\n\n");
 						gameBoard.repaint();
 						playerInformationGrid.repaint();
 						return;
