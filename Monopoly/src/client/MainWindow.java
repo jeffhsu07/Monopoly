@@ -46,6 +46,10 @@ public class MainWindow extends JFrame {
 	// Menu options
 	JMenuItem menuPlayerStats;
 	
+	private boolean determineOrder;
+	private int firstPlayer;
+	private int highRoll;
+	
 	public MainWindow(ArrayList<Player> players) {
 		super("Monopoly");
 		PropertiesSetUp p = new PropertiesSetUp();
@@ -54,6 +58,7 @@ public class MainWindow extends JFrame {
 		initializeComponents();
 		createGUI();
 		addListeners();
+		progressArea.addProgress(players.get(currentPlayer).getName() + ", roll to see who goes first.\n");
 	}
 	
 	public Property[] getPropertiesArray(){
@@ -63,7 +68,15 @@ public class MainWindow extends JFrame {
 		// Initialize our player tracking to default values.
 		currentPlayer = 0;
 		ownedPlayer = 0;
-		
+		determineOrder = true;
+		firstPlayer = 0;
+		highRoll = 0;
+		int[] tempCosts = {100,200};
+		Property temp1 = new Property("Test Property 1", 100, "Group9", tempCosts, 20, 100, 5);
+		Property temp2 = new Property("Test Property 2", 100, "Group9", tempCosts, 20, 80, 5);
+		temp2.setMortgaged(true);
+		players.get(currentPlayer).addProperty(properties[1]);
+		players.get(currentPlayer).addProperty(properties[3]);
 		// Initialize our various buttons.
 		rollButton = new JButton("Roll Dice");
 		manageBuildingsButton = new JButton("Manage Buildings");
@@ -128,7 +141,7 @@ public class MainWindow extends JFrame {
 		// Add the progress area
 		c.gridy = 2;
 		c.gridx = 1;
-		c.weightx = 1;
+		c.weightx = .25;
 		c.gridheight = 5;
 		controlPanel.add(progressArea, c);
 		
@@ -159,6 +172,22 @@ public class MainWindow extends JFrame {
 				Player p = players.get(currentPlayer);
 				progressArea.addProgress(p.getName() + " rolled a " + roll1 +
 						" and a " + roll2 + ".\n");
+				if (determineOrder) {
+					if (roll1+roll2 > highRoll) {
+						firstPlayer = currentPlayer;
+						highRoll = roll1+roll2;
+					}
+					if (currentPlayer == players.size()-1) {
+						currentPlayer = firstPlayer;
+						progressArea.addProgress("\n"+players.get(currentPlayer).getName() + " goes first.\n");
+						determineOrder = false;
+					} else {
+						currentPlayer = (currentPlayer + 1) % players.size();
+						progressArea.addProgress("\n"+players.get(currentPlayer).getName() + ", roll to see who goes first.\n");
+					}
+					rollButton.setEnabled(true);
+					return;
+				}
 				if (roll1 == roll2) {
 					p.setDoubles(p.getDoubles()+1);
 					if (p.getDoubles() == 3) {
@@ -355,19 +384,17 @@ public class MainWindow extends JFrame {
 		// Opens the Manage properties window when clicked
 		managePropertiesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
+				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this).setVisible(true);
 			}
 		});
 		
 		// Opens the Manage buildings window when clicked
 		manageBuildingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
+				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this).setVisible(true);
 			}
 		});
 	}
 	
-	public void updateProgressArea(String update){
-		progressArea.addProgress(update + ".\n");
-	}
+	
 }
