@@ -2,6 +2,7 @@ package server;
 
 import java.io.IOException;
 import java.net.BindException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -22,19 +23,19 @@ public class Server extends Thread{
 	private ArrayList<ServerThread> serverThreads; 
 	private ArrayList<ServerThread> actualPlayerTheads; //keep track of player who actually logs in order
 	private JDBCDriver jDBCDriver;
-
 	private ArrayList<String> teamNames; 
 	private ArrayList<Player> players;
-	private ArrayList<String> otherPlayerInfo; //who logged in, what token they picked
+	 //who logged in, what token they picked
 	private int numberOfGuests = 1; //used to assign guest name 
 	public Server(){
 		try{
+			System.out.println(InetAddress.getLocalHost());
 			ss = new ServerSocket(Constants.defaultPort);
 			serverThreads = new ArrayList<ServerThread>();
 			actualPlayerTheads = new ArrayList<ServerThread>();
 			players = new ArrayList<Player>();
 			teamNames = new ArrayList<String>();
-			otherPlayerInfo = new ArrayList<String>();
+			
 			stop = false;
 			jDBCDriver = new JDBCDriver();
 		}catch (IOException e) {
@@ -58,7 +59,9 @@ public class Server extends Thread{
 			for (int i = 0; i < actualPlayerTheads.size(); i++) {
 				ServerThread st = actualPlayerTheads.get(i);
 				String playername = st.getClientName();
-				players.add(new Player(playername, getWins(playername), getNumberOfGames(playername), st.getServerThreadID()));
+				Player newPlayer = new Player(playername, getWins(playername), getNumberOfGames(playername), st.getServerThreadID());
+				newPlayer.setGameToken(st.getTokenPicked());
+				players.add(newPlayer);
 			}
 		}
 		synchronized(actualPlayerTheads){
@@ -69,8 +72,10 @@ public class Server extends Thread{
 		
 	}
 	public void sendOtherPlayerInfo(ServerThread serverThread){
+		ArrayList<String> otherPlayerInfo = new ArrayList<String>();
 		synchronized(actualPlayerTheads){//construct the actual list of player once a new player login, the list will construct his startwindow
 			for (ServerThread st : actualPlayerTheads) {
+				
 				if(st !=serverThread ){
 					String name = st.getClientName();
 					String id = Integer.toString(st.getTokenPicked());
