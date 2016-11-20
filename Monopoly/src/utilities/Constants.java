@@ -41,5 +41,5 @@ public class Constants {
 	public static int luxuryTax = 75;
 	public static int goMoney = 200;
 	
-	public static int jailLocation = 11;
+	public static int jailLocation = 10;
 }
