@@ -159,75 +159,11 @@ public class Property {
 		this.group = group;
 	}
 	
-	//returns true if successfully builds house
-	/*public boolean addHouse()
-	{
-		if(numHouses < 4)
-		{
-			numHouses++;
-			return true;
-		}
-		return false;
-	}*/
-}
-/* returns array of all properties read in from fileName
-private Property[] readFile(String fileName)
-{
-	BufferedReader br = null;
-	Property[] properties = new Property[40];
-	try
-	{
-		br = new BufferedReader(new FileReader(fileName));
-		int count = 0;
-	
-		String line = br.readLine();
-		while (line != null) 
-		{
-			line = line.trim();
-			int[] rentPrices = new int[5];
-		
-			StringTokenizer st = new StringTokenizer(line, "|")
-			String name = st.nextToken();
-			String group = st.nextToken();
-			int price = Integer.parseInt(st.nextToken());
-			String rents = st.nextToken();
-			StringTokenizer rt = new StringTokenizer(rents, ",");
-			for(int i = 0; i < 5; i++)
-			{
-				rentPrices[i] = rt.nextToken();
-			}
-			int mValue = Integer.parseInt(st.nextToken());
-			int houseCost = Integer.parseInt(st.nextToken());
-			int bp = = Integer.parseInt(st.nextToken());
-			properties[count] = new Property(name, price, group, rentPrices, houseCost, mValue, bp);
-			
-			count++;
-			line = br.readLine();
-		}
+	public void resetProperty() {
+		mortgaged = false;
+		numHouses = 0;
+		hasHotel = false;
+		owner = null;
+		canBuild = false;
 	}
-	catch (FileNotFoundException fnfe) 
-	{
-		Util.printExceptionToCommand(fnfe);
-	} 
-	catch (IOException ioe) 
-	{
-		Util.printExceptionToCommand(ioe);
-	} 
-	finally 
-	{
-		if (br != null) 
-		{
-			try 
-			{
-				br.close();
-			} 
-			catch (IOException ioe1) 
-			{
-				Util.printExceptionToCommand(ioe1);
-			}
-		}
-	}
-	
-	return properties;
 }
-*/
