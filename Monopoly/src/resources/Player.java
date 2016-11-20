@@ -47,6 +47,9 @@ public class Player implements Serializable {
 		return wins;
 	}
 	
+	public int getID(){
+		return ID;
+	}
 	public int getGamesPlayed() {
 		return gamesPlayed;
 	}

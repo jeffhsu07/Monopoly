@@ -162,6 +162,10 @@ public class MainWindow extends JFrame {
 		// Add control panel to the main board
 		this.add(controlPanel, BorderLayout.CENTER);
 	}
+	
+	public ArrayList<Player> getPlayerList(){
+		return players;
+	}
 	public void updateProgressArea(String update){
 		progressArea.addProgress(update + ".\n");
 	}
