@@ -206,6 +206,7 @@ public class MainWindow extends JFrame {
 						endTurnButton.setText("End Turn");
 						payingDebt = false;
 						if (doubleRolledWhilePaying) endTurnButton.setEnabled(false);
+						progressArea.addProgress(players.get(currentPlayer).getName() +" gets to roll again.\n");
 					} else {
 						JOptionPane.showMessageDialog(null, "Need more money to repay debt.");
 						return;
@@ -491,8 +492,8 @@ public class MainWindow extends JFrame {
 					}
 					creditor = properties[newLocation].getOwner();
 					p.addMoney(-rent);
-					properties[newLocation].getOwner().addMoney(rent);
-					progressArea.addProgress("    paid $"+rent+" in rent.\n");
+					properties[newLocation].getOwner().addMoney(rent-debt);
+					progressArea.addProgress("    paid $"+(rent-debt)+" in rent.\n");
 				}
 			}
 		} else {
@@ -522,7 +523,7 @@ public class MainWindow extends JFrame {
 						debt = 0;
 					}
 					p.addMoney(-Constants.incomeTax);
-					progressArea.addProgress("    paid $"+Constants.incomeTax+" in tax.\n");
+					progressArea.addProgress("    paid $"+(Constants.incomeTax-debt)+" in tax.\n");
 				} else {
 					int totalWorth = p.getMoney();
 					for (Property property : p.getProperties()) {
@@ -541,7 +542,7 @@ public class MainWindow extends JFrame {
 						debt = 0;
 					}
 					p.addMoney(-tax);
-					progressArea.addProgress("    paid $"+tax+" in tax.\n");
+					progressArea.addProgress("    paid $"+(tax-debt)+" in tax.\n");
 				}
 			} else if (properties[newLocation].getName().equals("Go")) {
 				//Nothing. Go money handled above.
@@ -557,12 +558,13 @@ public class MainWindow extends JFrame {
 					debt = 0;
 				}
 				p.addMoney(-Constants.luxuryTax);
-				progressArea.addProgress("    paid $"+Constants.luxuryTax+" in tax.\n");
+				progressArea.addProgress("    paid $"+(Constants.luxuryTax-debt)+" in tax.\n");
 			}
 		}
 		
 		//Determine if player went bankrupt
 		if (debt > 0) {
+			progressArea.addProgress("    still owes "+debt+" in debt.\n");
 			int worth = 0;
 			for (Property property : p.getProperties()) {
 				if (!property.isMortgaged()) {
@@ -596,7 +598,7 @@ public class MainWindow extends JFrame {
 				endTurnButton.setText("Repay Debt");
 				payingPlayer = players.get(currentPlayer);
 				paidPlayer = creditor;
-				progressArea.addProgress("    needs to sell / mortgage to pay debt.\n");
+				progressArea.addProgress("    needs to sell/mortgage to pay remaining debt.\n");
 				endTurnButton.setEnabled(true);
 				doubleRolledWhilePaying = (roll1 == roll2);
 			}
@@ -612,7 +614,7 @@ public class MainWindow extends JFrame {
 		
 		progressArea.addProgress("\n");
 		
-		if (players.get(currentPlayer).getDoubles() > 0) {
+		if (players.get(currentPlayer).getDoubles() > 0 && !payingDebt) {
 			progressArea.addProgress(players.get(currentPlayer).getName() +" gets to roll again.\n");
 			rollButton.setEnabled(true);
 		} else {
