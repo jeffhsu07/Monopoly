@@ -60,15 +60,16 @@ public class MainWindow extends JFrame {
 	private int debtOwed;
 	private Player payingPlayer;
 	private Player paidPlayer;
-	
+	private Client client;
 	private Vector<Integer> playersToRoll;
 	private Vector<Integer> rollTies;
 	
-	public MainWindow(ArrayList<Player> players) {
+	public MainWindow(ArrayList<Player> players, Client client) {
 		super("Monopoly");
 		PropertiesSetUp p = new PropertiesSetUp();
 		properties = p.getProperties();
 		this.players = players;
+		this.client = client;
 		initializeComponents();
 		createGUI();
 		addListeners();
@@ -162,12 +163,12 @@ public class MainWindow extends JFrame {
 		// Add control panel to the main board
 		this.add(controlPanel, BorderLayout.CENTER);
 	}
+	public void updateProgressArea(String update){
+		progressArea.addProgress(update + ".\n");
+	}
 	
 	public ArrayList<Player> getPlayerList(){
 		return players;
-	}
-	public void updateProgressArea(String update){
-		progressArea.addProgress(update + ".\n");
 	}
 	private void addListeners() {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -229,14 +230,14 @@ public class MainWindow extends JFrame {
 		// Opens the Manage properties window when clicked
 		managePropertiesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
+				new ManagePropertiesWindow(players.get(ownedPlayer), MainWindow.this, client).setVisible(true);
 			}
 		});
 		
 		// Opens the Manage buildings window when clicked
 		manageBuildingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this, null).setVisible(true);
+				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this, client).setVisible(true);
 			}
 		});
 	}
