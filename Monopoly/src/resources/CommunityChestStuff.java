@@ -26,7 +26,7 @@ public class CommunityChestStuff
 	
 	public CommunityChestStuff(ArrayList<Player> woo, ProgressArea lesgo)
 	{
-		deckPosition = 0;
+		deckPosition = 9;
 		players = woo;
 		progress = lesgo;
 	}

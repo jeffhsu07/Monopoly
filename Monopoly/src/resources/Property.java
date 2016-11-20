@@ -16,6 +16,8 @@ package resources;
 import java.util.ArrayList;
 import java.util.List;
 
+import utilities.Constants;
+
 
 
 public class Property {
@@ -93,6 +95,28 @@ public class Property {
 	
 	public int getRent()
 	{
+		if(numHouses== 0&&owner != null&&!group.equals("Utilities")&&!group.equals("Stations"))
+		{
+			ArrayList<Integer> locations = null;
+			if(group.equals("Brown"))
+				locations = Constants.group1Locations;
+			else if(group.equalsIgnoreCase("light blue"))
+				locations = Constants.group2Locations;
+			else if(group.equalsIgnoreCase("purple"))
+				locations = Constants.group3Locations;
+			else if(group.equalsIgnoreCase("orange"))
+				locations = Constants.group4Locations;
+			else if(group.equalsIgnoreCase("red"))
+				locations = Constants.group5Locations;
+			else if(group.equalsIgnoreCase("yellow"))
+				locations = Constants.group6Locations;
+			else if(group.equalsIgnoreCase("green"))
+				locations = Constants.group7Locations;	
+			else if(group.equalsIgnoreCase("dark blue"))
+				locations = Constants.group8Locations;
+			if(owner.getProperties().containsAll(locations))
+				return rentCosts[0] * 2;
+		}
 		if(!group.equals("Utilities")&&!group.equals("Stations"))
 		{
 			if(hasHotel)
