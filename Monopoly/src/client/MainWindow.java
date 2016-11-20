@@ -522,7 +522,7 @@ public class MainWindow extends JFrame {
 				//TODO Deal with community chest
 				comChestHandler.handleCommunity(p);
 			} else if (properties[newLocation].getName().equals("Income Tax")) {
-				Object[] options = {"Pay $"+Constants.incomeTax,
+				/*Object[] options = {"Pay $"+Constants.incomeTax,
                 "Pay 10% of Total Worth"};
 				int n = JOptionPane.showOptionDialog(getContentPane(),
 						"Would you like to estimate your tax at $"+Constants.incomeTax+" or pay 10% of your total worth (including cash, properties, and buildings)?",
@@ -560,7 +560,28 @@ public class MainWindow extends JFrame {
 					}
 					p.addMoney(-tax);
 					progressArea.addProgress("    paid $"+(tax-debt)+" in tax.\n");
+				}*/
+				// To simplify networking make the income tax choice for the player
+				int flatTax = Constants.incomeTax;
+				int percentageTax = p.getMoney();
+				for (Property property : p.getProperties()) {
+					percentageTax += property.getPrice();
+					if (property.getHotel()) {
+						percentageTax += 5 * property.getHouseCost();
+					} else {
+						percentageTax += property.getNumHouses() * property.getHouseCost();
+					}
 				}
+				percentageTax = percentageTax/10;
+				debt = (flatTax < percentageTax) ? flatTax : percentageTax;
+				int tax = debt;
+				if (p.getMoney() < debt) {
+					debt -= p.getMoney();
+				} else {
+					debt = 0;
+				}
+				p.addMoney(-tax);
+				progressArea.addProgress("    paid $"+(tax-debt)+" in tax.\n");
 			} else if (properties[newLocation].getName().equals("Go")) {
 				//Nothing. Go money handled above.
 			} else if (properties[newLocation].getName().equals("Just Visiting")) {
