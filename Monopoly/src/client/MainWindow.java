@@ -247,6 +247,12 @@ public class MainWindow extends JFrame {
 				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this, client).setVisible(true);
 			}
 		});
+		
+		exitButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 	}
 	
 	public void endTurnButtonPushed() {
@@ -344,7 +350,7 @@ public class MainWindow extends JFrame {
 		if(p.getCurrentLocation() + roll1 + roll2 % 40 == 30){
 			p.setCurrentLocation(Constants.jailLocation);
 			p.setInJail(true);
-			progressArea.addProgress(p.getName() + " landed on go to jail, " + p.getName() + " has been sent to jail");
+			progressArea.addProgress(p.getName() + " landed on go to jail, " + p.getName() + " has been sent to jail.\n");
 			endTurnButton.setEnabled(true);
 			return;
 		}
@@ -379,6 +385,8 @@ public class MainWindow extends JFrame {
 				endTurnButton.setEnabled(true);
 				return;
 			}
+			// If we rolled doubles, let the player roll again. Otherwise Player may end turn
+			progressArea.addProgress("    " + players.get(currentPlayer).getName() +" will get to roll again.\n");
 		}
 		
 		// Move the player
@@ -408,7 +416,6 @@ public class MainWindow extends JFrame {
 		
 		// If we rolled doubles, let the player roll again. Otherwise Player may end turn
 		if (players.get(currentPlayer).getDoubles() > 0 && !payingDebt) {
-			progressArea.addProgress(players.get(currentPlayer).getName() +" gets to roll again.\n");
 			rollButton.setEnabled(true);
 		} else {
 			endTurnButton.setEnabled(true);
@@ -753,6 +760,8 @@ public class MainWindow extends JFrame {
 		}
 		
 		private void addListeners(){
+			this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+			
 			payButton.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {
 					// Check the player can afford to get our of jail
