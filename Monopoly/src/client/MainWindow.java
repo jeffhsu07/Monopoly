@@ -291,6 +291,9 @@ public class MainWindow extends JFrame {
 		}
 	}
 	
+	public ArrayList<Player> getPlayerList(){
+		return players;
+	}
 	public void rollDice(){
 		rollButton.setEnabled(false);
 		

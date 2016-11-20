@@ -143,6 +143,7 @@ public class ManagePropertiesWindow extends JFrame{
 		mortgageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
 				mortgageProperty();
+				
 			}
 		});
 		
@@ -198,6 +199,7 @@ public class ManagePropertiesWindow extends JFrame{
 			isMortgaged = currentProperty.isMortgaged();
 			updateMortgageStateLabel();
 			mw.updateProgressArea(player.getName() + " mortgaged " + currentProperty.getName());
+			client.sendMessage(player.getID()+"::MortgagedProperty::" + currentProperty.getBoardPosition());
 		}
 		else if(groupHasHouses()){
 			mortgageStateLabel.setText("<html>Can't mortgage property if properties in the same group has <br>buildings on them</br></html>");
@@ -208,6 +210,7 @@ public class ManagePropertiesWindow extends JFrame{
 				isMortgaged = currentProperty.isMortgaged();
 				updateMortgageStateLabel();
 				mw.updateProgressArea(player.getName() + " reclaimed " + currentProperty.getName());
+				client.sendMessage(player.getID()+"::ReclaimedProperty::" + currentProperty.getBoardPosition());
 			}
 			else{
 				mortgageStateLabel.setText("Can't reclaim this property because you don't have enough money");

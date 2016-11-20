@@ -124,4 +124,8 @@ public class Player implements Serializable {
 	public void setDoubles(int num) {
 		doubles = num;
 	}
+	
+	public int getID(){
+		return ID;
+	}
 }

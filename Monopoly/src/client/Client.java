@@ -203,6 +203,19 @@ public class Client extends Thread{
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]);
+			mainWindow.getPropertiesArray()[propertyID].setMortgaged(true);
+			mainWindow.getPlayerList().get(clientID).addMoney(mainWindow.getPropertiesArray()[propertyID].getMortgageValue());
+			mainWindow.updateProgressArea(mainWindow.getPlayerList().get(clientID).getName() +
+					" mortgaged " + mainWindow.getPropertiesArray()[propertyID].getName());
+			//TODO
+		}else if(message.contains("::ReclaimedProperty::") && mainWindow != null){
+			String[] command = message.split("::");
+			int clientID = Integer.parseInt(command[0]);
+			int propertyID = Integer.parseInt(command[2]);
+			mainWindow.getPropertiesArray()[propertyID].setMortgaged(false);
+			mainWindow.getPlayerList().get(clientID).subtractMoney(mainWindow.getPropertiesArray()[propertyID].getMortgageValue());
+			mainWindow.updateProgressArea(mainWindow.getPlayerList().get(clientID).getName() +
+										" reclaimed " + mainWindow.getPropertiesArray()[propertyID].getName());
 			//TODO
 		}else if(message.contains("::MortgagedHouse::") && mainWindow != null){
 			String[] command = message.split("::");

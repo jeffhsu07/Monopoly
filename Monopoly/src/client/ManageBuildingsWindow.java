@@ -151,7 +151,7 @@ public class ManageBuildingsWindow extends JFrame{
 		
 		sellHouseButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				sellHouse();
+				sellHouse();			
 				mw.repaint();
 				mw.revalidate();
 			}
@@ -280,6 +280,7 @@ public class ManageBuildingsWindow extends JFrame{
 				mw.updateProgressArea(player.getName() + " built a house on " + currentProperty.getName()); 
 				mw.updateProgressArea("Total number of houses on " + currentProperty.getName() + ": " + currentProperty.getNumHouses());
 			}
+			client.sendMessage(player.getID() + "::PurchasedHouse::" + currentProperty.getBoardPosition());
 		}
 		else{
 			buyHouseDescriptionLabel.setText("You do not have enough money to buy a house on this property!");
@@ -317,6 +318,7 @@ public class ManageBuildingsWindow extends JFrame{
 			buyHouseDescriptionLabel.setText("<html>Clicking this button will <br>add a house to the property<br>House cost: " + currentProperty.getHouseCost() + "</br><html>");
 			mw.updateProgressArea(player.getName() + " sold a house on " + currentProperty.getName());
 			mw.updateProgressArea("Total number of houses on " + currentProperty.getName() + ": " + currentProperty.getNumHouses());
+			client.sendMessage(player.getID() + "::MortgagedHouse::" + currentProperty.getBoardPosition());
 		}
 		else{
 			sellHouseDescriptionLabel.setText("There are no houses on this property!");
