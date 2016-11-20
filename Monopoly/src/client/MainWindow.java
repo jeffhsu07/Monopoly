@@ -371,8 +371,6 @@ public class MainWindow extends JFrame {
 		} else if(p.isInJail()) {
 			progressArea.addProgress(p.getName() + " is still stuck in jail. \n");
 			endTurnButton.setEnabled(true);
-			currentPlayer = (roll1 == roll2 && !p.isInJail()) ? 
-					currentPlayer : (currentPlayer+1) % players.size();
 			
 			// Repaint the game board and update the progress area
 			gameBoard.repaint();
@@ -721,6 +719,7 @@ public class MainWindow extends JFrame {
 	public void payBail() {
 		players.get(currentPlayer).subtractMoney(50);
 		players.get(currentPlayer).setInJail(false);
+		progressArea.addProgress("    paid $50 to leave jail.");
 		rollButton.setEnabled(false);
 		endTurnButton.setEnabled(true);
 	}
@@ -728,6 +727,7 @@ public class MainWindow extends JFrame {
 	public void useGetOutOfJailFreeCard() {
 		players.get(currentPlayer).useJailCard();
 		players.get(currentPlayer).setInJail(false);
+		progressArea.addProgress("    used a get out of jail free card.");
 		rollButton.setEnabled(false);
 		endTurnButton.setEnabled(true);
 	}

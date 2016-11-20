@@ -226,9 +226,16 @@ public class GameBoard extends JPanel {
 		// Draw a mouseover text for each property
 		for (int i = 0; i < 40; i++) {
 			if (isMouseWithinLocation(i)) {
-				g.drawString("Property: " + properties[i].getName() +
-						"\nOwner: " + properties[i].getOwner() +
-						"\nCurrent Rent: " + properties[i].getRent(), gridWidth+20, gridHeight+40);
+				int currenty = gridHeight+20;
+				g.drawString("Property: " + properties[i].getName(), gridWidth + 20, currenty);
+				currenty += 20;
+				if (properties[i].getOwner() != null) {
+					g.drawString("Owner: " + properties[i].getOwner().getName(), gridWidth + 20, currenty);
+					currenty += 20;
+				}
+				if (Constants.propertyLocations.contains(i)) {
+					g.drawString("Current Rent: " + properties[i].getRent(), gridWidth+20, currenty);
+				}
 			}
 		}
 	}
