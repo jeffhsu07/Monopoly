@@ -4,8 +4,6 @@ To Do:
 		Community Chest Cards (Brandon)
 		Selling Properties if you can't pay rent
 		Bankruptcy
-		Go To Jail (Jeffrey)
-			Different Ways to get out / forced to leave
 
 	Finish the game setup window (Matt)
 
@@ -28,4 +26,5 @@ To Do:
 
 Known Issue:
 	Management Windows Crash if user has no properties
-	Rolling doubles favors last player to roll
+	Rolling for first turn favors last player to roll
+	Players aren't forced to pay after 3 turns failing to roll to leave jail
