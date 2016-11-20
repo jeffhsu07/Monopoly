@@ -6,6 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -48,6 +50,10 @@ public class MainWindow extends JFrame {
 	// Menu options
 	JMenuItem menuPlayerStats;
 	
+	private boolean determineOrder;
+	private int firstPlayer;
+	private int highRoll;
+	
 	public MainWindow(ArrayList<Player> players) {
 		super("Monopoly");
 		PropertiesSetUp p = new PropertiesSetUp();
@@ -56,6 +62,7 @@ public class MainWindow extends JFrame {
 		initializeComponents();
 		createGUI();
 		addListeners();
+		progressArea.addProgress(players.get(currentPlayer).getName() + ", roll to see who goes first.\n");
 	}
 	
 	public Property[] getPropertiesArray(){
@@ -65,14 +72,9 @@ public class MainWindow extends JFrame {
 		// Initialize our player tracking to default values.
 		currentPlayer = 0;
 		ownedPlayer = 0;
-		int[] tempCosts = {100,200};
-		Property temp1 = new Property("Test Property 1", 100, "Group9", tempCosts, 20, 100, 5);
-		Property temp2 = new Property("Test Property 2", 100, "Group9", tempCosts, 20, 80, 5);
-		temp2.setMortgaged(true);
-		players.get(currentPlayer).addProperty(properties[1]);
-		properties[1].setOwner(players.get(currentPlayer));
-		players.get(currentPlayer).addProperty(properties[3]);
-		properties[3].setOwner(players.get(currentPlayer));
+		determineOrder = true;
+		firstPlayer = 0;
+		highRoll = 0;
 		// Initialize our various buttons.
 		rollButton = new JButton("Roll Dice");
 		manageBuildingsButton = new JButton("Manage Buildings");
@@ -92,7 +94,8 @@ public class MainWindow extends JFrame {
 
 	private void createGUI() {
 		this.setSize(1280,720);
-		this.setResizable(false);
+		this.setResizable(true);
+		this.setMinimumSize(getSize());
 		
 		// Set up the menu bar
 		JMenuBar menuBar = new JMenuBar();
@@ -137,7 +140,7 @@ public class MainWindow extends JFrame {
 		// Add the progress area
 		c.gridy = 2;
 		c.gridx = 1;
-		c.weightx = .25;
+		c.weightx = 1;
 		c.gridheight = 5;
 		controlPanel.add(progressArea, c);
 		
@@ -156,6 +159,12 @@ public class MainWindow extends JFrame {
 			}
 		});
 		
+		this.addWindowStateListener(new WindowStateListener() {
+			public void windowStateChanged(WindowEvent arg0) {
+				gameBoard.repaint();
+				repaint();
+			}
+		});
 		// Have the roll button move the current player.
 		rollButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -293,6 +302,24 @@ public class MainWindow extends JFrame {
 		Player p = players.get(currentPlayer);
 		progressArea.addProgress(p.getName() + " rolled a " + roll1 +
 				" and a " + roll2 + ".\n");
+		
+		if (determineOrder) {
+			if (roll1+roll2 > highRoll) {
+				firstPlayer = currentPlayer;
+				highRoll = roll1+roll2;
+			}
+			if (currentPlayer == players.size()-1) {
+				currentPlayer = firstPlayer;
+				progressArea.addProgress("\n"+players.get(currentPlayer).getName() + " goes first.\n");
+				determineOrder = false;
+			} else {
+				currentPlayer = (currentPlayer + 1) % players.size();
+				progressArea.addProgress("\n"+players.get(currentPlayer).getName() + ", roll to see who goes first.\n");
+			}
+			rollButton.setEnabled(true);
+			return;
+		}
+		
 		if(p.getCurrentLocation() + roll1 + roll2 % 40 == 30){
 			p.setCurrentLocation(Constants.jailLocation);
 			p.setInJail(true);
@@ -349,8 +376,10 @@ public class MainWindow extends JFrame {
 		//property you can buy, then a super long if else statement for example you could use
 		//"if(properties[newLocation].getName().equals("Chance")){}" in the case of testing to see if the player landed on chance space
 		//-bho
-		
-		if (properties[newLocation].getPrice() != 0) {
+
+		int debt = 0;
+		Player creditor = null; 
+		if(properties[newLocation].getPrice() != 0) {
 			if (properties[newLocation].getOwner() == null) {
 				if (p.getMoney() >= properties[newLocation].getPrice()) {
 					int n = JOptionPane.showConfirmDialog(
@@ -394,6 +423,13 @@ public class MainWindow extends JFrame {
 					} else {
 						rent = properties[newLocation].getRent();
 					}
+					debt = rent;
+					if (p.getMoney() < debt) {
+						debt -= p.getMoney();
+					} else {
+						debt = 0;
+					}
+					creditor = properties[newLocation].getOwner();
 					p.addMoney(-rent);
 					properties[newLocation].getOwner().addMoney(rent);
 					progressArea.addProgress("    paid $"+rent+" in rent.\n");
@@ -419,6 +455,12 @@ public class MainWindow extends JFrame {
 						options,  //the titles of buttons
 						options[0]);
 				if (n == 0) {
+					debt = Constants.incomeTax;
+					if (p.getMoney() < debt) {
+						debt -= p.getMoney();
+					} else {
+						debt = 0;
+					}
 					p.addMoney(-Constants.incomeTax);
 					progressArea.addProgress("    paid $"+Constants.incomeTax+" in tax.\n");
 				} else {
@@ -432,6 +474,12 @@ public class MainWindow extends JFrame {
 						}
 					}
 					int tax = totalWorth/10;
+					debt = tax;
+					if (p.getMoney() < debt) {
+						debt -= p.getMoney();
+					} else {
+						debt = 0;
+					}
 					p.addMoney(-tax);
 					progressArea.addProgress("    paid $"+tax+" in tax.\n");
 				}
@@ -442,16 +490,25 @@ public class MainWindow extends JFrame {
 			} else if (properties[newLocation].getName().equals("Free Parking")) {
 				//Nothing
 			} else if (properties[newLocation].getName().equals("Luxury Tax")) {
+				debt = Constants.luxuryTax;
+				if (p.getMoney() < debt) {
+					debt -= p.getMoney();
+				} else {
+					debt = 0;
+				}
 				p.addMoney(-Constants.luxuryTax);
 				progressArea.addProgress("    paid $"+Constants.luxuryTax+" in tax.\n");
 			}
 		}
 		
 		//Determine if player went bankrupt
-		if (p.isBankrupt()) {
+		if (debt > 0) {
+			//TODO let player sell buildings and mortgage properties
+			//determine if player cannot repay their debt
 			progressArea.addProgress("    is bankrupt.\n");
-			//TODO
+			//TODO handle bankrupt player
 		}
+
 		
 		//Find next player. If doubles was rolled and player is not in jail, player goes again.
 		currentPlayer = (roll1 == roll2 && !p.isInJail()) ? 
