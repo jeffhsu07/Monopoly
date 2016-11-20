@@ -112,16 +112,14 @@ public class ServerThread extends Thread  {
 		}else if(message.contains("Client Logout: ")){// a player log out during starting game gui or main gui
 			server.sendMessageToAllOtherClients(message+ clientName, this); // tell all other client that this client logs out with its ID number
 			server.removeFromPlayerThread(this);
-			
+		
 		}else if (message.contains("Host Logout: ")){
 			server.sendMessageToAllOtherClients("Host Logout: ", this);
 			server.removeEveryPlayer();
 		}else if(message.contains("Startgame")){
+			server.incrementNumberOfGameplays();
 			server.stopServer(); // server doesnt take more people after host clicked start 
 			server.sendPlayersToClients();
-			//the host(first player joined) clicked start game
-			//TODO
-			//send new ID to all players in actual player list 
 			
 		}else if(message.contains("::Picked Token::")){
 			server.sendMessageToAllOtherClients(message, this);
@@ -129,6 +127,11 @@ public class ServerThread extends Thread  {
 			String clientName = command[0];
 			int tokenID = Integer.parseInt(command[2]);
 			tokenPicked = tokenID;
+		}else if(message.contains("Winnner: ")){
+			message = message.replace("Winnner: ", "");
+			message = message.trim();
+			String winnerName = message;
+			server.incrementWins(winnerName);
 		}else{
 			server.sendMessageToAllOtherClients(message, this); //if it is other message,  send to other players
 		}

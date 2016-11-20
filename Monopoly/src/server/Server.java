@@ -218,9 +218,16 @@ public class Server extends Thread{
 		jDBCDriver.incrementWins(username);
 		jDBCDriver.stop();
 	}
-	public void incrementNumberOfGameplays(String username){
+	public void incrementNumberOfGameplays(){
 		jDBCDriver.connect();
-		jDBCDriver.incrementGameplays(username);
+		synchronized(players){
+			for (Player p: players){
+				if(!p.getName().contains("Guest")){
+					jDBCDriver.incrementGameplays(p.getName());
+					System.out.println("Incremented number of game for " +p.getName()+" by 1.");
+				}
+			}
+		}
 		jDBCDriver.stop();
 	}
 	
