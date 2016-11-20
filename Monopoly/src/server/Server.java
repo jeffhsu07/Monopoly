@@ -14,11 +14,19 @@
 package server;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.BindException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import resources.JDBCDriver;
 import resources.Player;
@@ -41,19 +49,7 @@ public class Server extends Thread{
 	 //who logged in, what token they picked
 	private int numberOfGuests = 1; //used to assign guest name 
 	public Server(){
-		try{
-			System.out.println(InetAddress.getLocalHost());
-			ss = new ServerSocket(Constants.defaultPort);
-			serverThreads = new ArrayList<ServerThread>();
-			actualPlayerTheads = new ArrayList<ServerThread>();
-			players = new ArrayList<Player>();
-			teamNames = new ArrayList<String>();
-			
-			stop = false;
-			jDBCDriver = new JDBCDriver();
-		}catch (IOException e) {
-			e.printStackTrace();
-		}
+		new PortPane();
 		
 	}
 	//send message to all other clients except the one who is doing the action
@@ -319,6 +315,37 @@ public class Server extends Thread{
 	
 	public boolean cannotAddPlayer(){
 		return actualPlayerTheads.size() == 8;
+	}
+	private class PortPane {
+	   public PortPane() {
+	      JTextField portField = new JTextField(5);
+
+	      JPanel myPanel = new JPanel();
+	      myPanel.add(new JLabel("Port:"));
+	      myPanel.add(portField);
+
+	      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+	               "Please Enter Port Values", JOptionPane.OK_CANCEL_OPTION);
+	      if (result == JOptionPane.OK_OPTION) {
+	         System.out.println("Port: " + portField.getText());
+	         int port = Integer.parseInt(portField.getText());
+	         try {
+	 			//teamNames = new ArrayList<String>();
+	        	System.out.println(InetAddress.getLocalHost());
+	 			ss = new ServerSocket(port);
+	 			serverThreads = new ArrayList<ServerThread>();
+	 			actualPlayerTheads = new ArrayList<ServerThread>();
+	 			players = new ArrayList<Player>();
+	 			teamNames = new ArrayList<String>();
+	 			stop = false;
+	 			jDBCDriver = new JDBCDriver();
+	 			System.out.println("Server constructed");
+	 		} catch (IOException ioe) {
+	 			System.out.println("ioe construct: " + ioe.getMessage());
+	 		}
+	      }
+	   }
+		   
 	}
 	
 	public static void main(String args[]){
