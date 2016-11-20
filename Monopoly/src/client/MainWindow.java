@@ -288,6 +288,7 @@ public class MainWindow extends JFrame {
 	
 	private void endTurn() {
 		//Find next player.
+		progressArea.addProgress("\n");
 		do {currentPlayer = (currentPlayer+1) % players.size();}
 		while (players.get(currentPlayer).isBankrupt());
 		
@@ -354,6 +355,8 @@ public class MainWindow extends JFrame {
 			p.setInJail(true);
 			progressArea.addProgress(p.getName() + " landed on go to jail, " + p.getName() + " has been sent to jail.\n");
 			endTurnButton.setEnabled(true);
+			repaint();
+			gameBoard.repaint();
 			return;
 		}
 		
@@ -414,7 +417,6 @@ public class MainWindow extends JFrame {
 		// Repaint the game board and update the progress area
 		gameBoard.repaint();
 		playerInformationGrid.repaint();
-		progressArea.addProgress("\n");
 		
 		// If we rolled doubles, let the player roll again. Otherwise Player may end turn
 		if (players.get(currentPlayer).getDoubles() > 0 && !payingDebt) {
