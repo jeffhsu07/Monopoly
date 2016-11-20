@@ -249,6 +249,10 @@ public class ManageBuildingsWindow extends JFrame{
 	}
 	
 	public void addHouse(){
+		if(currentProperty.isMortgaged()){
+			buyHouseDescriptionLabel.setText("Cannot build house on a mortgaged property");
+			return;
+		}
 		ArrayList<Property> group = new ArrayList<Property>();
 		for(int i = 0; i < groupLocation.size(); i++){
 			for(int j = 0; j < player.getProperties().size(); j++){
