@@ -77,8 +77,6 @@ public class Client extends Thread{
 		}
 	}
 	
-	
-	
 	//stop listening to server
 	public void endClient(){
 		try {
@@ -199,29 +197,29 @@ public class Client extends Thread{
 			//TODO 
 			//start the game 
 			
-		}else if(message.contains("EndTurn: ") && mainWindow != null ){
-			message = message.replace("EndTurn: ", "");
-			message = message.trim();
-			int clientID = Integer.parseInt(message);
-			//TODO
-			//after client end his turn, proceed to another player
-		}else if(message.contains("::RolledForTurn::") && mainWindow != null){ //at the begining of the game decide turns
-			
+		}else if(message.contains("EndTurn") && mainWindow != null ){
+			// End turn message only states end turn.
+			// No other information sent in message
+			mainWindow.endTurnButtonPushed();
+		}else if(message.contains("Rolled::") && mainWindow != null){
+			// Each client receives which dice the active player rolled
 			String[] command = message.split("::");
-			int clientID = Integer.parseInt(command[0]);
-			int diceRolled = Integer.parseInt(command[2]);
-		}else if(message.contains("::Rolled::") && mainWindow != null){ //ID::Rolled::number
+			int roll1 = Integer.parseInt(command[1]);
+			int roll2 = Integer.parseInt(command[2]);
+			mainWindow.rollDice(roll1, roll2);
+		}else if(message.contains("PurchasedProperty::") && mainWindow != null){
+			// Active player buys property at location specified
 			String[] command = message.split("::");
-			int clientID = Integer.parseInt(command[0]);
-			int diceRolled = Integer.parseInt(command[2]);
-			//TODO
-			//do somthing when player rooled dice 
-		}else if(message.contains("::PurchasedProperty::") && mainWindow != null){
-			String[] command = message.split("::");
-			int clientID = Integer.parseInt(command[0]);
-			int propertyID = Integer.parseInt(command[2]);
-			//TODO
+			int propertyLocation = Integer.parseInt(command[1]);
+			mainWindow.buyProperty(propertyLocation);
+		}else if(message.contains("PayBail") && mainWindow != null){
+			// Active player pays bail to leave jail
+			mainWindow.payBail();
+		}else if(message.contains("useGetOutOfJailFreeCard") && mainWindow != null){
+			// Active player uses a get out of jail free card to leave jail
+			mainWindow.useGetOutOfJailFreeCard();
 		}else if(message.contains("::PurchasedHouse::") && mainWindow != null){
+			// A player purchases a house
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]); //house on the property
@@ -232,8 +230,8 @@ public class Client extends Thread{
 			mainWindow.updateProgressArea(currentPlayer.getName() + " built a house on " + property.getName()); 
 			mainWindow.updateProgressArea("Total number of houses on " + property.getName() + ": " + property.getNumHouses());
 			mainWindow.repaint();
-			//TODO
 		}else if(message.contains("::MortgagedProperty::") && mainWindow != null){
+			// A player mortgages a property
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]);
@@ -241,8 +239,8 @@ public class Client extends Thread{
 			mainWindow.getPlayerList().get(clientID).addMoney(mainWindow.getPropertiesArray()[propertyID].getMortgageValue());
 			mainWindow.updateProgressArea(mainWindow.getPlayerList().get(clientID).getName() +
 					" mortgaged " + mainWindow.getPropertiesArray()[propertyID].getName());
-			//TODO
 		}else if(message.contains("::ReclaimedProperty::") && mainWindow != null){
+			// A player reclaims their property
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]);
@@ -250,8 +248,8 @@ public class Client extends Thread{
 			mainWindow.getPlayerList().get(clientID).subtractMoney(mainWindow.getPropertiesArray()[propertyID].getMortgageValue());
 			mainWindow.updateProgressArea(mainWindow.getPlayerList().get(clientID-1).getName() +
 										" reclaimed " + mainWindow.getPropertiesArray()[propertyID].getName());
-			//TODO
 		}else if(message.contains("::MortgagedHouse::") && mainWindow != null){
+			// A player sells a building on their property
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);
 			int propertyID = Integer.parseInt(command[2]); //house on the property
@@ -262,7 +260,6 @@ public class Client extends Thread{
 			mainWindow.updateProgressArea(currentPlayer.getName() + " sold a house on " + property.getName()); 
 			mainWindow.updateProgressArea("Total number of houses on " + property.getName() + ": " + property.getNumHouses());
 			mainWindow.repaint();
-			//TODO
 		}else if(message.contains("::DrewCard::") && mainWindow != null){
 			String[] command = message.split("::");
 			int clientID = Integer.parseInt(command[0]);

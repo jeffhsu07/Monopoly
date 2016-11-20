@@ -206,7 +206,7 @@ public class MainWindow extends JFrame {
 		// Have the roll button move the current player.
 		rollButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				rollDice();
+				if (currentPlayer == ownedPlayer) rollDice();
 			}	
 		});
 		
@@ -214,10 +214,9 @@ public class MainWindow extends JFrame {
 		// The same button is overloaded for paying off game debt.
 		endTurnButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (payingDebt) {
-					payDebt();
-				} else {
-					endTurn();
+				if (currentPlayer == ownedPlayer) {
+					client.sendMessage("EndTurn");
+					endTurnButtonPushed();
 				}
 			}
 		});
@@ -235,6 +234,14 @@ public class MainWindow extends JFrame {
 				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this, client).setVisible(true);
 			}
 		});
+	}
+	
+	public void endTurnButtonPushed() {
+		if (payingDebt) {
+			payDebt();
+		} else {
+			endTurn();
+		}
 	}
 		
 	private void payDebt() {
@@ -254,7 +261,7 @@ public class MainWindow extends JFrame {
 			}
 		} else {
 			// Remind the player what they need to do to continue.
-			JOptionPane.showMessageDialog(null, "Need more money to repay debt.");
+			if (currentPlayer == ownedPlayer) JOptionPane.showMessageDialog(null, "Need more money to repay debt.");
 		}
 	}
 	
@@ -273,8 +280,10 @@ public class MainWindow extends JFrame {
 			manageBuildingsButton.setEnabled(false);
 			rollButton.setEnabled(false);
 			endTurnButton.setEnabled(false);
-			InJailPopup popup = new InJailPopup();
-			popup.setVisible(true);
+			if (currentPlayer == ownedPlayer) {
+				InJailPopup popup = new InJailPopup();
+				popup.setVisible(true);
+			}
 		} else {
 			rollButton.setEnabled(true);
 			endTurnButton.setEnabled(false);
@@ -283,7 +292,7 @@ public class MainWindow extends JFrame {
 	
 	// Private Roll Dice used when player pushes button
 	private void rollDice(){
-		if (payingDebt) {
+		if (payingDebt && currentPlayer == ownedPlayer) {
 			// Remind the player to not roll the dice before rolling
 			JOptionPane.showMessageDialog(null, "Repay Debt Before Rolling Again");
 			return;
@@ -295,6 +304,7 @@ public class MainWindow extends JFrame {
 		int roll2 = rand.nextInt(6)+1;
 
 		rollDice(roll1, roll2);
+		client.sendMessage("Rolled::"+roll1+"::"+roll2);
 	}
 	
 	// Public rollDice can be called by client when game change occurs
@@ -437,7 +447,7 @@ public class MainWindow extends JFrame {
 			// Landed on a property
 			if (properties[newLocation].getOwner() == null) {
 				// Offer the player to buy the new property if they can afford it
-				if (p.getMoney() >= properties[newLocation].getPrice()) {
+				if (p.getMoney() >= properties[newLocation].getPrice() && currentPlayer == ownedPlayer) {
 					int n = JOptionPane.showConfirmDialog(
 						    getContentPane(),
 						    "Would you like to buy "+properties[newLocation].getName()+
@@ -445,6 +455,7 @@ public class MainWindow extends JFrame {
 						    "Buy Property?",
 						    JOptionPane.YES_NO_OPTION);
 					if (n == 0) {
+						client.sendMessage("PurchasedProperty::"+newLocation);
 						buyProperty(newLocation);
 					}
 				}
@@ -654,6 +665,20 @@ public class MainWindow extends JFrame {
 		return players;
 	}
 	
+	public void payBail() {
+		players.get(currentPlayer).subtractMoney(50);
+		players.get(currentPlayer).setInJail(false);
+		rollButton.setEnabled(false);
+		endTurnButton.setEnabled(true);
+	}
+	
+	public void useGetOutOfJailFreeCard() {
+		players.get(currentPlayer).useJailCard();
+		players.get(currentPlayer).setInJail(false);
+		rollButton.setEnabled(false);
+		endTurnButton.setEnabled(true);
+	}
+	
 	// Helper Class For Custom Jail Behavior
 	private class InJailPopup extends JFrame {
 		private static final long serialVersionUID = 8782904345955253349L;
@@ -695,11 +720,8 @@ public class MainWindow extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// Check the player can afford to get our of jail
 					if(players.get(currentPlayer).getMoney() >= 50){
-						players.get(currentPlayer).subtractMoney(50);
-						players.get(currentPlayer).setInJail(false);
-						rollButton.setEnabled(false);
-						endTurnButton.setEnabled(true);
-						
+						payBail();
+						client.sendMessage("PayBail");
 						dispose();
 					}
 					else{
@@ -720,10 +742,8 @@ public class MainWindow extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// Attempt to use a get out of jail free card
 					if(players.get(currentPlayer).getJailCards() > 0){
-						players.get(currentPlayer).useJailCard();
-						players.get(currentPlayer).setInJail(false);
-						rollButton.setEnabled(false);
-						endTurnButton.setEnabled(true);
+						useGetOutOfJailFreeCard();
+						client.sendMessage("useGetOutOfJailFreeCard");
 						dispose();
 					}
 					else{

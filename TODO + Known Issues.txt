@@ -4,11 +4,12 @@ To Do:
 		Community Chest Cards (Brandon)
 
 	Update wins and losses on server when a player wins
-	
-	Finish the game setup window (Matt)
 
-	Utilize networking thorughout code (everyone)
-		Use messages to have game actions occur simultaneously across clients (Jesse)
+	Utilize networking thorughout code
+		Income Tax Uses Network
+
+		Chance Cards Use Network
+		Community Chest Cards Use Network
 
 	Pick fonts / Colors For Windows
 		Make the game look pretty
@@ -19,11 +20,9 @@ To Do:
 		Make sure all old classes are removed
 		Ensure all adapted code cites it's source
 
-	Add comment to top of every file with our names and group name.
+	Ensure Guest Functionality is Limited
 
-	Guest Functionality is Limited
-
-	Make a read me
+	Update ReadMe.txt
 
 Known Issue:
 	Players aren't forced to pay after 3 turns failing to roll to leave jail
