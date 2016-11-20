@@ -77,12 +77,7 @@ public class MainWindow extends JFrame {
 		determineOrder = true;
 		firstPlayer = 0;
 		highRoll = 0;
-		int[] tempCosts = {100,200};
-		Property temp1 = new Property("Test Property 1", 100, "Group9", tempCosts, 20, 100, 5);
-		Property temp2 = new Property("Test Property 2", 100, "Group9", tempCosts, 20, 80, 5);
-		temp2.setMortgaged(true);
-		players.get(currentPlayer).addProperty(properties[1]);
-		players.get(currentPlayer).addProperty(properties[3]);
+		
 		// Initialize our various buttons.
 		rollButton = new JButton("Roll Dice");
 		manageBuildingsButton = new JButton("Manage Buildings");
@@ -406,6 +401,13 @@ public class MainWindow extends JFrame {
 		manageBuildingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new ManageBuildingsWindow(players.get(ownedPlayer), MainWindow.this,null).setVisible(true);
+			}
+		});
+		
+		// Quits the game when exit is pushed
+		exitButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
 			}
 		});
 	}
