@@ -99,7 +99,7 @@ public class Client extends Thread{
 									System.out.println("Players' names are: " + p.getName());
 								}
 							}
-							mainWindow = new MainWindow(playerList);
+							mainWindow = new MainWindow(playerList, this);
 							mainWindow.setVisible(true);
 							startWindow.dispose();
 							//start main game gui
