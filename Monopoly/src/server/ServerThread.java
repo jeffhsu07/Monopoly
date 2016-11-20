@@ -40,6 +40,7 @@ public class ServerThread extends Thread  {
 	//send message to the client that is connected to this server thread
 	public void sendMessage(String message) {
 		try {
+			System.out.println("Sent: " + message);
 			oos.writeObject(message);
 			oos.flush();
 		} catch (IOException ioe) {
@@ -99,8 +100,9 @@ public class ServerThread extends Thread  {
 			server.sendMessageToAllOtherClients(message+ clientName, this); // tell all other client that this client logs out with its ID number
 			server.removeFromPlayerThread(this);
 			
-		}else if(message.contains("StartGame")){
+		}else if(message.contains("Startgame")){
 			server.stopServer(); // server doesnt take more people after host clicked start 
+			server.sendPlayersToClients();
 			//the host(first player joined) clicked start game
 			//TODO
 			//send new ID to all players in actual player list 
