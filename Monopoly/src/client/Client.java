@@ -318,7 +318,7 @@ public class Client extends Thread{
 	      myPanel.add(yField);
 
 	      int result = JOptionPane.showConfirmDialog(null, myPanel, 
-	               "Please Enter Ip and Port Values", JOptionPane.OK_CANCEL_OPTION);
+	               "Please Enter IP and Port Values", JOptionPane.OK_CANCEL_OPTION);
 	      if (result == JOptionPane.OK_OPTION) {
 	         System.out.println("Ip: " + xField.getText());
 	         System.out.println("Port: " + yField.getText());
