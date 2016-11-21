@@ -17,6 +17,7 @@ package client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -87,7 +88,7 @@ public class LoginWindow extends JFrame {
 		
 		//	make it pretty
 		monopolyLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		AppearanceSettings.setFont(AppearanceConstants.fontMedium, monopolyLabel);
+		monopolyLabel.setFont(new Font("Lucida", Font.PLAIN, 20));
 		AppearanceSettings.setTextAlignment(monopolyLabel, alertLabel);
 		AppearanceSettings.setSize(300, 60, password, username);
 		//AppearanceSettings.unSetBorderOnButtons(loginButton, createAccountButton, guestButton);
