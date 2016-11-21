@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -33,14 +34,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import resources.LoginInfo;
+import utilities.AppearanceConstants;
 import utilities.AppearanceSettings;
 
 public class LoginWindow extends JFrame {
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6328818746654805079L;
+	
 	private JLabel alertLabel;
 	private JButton loginButton;
 	private JButton createAccountButton;
@@ -48,6 +48,7 @@ public class LoginWindow extends JFrame {
 	private JTextField username;
 	private JPasswordField password;
 	private Client client;
+	
 	public LoginWindow(Client client) {
 		this.client = client;
 		client.setLoginWindow(this);
@@ -68,17 +69,31 @@ public class LoginWindow extends JFrame {
 	
 	private void createGUI() {
 		//	create local variables
-		JPanel mainPanel= new JPanel();
+		JPanel mainPanel = new JPanel();
+		JPanel northPanel = new JPanel();
+		JPanel centerPanel = new JPanel();
+		JPanel southPanel = new JPanel();
 		JPanel usernamePanel = new JPanel();
 		JPanel passwordPanel = new JPanel();
-		JLabel monopolyLabel = new JLabel("Monopoly", JLabel.CENTER);
+		JLabel monopolyLabel = new JLabel("Monopoly");
 		JPanel alertPanel = new JPanel();
 		JPanel buttonsPanel = new JPanel();
 		
+		mainPanel.setLayout(new BorderLayout());
+		northPanel.setLayout(new BorderLayout());
+		centerPanel.setLayout(new BorderLayout());
+		southPanel.setLayout(new BorderLayout());
+		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
+		
 		//	make it pretty
+		monopolyLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		AppearanceSettings.setFont(AppearanceConstants.fontMedium, monopolyLabel);
+		AppearanceSettings.setTextAlignment(monopolyLabel, alertLabel);
 		AppearanceSettings.setSize(300, 60, password, username);
-		//AppearanceSettings.unSetBorderOnButtons(loginButton, createAccountButton);
-		//AppearanceSettings.setSize(120, 60, loginButton, createAccountButton, guestButton);
+		//AppearanceSettings.unSetBorderOnButtons(loginButton, createAccountButton, guestButton);
+		AppearanceSettings.setSize(120, 60, loginButton, createAccountButton, guestButton);
+		AppearanceSettings.setOpaque(loginButton, createAccountButton, guestButton);
+		//AppearanceSettings.setBackground(Color.DARK_GRAY, loginButton, createAccountButton, guestButton);
 		AppearanceSettings.setForeground(Color.LIGHT_GRAY, username, password);
 		
 		//	only guest button starts as enabled (and is always enabled)
@@ -89,21 +104,25 @@ public class LoginWindow extends JFrame {
 		usernamePanel.add(username);
 		passwordPanel.add(password);
 		
-		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-		
 		AppearanceSettings.addGlue(buttonsPanel, BoxLayout.LINE_AXIS, true, loginButton, createAccountButton, guestButton);
-		AppearanceSettings.addGlue(mainPanel, BoxLayout.PAGE_AXIS, false, monopolyLabel);
+		//AppearanceSettings.addGlue(mainPanel, BoxLayout.PAGE_AXIS, false, monopolyLabel);
 		
-		mainPanel.add(alertPanel);
-		mainPanel.add(usernamePanel);
-		AppearanceSettings.addGlue(mainPanel, BoxLayout.PAGE_AXIS, false, passwordPanel);
-		mainPanel.add(buttonsPanel);
+		northPanel.add(monopolyLabel, BorderLayout.NORTH);
+		northPanel.add(alertPanel, BorderLayout.SOUTH);
+		centerPanel.add(usernamePanel, BorderLayout.NORTH);
+		centerPanel.add(passwordPanel, BorderLayout.CENTER);
+		//AppearanceSettings.addGlue(mainPanel, BoxLayout.PAGE_AXIS, false, passwordPanel);
+		southPanel.add(buttonsPanel, BorderLayout.CENTER);
+		
+		mainPanel.add(northPanel, BorderLayout.NORTH);
+		mainPanel.add(centerPanel, BorderLayout.CENTER);
+		mainPanel.add(southPanel, BorderLayout.SOUTH);
 		
 		add(mainPanel, BorderLayout.CENTER);
 		
-		setSize(600, 600);
+		setSize(400, 300);
 		setLocationRelativeTo(null);
+		setResizable(false);
 	}
 	
 	private void addListeners() {
@@ -204,7 +223,6 @@ public class LoginWindow extends JFrame {
 	
 	private void login() {
 		client.sendLoginInfo(new LoginInfo(username.getText(), new String(password.getPassword()), true  ) );
-		
 	}
 	
 	private void createAccount() {
@@ -237,9 +255,4 @@ public class LoginWindow extends JFrame {
 		}
 		
 	}
-	/*
-	public static void main(String args[]){
-		new LoginWindow().setVisible(true);
-	}
-	*/
 }
