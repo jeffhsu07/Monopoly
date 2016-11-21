@@ -1,5 +1,0 @@
-To Do:
-	Make the Game Look Pretty
-
-Known Issue:
-	Players aren't forced to pay after 3 turns failing to roll to leave jail
