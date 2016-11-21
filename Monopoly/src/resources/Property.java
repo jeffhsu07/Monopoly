@@ -16,7 +16,7 @@ package resources;
 import java.util.ArrayList;
 import utilities.Constants;
 
-
+//made by brandon
 
 public class Property {
 	private String name;

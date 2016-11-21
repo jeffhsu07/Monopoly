@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import client.MainWindow;
 import client.ProgressArea;
 import utilities.Constants;
-
+//made by brandon
 public class ChanceCardStuff 
 {
 	

@@ -533,7 +533,7 @@ public class MainWindow extends JFrame {
 					creditor = properties[newLocation].getOwner();
 					p.addMoney(-rent);
 					properties[newLocation].getOwner().addMoney(rent-debt);
-					progressArea.addProgress("    paid $"+(rent-debt)+" in rent.\n");
+					progressArea.addProgress("    paid $"+(rent-debt)+" in rent to " + properties[newLocation].getOwner().getName() + "\n");
 				}
 			}
 		} else {

@@ -19,6 +19,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+//made by brandon
 public class PropertiesSetUp 
 {
 	private Property[] allProperties;

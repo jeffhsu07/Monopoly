@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 import client.ProgressArea;
 import utilities.Constants;
-
+//made by brandon
 public class CommunityChestStuff 
 {
 	private int deckPosition;
