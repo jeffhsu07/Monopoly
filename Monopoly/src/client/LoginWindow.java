@@ -35,7 +35,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import resources.LoginInfo;
-import utilities.AppearanceConstants;
 import utilities.AppearanceSettings;
 
 public class LoginWindow extends JFrame {
