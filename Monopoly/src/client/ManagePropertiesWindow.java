@@ -202,7 +202,7 @@ public class ManagePropertiesWindow extends JFrame{
 	
 	private void updateDescriptionLabel(int value){ //updates the description label to match the mortgage value of the property 
 		mortgageValue = value;
-		descriptionLabel.setText("<html>Mortgage Value: " + mortgageValue + "<br>You won't be able to do shit with this property if mortgage it dumbass</html>");
+		descriptionLabel.setText("<html>Mortgage Value: " + mortgageValue + "<br>You won't be build houses or collect rent on this <br>property when it is mortgaged</html>");
 	}
 	
 	private void updateMortgageStateLabel(){ //updates the mortgage state label.
