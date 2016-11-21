@@ -309,6 +309,9 @@ public class Server extends Thread{
 	public boolean cannotAddPlayer(){
 		return actualPlayerTheads.size() == 8;
 	}
+	public boolean ableToStart(){
+		return (ss!=null);
+	}
 	private class PortPane {
 	   public PortPane() {
 	      JTextField portField = new JTextField(5);
@@ -334,7 +337,10 @@ public class Server extends Thread{
 	 			System.out.println("Server constructed");
 	 		} catch (IOException ioe) {
 	 			System.out.println("ioe construct: " + ioe.getMessage());
+	 			ss = null;
 	 		}
+	      }else if (result == JOptionPane.OK_OPTION) {
+	    	  ss = null;
 	      }
 	   }
 		   
@@ -342,7 +348,12 @@ public class Server extends Thread{
 	
 	public static void main(String args[]){
 		Server server = new Server();
-		server.start();
+		if(server.ableToStart()){
+			server.start();
+		}else {
+			System.out.println("Terminate");
+			return;
+		}
 		
 	}
 
