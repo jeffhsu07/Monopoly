@@ -37,6 +37,10 @@ import utilities.AppearanceSettings;
 
 public class LoginWindow extends JFrame {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JLabel alertLabel;
 	private JButton loginButton;
 	private JButton createAccountButton;
@@ -69,7 +73,6 @@ public class LoginWindow extends JFrame {
 		JPanel passwordPanel = new JPanel();
 		JLabel monopolyLabel = new JLabel("Monopoly", JLabel.CENTER);
 		JPanel alertPanel = new JPanel();
-		JPanel textFieldsPanel = new JPanel();
 		JPanel buttonsPanel = new JPanel();
 		
 		//	make it pretty

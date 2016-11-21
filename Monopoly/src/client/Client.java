@@ -18,7 +18,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
@@ -29,8 +28,6 @@ import javax.swing.JTextField;
 import resources.LoginInfo;
 import resources.Player;
 import resources.Property;
-import server.Server;
-import utilities.Constants;
 /*-----------------------------------------
  * Author: James Su
  * 
@@ -83,6 +80,7 @@ public class Client extends Thread{
 		}
 	
 	}
+	@SuppressWarnings("unchecked")
 	public void run() {
 		try {
 			while(true) {
@@ -96,6 +94,7 @@ public class Client extends Thread{
 				}else if (obj instanceof ArrayList<?>){//checking what arraylist contains, if contain strings then its otherplayerInfo, else is playerlist
 					if(((ArrayList<?>)obj).size()!=0){
 						if(((ArrayList<?>)obj).get(0) instanceof String){ //after login success, server send otherplayerInfo to consctuct a startwindow
+							@SuppressWarnings("unchecked")
 							ArrayList<String> otherPlayerInfo = (ArrayList<String>)obj; //pass to startwindow to initialize it 
 							loginWindow.setVisible(false);
 							startWindow = new StartWindow(thisPlayerName, otherPlayerInfo, this);
@@ -156,21 +155,18 @@ public class Client extends Thread{
 			message = message.replace("Guest Login: ", "");
 			message = message.trim();
 			String guestName = message;
-			//TODO
 			startWindow.userJoined(guestName);
 			//do something after a Guest logs in 
 		}else if(message.contains("User Login: ") && startWindow != null){
 			message = message.replace("User Login: ", "");
 			message = message.trim();
 			String username = message;
-			//TODO
 			startWindow.userJoined(username);
 			//do something after a User logs in 
 		}else if(message.contains("::Picked Token::") && startWindow != null){ //ClientName::Picked Token::TokenID
 			String[] command = message.split("::");
 			String clientName = command[0];
 			int tokenID = Integer.parseInt(command[2]);
-			//TODO
 			startWindow.refreshPlayer(clientName, tokenID);
 			startWindow.setTokenButtons();
 			//do something after the client picked a token
@@ -180,18 +176,12 @@ public class Client extends Thread{
 			String[] command = message.split("::");
 			String clientName = command[1];
 			if(thisPlayerID == 0){
-				//TODO
 				//if this client is host do sth
 				startWindow.addReadyPlayer(clientName);
 				startWindow.checkReady();
 			}else{
 				System.out.println(message);
 			}
-		}else if(message.contains("Startgame") && startWindow != null){
-			//obtain the correct teamnames and team id at this point 
-			//TODO 
-			//start the game 
-			
 		}else if(message.contains("EndTurn") && mainWindow != null ){
 			// End turn message only states end turn.
 			// No other information sent in message
@@ -258,24 +248,17 @@ public class Client extends Thread{
 			mainWindow.updateProgressArea(currentPlayer.getName() + " sold a house on " + property.getName()); 
 			mainWindow.updateProgressArea("Total number of houses on " + property.getName() + ": " + property.getNumHouses());
 			mainWindow.repaint();
-		}else if(message.contains("::DrewCard::") && mainWindow != null){
-			String[] command = message.split("::");
-			int clientID = Integer.parseInt(command[0]);
-			int cardID = Integer.parseInt(command[2]); //house on the property
-			//TODO
 		}else if(message.contains("You are connected")){
 			System.out.println("You are connected");
 		}else if(message.contains("Client Logout: ")){
 			message = message.replace("Client Logout: ", "");
 			message = message.trim();
 			String username = message;
-			//TODO
 			if(startWindow != null){// a client in startwindow logs out 
 				startWindow.userLeft(username);
 				
 			}
 		}else if(message.contains("Host Logout: ")){
-			//TODO
 			if(startWindow != null){// a client in startwindow logs out 
 				Object[] options = {"OK"};
 			    int n = JOptionPane.showOptionDialog(startWindow,
@@ -329,7 +312,7 @@ public class Client extends Thread{
 	      JTextField yField = new JTextField(5);
 
 	      JPanel myPanel = new JPanel();
-	      myPanel.add(new JLabel("Ip:"));
+	      myPanel.add(new JLabel("IP:"));
 	      myPanel.add(xField);
 	      myPanel.add(Box.createHorizontalStrut(15)); // a spacer
 	      myPanel.add(new JLabel("Port:"));

@@ -35,6 +35,7 @@ public class ServerThread extends Thread  {
 	private int ID = -1; //after player login as user or guest, he is given an id from 1 to 8
 	private int tokenPicked =-1; //set to actual token id after client-connected picked a token 
 	private Server server;
+	@SuppressWarnings("unused")
 	private Socket s;
 	private String clientName;
 	public ServerThread(Socket s, Server server) {
@@ -124,7 +125,6 @@ public class ServerThread extends Thread  {
 		}else if(message.contains("::Picked Token::")){
 			server.sendMessageToAllOtherClients(message, this);
 			String[] command = message.split("::");
-			String clientName = command[0];
 			int tokenID = Integer.parseInt(command[2]);
 			tokenPicked = tokenID;
 		}else if(message.contains("Winnner: ")){
