@@ -94,7 +94,6 @@ public class Client extends Thread{
 				}else if (obj instanceof ArrayList<?>){//checking what arraylist contains, if contain strings then its otherplayerInfo, else is playerlist
 					if(((ArrayList<?>)obj).size()!=0){
 						if(((ArrayList<?>)obj).get(0) instanceof String){ //after login success, server send otherplayerInfo to consctuct a startwindow
-							@SuppressWarnings("unchecked")
 							ArrayList<String> otherPlayerInfo = (ArrayList<String>)obj; //pass to startwindow to initialize it 
 							loginWindow.setVisible(false);
 							startWindow = new StartWindow(thisPlayerName, otherPlayerInfo, this);
